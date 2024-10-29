@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b2174c2cdc44208d40ebcf105e369f, type: 3}
+  m_Name: DragonBlastSkill
+  m_EditorClassIdentifier: 
+  skillName: 
+  icon: {fileID: 0}
+  baseCooldown: 10
+  damage: 5
+  projectilePrefab: {fileID: 6319345273986289958, guid: 90b2dbbd9ec554650b0baa7ad118ebe4, type: 3}
+  projectileCollidableLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  projectileSpecs: {fileID: 11400000, guid: 0c222fcd8134f4d3fb2c3b3429add3a7, type: 2}
