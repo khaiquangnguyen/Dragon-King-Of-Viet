@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class DragonFloat : PlayerStateBehavior {
-    public DragonFloat(Player player) : base(player, CharacterState.DragonFloat, PlayerForm.Dragon) { }
+    public DragonFloat(Player player) : base(player, PlayerState.DragonFloat, PlayerForm.Dragon) { }
     public float dragonHoverBufferCountdown;
 
     public override void OnStateEnter() {
@@ -18,7 +18,7 @@ public class DragonFloat : PlayerStateBehavior {
         var maxSpeedX = player.playerStats.dragonMaxSpeed;
         player.MoveX(acceleration, deceleration, maxSpeedX);
         if (Mathf.Approximately(player.body.linearVelocity.x, 0)) {
-            player.stateMachine.ChangeState(CharacterState.DragonHover);
+            player.stateMachine.ChangeState(PlayerState.DragonHover);
         }
         float y = Mathf.PingPong(Time.time, 1f) - 0.5f;
         player.dragonBody.transform.localPosition = new Vector3(0, y, 0);

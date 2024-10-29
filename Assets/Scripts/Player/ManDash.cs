@@ -10,7 +10,7 @@ public class ManDash : PlayerStateBehavior {
     private Environment environment => player.environment;
     private PlayerStats playerStats => player.playerStats;
 
-    public ManDash(Player player) : base(player, CharacterState.ManDash, PlayerForm.Man) { }
+    public ManDash(Player player) : base(player, PlayerState.ManDash, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         player.humanAnimator.Play("Dash");
@@ -34,12 +34,12 @@ public class ManDash : PlayerStateBehavior {
         else {
             if (player.environment == Environment.Ground) {
                 if (player.inputDirectionX == 0)
-                    player.stateMachine.ChangeState(CharacterState.ManIdle);
+                    player.stateMachine.ChangeState(PlayerState.ManIdle);
                 else
-                    player.stateMachine.ChangeState(CharacterState.ManRun);
+                    player.stateMachine.ChangeState(PlayerState.ManRun);
             }
             else if (player.environment == Environment.Air) {
-                player.stateMachine.ChangeState(CharacterState.ManFall);
+                player.stateMachine.ChangeState(PlayerState.ManFall);
             }
         }
     }

@@ -8,7 +8,7 @@ public class ManAttack : PlayerStateBehavior {
     private float newStateStartAt;
     private float attackStartTimestamp;
 
-    public ManAttack(Player player) : base(player, CharacterState.ManAttack, PlayerForm.Man) { }
+    public ManAttack(Player player) : base(player, PlayerState.ManAttack, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
@@ -61,7 +61,7 @@ public class ManAttack : PlayerStateBehavior {
                 newStateStartAt = Time.time;
             }
             else {
-                player.stateMachine.ChangeState(CharacterState.ManIdle);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
         }
 

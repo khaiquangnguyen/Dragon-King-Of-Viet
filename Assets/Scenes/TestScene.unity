@@ -1275,6 +1275,7 @@ GameObject:
   - component: {fileID: 1983922118}
   - component: {fileID: 1983922116}
   - component: {fileID: 1983922120}
+  - component: {fileID: 1983922121}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1336,6 +1337,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1983922114}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f629e7fa7249889ba48f73c6812519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1983922121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e6a76f0e7674f2da827ad6b0f62df41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
@@ -1351,16 +1364,16 @@ MonoBehaviour:
   dragonMaxSpeed: 0
   dragonRotationSpeed: 0
   dragonForcedHoverInPlace: 0
-  maxDragonEnergy: 100
+  maxDragonEnergy: 0
   currentDragonEnergy: 0
-  dragonEnergyRegenRate: 10
-  dragonEnergyDrainRate: 10
+  dragonEnergyRegenRate: 0
+  dragonEnergyDrainRate: 0
   attackInputBufferCountdown: 0
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   playerStats: {fileID: 11400000, guid: d0afaf364383a4747986ea3a6427f01a, type: 2}
-  skillList: {fileID: 11400000, guid: 2c5dbf59bf4294305a5910c2034b4031, type: 2}
+  skillList: {fileID: 0}
   inputDisabled: 0
   environment: 0
   humanAnimator: {fileID: 0}

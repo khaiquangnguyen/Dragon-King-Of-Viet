@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 public class ManFall : PlayerStateBehavior {
-    public ManFall(Player player) : base(player, CharacterState.ManFall, PlayerForm.Man) { }
+    public ManFall(Player player) : base(player, PlayerState.ManFall, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         player.humanAnimator.Play("JumpFall");
@@ -21,9 +21,9 @@ public class ManFall : PlayerStateBehavior {
         player.UpdateVelocityY(moveY);
         if (player.environment == Environment.Ground) {
             if (player.inputDirectionX == 0)
-                player.stateMachine.ChangeState(CharacterState.ManIdle);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
             else
-                player.stateMachine.ChangeState(CharacterState.ManRun);
+                player.stateMachine.ChangeState(PlayerState.ManRun);
         }
     }
 

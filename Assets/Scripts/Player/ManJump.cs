@@ -26,7 +26,7 @@ public class ManJump : PlayerStateBehavior{
     private AnimationCurve jumpCutHeightCurve => player.playerStats.jumpCutHeightCurve;
 
 
-    public ManJump(Player player) : base(player, CharacterState.ManJump, PlayerForm.Man) { }
+    public ManJump(Player player) : base(player, PlayerState.ManJump, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         player.humanAnimator.Play("JumpRise");
@@ -67,7 +67,7 @@ public class ManJump : PlayerStateBehavior{
             var jumpHeightNextPercentage = jumpCutHeightCurve.Evaluate((Time.time - jumpTimestamp + Time.fixedDeltaTime) / player.playerStats.jumpCutDuration);
             var jumpHeightDelta = (jumpHeightNextPercentage - jumpHeightCurrentPercentage) * player.playerStats.jumpCutHeight;
             jumpMoveY = jumpHeightDelta / Time.fixedDeltaTime;
-            if (Time.time - jumpCutTimestamp > player.playerStats.jumpCutDuration) player.stateMachine.ChangeState(CharacterState.ManFall);
+            if (Time.time - jumpCutTimestamp > player.playerStats.jumpCutDuration) player.stateMachine.ChangeState(PlayerState.ManFall);
         }
         else {
             var jumpHeightCurrentPercentage = jumpHeightCurve.Evaluate((Time.time - jumpTimestamp) / player.playerStats.jumpDuration);
@@ -78,7 +78,7 @@ public class ManJump : PlayerStateBehavior{
                 player.humanAnimator.Play("JumpMid");
             }
             if (Time.time - jumpTimestamp > player.playerStats.jumpDuration) {
-                player.stateMachine.ChangeState(CharacterState.ManFall);
+                player.stateMachine.ChangeState(PlayerState.ManFall);
             }
 
         }

@@ -4,7 +4,7 @@ public class ManEmpoweredDefense:PlayerStateBehavior {
     public SkillState state = SkillState.Ready;
     public float lastStateTimestamp;
 
-    public ManEmpoweredDefense(Player player) : base(player, CharacterState.ManEmpoweredDefense, PlayerForm.Man) { }
+    public ManEmpoweredDefense(Player player) : base(player, PlayerState.ManEmpoweredDefense, PlayerForm.Man) { }
 
     public void Begin() {
         lastStateTimestamp = Time.time;

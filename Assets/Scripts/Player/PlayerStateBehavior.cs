@@ -1,11 +1,11 @@
 using UnityEngine;
 
 public abstract class PlayerStateBehavior {
-    public readonly CharacterState name;
+    public readonly PlayerState name;
     public readonly PlayerForm form;
     protected readonly Player player;
 
-    protected PlayerStateBehavior(Player player, CharacterState name, PlayerForm form) {
+    protected PlayerStateBehavior(Player player, PlayerState name, PlayerForm form) {
         this.player = player;
         this.name = name;
         this.form = form;

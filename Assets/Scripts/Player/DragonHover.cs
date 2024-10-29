@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 public class DragonHover : PlayerStateBehavior {
-    public DragonHover(Player player) : base(player, CharacterState.DragonHover, PlayerForm.Dragon) { }
+    public DragonHover(Player player) : base(player, PlayerState.DragonHover, PlayerForm.Dragon) { }
     private float amplitude = 1f;
 
     public override void OnStateEnter() {

@@ -3,7 +3,7 @@ using UnityEngine;
 public class ManToDragonTransform: PlayerStateBehavior {
     private float manToDragonCountdown;
 
-    public ManToDragonTransform(Player player) : base(player, CharacterState.ManToDragon, PlayerForm.Dragon) { }
+    public ManToDragonTransform(Player player) : base(player, PlayerState.ManToDragon, PlayerForm.Dragon) { }
 
     public override void OnStateEnter() {
         player.UpdateVelocity(0,0);
@@ -25,7 +25,7 @@ public class ManToDragonTransform: PlayerStateBehavior {
             player.ChangeAlphaOfDragonAnimator(transformRate);
         }
         if (transformRate >= 1) {
-            player.stateMachine.ChangeState(CharacterState.DragonHover);
+            player.stateMachine.ChangeState(PlayerState.DragonHover);
         }
     }
 

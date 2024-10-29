@@ -1,4 +1,4 @@
 public class ManRunAttack: PlayerStateBehavior {
-    public ManRunAttack(Player player) : base(player, CharacterState.ManRunAttack, PlayerForm.Man) { }
+    public ManRunAttack(Player player) : base(player, PlayerState.ManRunAttack, PlayerForm.Man) { }
 
 }

@@ -4,17 +4,16 @@ using JetBrains.Annotations;
 using UnityEngine;
 
 public class StateMachine {
-    public CharacterState currentCharacterState;
+    public PlayerState currentPlayerState;
 
-    private readonly Dictionary<CharacterState, PlayerStateBehavior> states = new();
-    private List<Transition> transitions = new();
-    public PlayerStateBehavior currentStateBehavior => states[currentCharacterState];
+    private readonly Dictionary<PlayerState, PlayerStateBehavior> states = new();
+    public PlayerStateBehavior currentStateBehavior => states[currentPlayerState];
 
-    public void ChangeState(CharacterState newCharacterState) {
-        if (newCharacterState == currentCharacterState) return;
+    public void ChangeState(PlayerState newPlayerState) {
+        if (newPlayerState == currentPlayerState) return;
         currentStateBehavior.OnStateExit();
-        currentCharacterState = newCharacterState;
-        var newState = states[newCharacterState];
+        currentPlayerState = newPlayerState;
+        var newState = states[newPlayerState];
         newState.OnStateEnter();
     }
 
@@ -31,14 +30,5 @@ public class StateMachine {
 
     public void AddState(PlayerStateBehavior state) {
         this.states.Add(state.name, state);
-    }
-
-    public void AddTransition(Transition transition) {
-        var existingTransition = transitions.FindIndex(existingTransition =>
-            existingTransition.from == transition.from && existingTransition.to == transition.to);
-        if (existingTransition != -1)
-            transitions[existingTransition] = transition;
-        else
-            transitions.Add(transition);
     }
 }

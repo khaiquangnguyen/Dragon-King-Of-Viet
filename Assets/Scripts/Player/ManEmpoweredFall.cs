@@ -4,7 +4,7 @@ public class ManEmpoweredFall:PlayerStateBehavior {
     private SkillState state = SkillState.Ready;
     private float lastStateTimestamp;
 
-    public ManEmpoweredFall(Player player) : base(player, CharacterState.ManEmpoweredFall, PlayerForm.Man) { }
+    public ManEmpoweredFall(Player player) : base(player, PlayerState.ManEmpoweredFall, PlayerForm.Man) { }
 
     public void Begin() {
         player.inputDisabled = true;
@@ -32,6 +32,6 @@ public class ManEmpoweredFall:PlayerStateBehavior {
     }
 
     public void End() {
-        player.stateMachine.ChangeState(CharacterState.ManIdle);
+        player.stateMachine.ChangeState(PlayerState.ManIdle);
     }
 }

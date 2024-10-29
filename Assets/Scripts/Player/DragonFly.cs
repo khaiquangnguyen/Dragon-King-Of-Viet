@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class DragonFly : PlayerStateBehavior {
-    public DragonFly(Player player) : base(player, CharacterState.DragonFly, PlayerForm.Dragon) { }
+    public DragonFly(Player player) : base(player, PlayerState.DragonFly, PlayerForm.Dragon) { }
     public float dragonHoverBufferCountdown;
 
     public override void OnStateEnter() {

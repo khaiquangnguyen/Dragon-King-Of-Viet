@@ -5,7 +5,7 @@ public class ManDefense : PlayerStateBehavior {
     private float defenseStartTimestamp;
     private DefenseState defenseState = DefenseState.Ready;
 
-    public ManDefense(Player player) : base(player, CharacterState.ManDefense, PlayerForm.Man) { }
+    public ManDefense(Player player) : base(player, PlayerState.ManDefense, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         player.UpdateVelocity(0, 0);
@@ -53,7 +53,7 @@ public class ManDefense : PlayerStateBehavior {
         else if (defenseState == DefenseState.Recovery) {
             player.humanAnimator.Play("IdleTransition");
             if (Time.time - newStateStartAt > player.playerStats.defenseRecoveryDuration)
-                player.stateMachine.ChangeState(CharacterState.ManIdle);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 public class DragonToManTransform : PlayerStateBehavior {
     private float dragonToManCountdown;
 
-    public DragonToManTransform(Player player) : base(player, CharacterState.DragonToMan, PlayerForm.Dragon) { }
+    public DragonToManTransform(Player player) : base(player, PlayerState.DragonToMan, PlayerForm.Dragon) { }
 
     public override void OnStateEnter() {
         player.dragonRotationSpeed = player.playerStats.dragonToManRotationSpeed;
@@ -27,12 +27,12 @@ public class DragonToManTransform : PlayerStateBehavior {
             player.transform.rotation = Quaternion.identity;
             player.CheckGround();
             if (player.environment == Environment.Ground) {
-                if (player.inputDirectionX != 0) player.stateMachine.ChangeState(CharacterState.ManRun);
+                if (player.inputDirectionX != 0) player.stateMachine.ChangeState(PlayerState.ManRun);
                 else
-                    player.stateMachine.ChangeState(CharacterState.ManIdle);
+                    player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
             else {
-                player.stateMachine.ChangeState(CharacterState.ManFall);
+                player.stateMachine.ChangeState(PlayerState.ManFall);
             }
         }
     }
