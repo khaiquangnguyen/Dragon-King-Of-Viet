@@ -133,9 +133,13 @@ public class Player : Character {
     [NonSerialized]
     public Rigidbody2D body;
     private Collider2D humanBodyCollider;
+    [HideInInspector]
     public Animator humanAnimator;
+    [HideInInspector]
     public Component humanRenderer;
+    [HideInInspector]
     public Component dragonRenderer;
+    [HideInInspector]
     public Animator dragonAnimator;
     [HideInInspector]
     public Component dragonBody;
@@ -217,6 +221,7 @@ public class Player : Character {
         }
 
         if (stateMachine.currentPlayerState == PlayerState.ManRun) {
+            CheckChangeToManRunState();
             CheckChangeToManDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
@@ -234,11 +239,18 @@ public class Player : Character {
             CheckChangeToManDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
+            CheckChangeToIdleState();
         }
 
-        if (stateMachine.currentPlayerState == PlayerState.ManDash) { }
+        if (stateMachine.currentPlayerState == PlayerState.ManDash) {
+            CheckChangeToIdleState();
+        }
 
-        if (stateMachine.currentPlayerState == PlayerState.ManFall) CheckChangeToManDashState();
+        if (stateMachine.currentPlayerState == PlayerState.ManFall) {
+            CheckChangeToManDashState();
+            CheckChangeToManRunState();
+            CheckChangeToIdleState();
+        }
         if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
         // if (inputDirectionX != 0) {
         //     if (stateMachine.currentCharacterState == CharacterState.ManIdle)
@@ -265,6 +277,7 @@ public class Player : Character {
         // CheckChangeToManAttackState();
     }
 
+
     private void CheckChangeToManRunState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
@@ -273,6 +286,12 @@ public class Player : Character {
         if (canRun) stateMachine.ChangeState(PlayerState.ManRun);
     }
 
+    private void CheckChangeToIdleState() {
+        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
+        var environmentValidated = environment == Environment.Ground;
+        var speedValidated = Mathf.Approximately(body.linearVelocity.x, 0);
+        if (environmentValidated && formValidated && speedValidated) stateMachine.ChangeState(PlayerState.ManIdle);
+    }
     private void CheckChangeToManDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = Input.GetButtonDown("Horizontal") && isEmpowering;
@@ -340,7 +359,6 @@ public class Player : Character {
             vX = Mathf.MoveTowards(body.linearVelocity.x, maxSpeedX * facingDirection,
                 accelerationFactor * Time.fixedDeltaTime);
         }
-
         UpdateVelocityX(vX);
     }
 
@@ -365,12 +383,14 @@ public class Player : Character {
 
     public void CheckGround() {
         var boxCastOrigin = new Vector2(humanBodyCollider.bounds.center.x, humanBodyCollider.bounds.min.y);
-        var boxCastSize = new Vector2(humanBodyCollider.bounds.size.x, GROUND_CHECK_DISTANCE);
+        var boxCastSize = new Vector2(humanBodyCollider.bounds.size.x * 0.75f, GROUND_CHECK_DISTANCE);
         var groundedHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0, Vector2.down, GROUND_CHECK_DISTANCE,
             groundLayer);
+
         if (groundedHit.collider is not null) {
             coyoteTimeCountdown = playerStats.jumpCoyoteDuration;
             environment = Environment.Ground;
+
         }
         else {
             coyoteTimeCountdown = -1f;

@@ -20,10 +20,11 @@ public class ManRun : PlayerStateBehavior {
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeedX = player.playerStats.manGroundMaxSpeed;
         player.MoveX(acceleration, deceleration, maxSpeedX);
+        // simulated gravity on slope
+        player.body.linearVelocityY = player.body.linearVelocity.y + player.playerStats.gravity * Time.fixedDeltaTime;
         if (Mathf.Approximately(player.body.linearVelocity.x, 0)) {
             player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
-
     }
 
     public override void Update() { }

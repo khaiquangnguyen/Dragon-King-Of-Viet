@@ -12,7 +12,7 @@ public class ManEmpoweredDefense:PlayerStateBehavior {
         player.ResetEmpowermentAfterTrigger();
     }
 
-    public void FixedUpdate() {
+    public override void FixedUpdate() {
         if (state == SkillState.Ready) {
             state = SkillState.Startup;
         }
