@@ -16,7 +16,14 @@ public class ManFall : PlayerStateBehavior {
         player.characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
             player.playerStats.gravity, gravityMult, player.facingDirection);
         if (player.characterController.isOnWalkableGround()) {
-            player.stateMachine.ChangeState(player.inputDirectionX != 0 ? PlayerState.ManRun : PlayerState.ManIdle);
+            if (player.inputDirectionX == 0) {
+                player.characterController.Move(0,0);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
+            }
+            else {
+                player.characterController.Move(maxSpeedX,0);
+                player.stateMachine.ChangeState(PlayerState.ManRun);
+            }
         }
     }
 
