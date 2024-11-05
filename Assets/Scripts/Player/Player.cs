@@ -253,11 +253,11 @@ public class Player : Character {
 
         if (stateMachine.currentPlayerState == PlayerState.ManDash) CheckChangeToIdleState();
 
-        if (stateMachine.currentPlayerState == PlayerState.ManFall) {
-            CheckChangeToManDashState();
-            CheckChangeToManRunState();
-            CheckChangeToIdleState();
-        }
+        // if (stateMachine.currentPlayerState == PlayerState.ManFall) {
+        //     CheckChangeToManDashState();
+        //     CheckChangeToManRunState();
+        //     CheckChangeToIdleState();
+        // }
 
         if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
         // if (inputDirectionX != 0) {
@@ -381,7 +381,6 @@ public class Player : Character {
     }
 
     private void FixedUpdate() {
-        print(stateMachine.currentPlayerState);
         CheckGround();
         stateMachine.FixedUpdate();
     }

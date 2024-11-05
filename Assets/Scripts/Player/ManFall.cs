@@ -11,11 +11,10 @@ public class ManFall : PlayerStateBehavior {
     public override void FixedUpdate() {
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
-        var maxSpeedX = player.playerStats.manAirMaxSpeed;
+        var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
         var gravityMult = player.GetGravityMult();
         player.characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
-            player.playerStats.gravity,
-            gravityMult);
+            player.playerStats.gravity, gravityMult, player.facingDirection);
         if (player.characterController.isOnWalkableGround()) {
             player.stateMachine.ChangeState(player.inputDirectionX != 0 ? PlayerState.ManRun : PlayerState.ManIdle);
         }

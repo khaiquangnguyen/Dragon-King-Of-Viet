@@ -54,12 +54,12 @@ namespace CharacterBehavior {
         }
 
         public void MoveOnAirWithGravityApplied(float accel, float decel, float maxSpeedX, float gravity,
-            float gravityMult) {
+            float gravityMult, int facingDirection) {
             var accelerationFactor = Mathf.Abs(velocity.x) > maxSpeedX
                 ? accel
                 : decel;
             var vX = Mathf.MoveTowards(Mathf.Abs(velocity.x), maxSpeedX,
-                accelerationFactor * Time.fixedDeltaTime);
+                accelerationFactor * Time.fixedDeltaTime) * facingDirection;
             var vY = velocity.y;
             vY += gravity * gravityMult * Time.fixedDeltaTime;
             Move(vX, vY);
