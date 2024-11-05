@@ -1,26 +1,15 @@
-using System.ComponentModel;
+using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CharacterBehavior {
     public class CharacterController2D : MonoBehaviour {
-        [HideInInspector]
-        public float groundCheckDistance = 0.1f;
-        [HideInInspector]
-        public float stickToGroundDistance = 0.4f;
-        [HideInInspector]
-        public float slopeCheckDistance = 0.1f;
-        [HideInInspector]
-        public float maxVyStickToGroundCorrectionVelocity = 20f;
-        [HideInInspector]
-        public LayerMask groundLayer = LayerMask.GetMask("Ground");
         public CharacterControllerStats stats;
         public Rigidbody2D body;
         public Collider2D bodyCollider;
+        [ReadOnly]
         public bool isOnWalkableSlope;
         public float slopeSideAngle;
         private float lastSlopeAngle;
-        private float maxSlopeAngle;
         public float slopeDownAngle;
         public bool isWalkableGroundCheckPassed;
         public bool shouldStickToGround = true;
@@ -28,12 +17,6 @@ namespace CharacterBehavior {
         public Vector2 velocity;
 
         public void OnEnable() {
-            groundCheckDistance = stats.groundCheckDistance;
-            stickToGroundDistance = stats.stickToGroundDistance;
-            slopeCheckDistance = stats.slopeCheckDistance;
-            maxVyStickToGroundCorrectionVelocity = stats.maxVyStickToGroundCorrectionVelocity;
-            groundLayer = stats.groundLayer;
-            maxSlopeAngle = stats.maxSlopeAngle;
         }
 
         public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
@@ -47,7 +30,7 @@ namespace CharacterBehavior {
 
         public void MoveAlongGround(float movementVelocity) {
             var groundTangent = Vector2.one;
-            var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
+            var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.groundLayer);
             if (hit) groundTangent = Vector2.Perpendicular(hit.normal).normalized;
             velocity = new Vector2(movementVelocity * -groundTangent.x,
                 movementVelocity * -groundTangent.y);
@@ -70,11 +53,12 @@ namespace CharacterBehavior {
 
         public void StickToGround() {
             // can stick to ground but not on ground yet
-            var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
+            var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.groundLayer);
+            Debug.DrawRay(GetCastOrigin(), Vector2.down * stats.stickToGroundDistance, Color.red);
             if (!isWalkableGroundCheckPassed && !isOnWalkableSlope && hit && shouldStickToGround) {
                 velocity.y = -hit.distance / Time.fixedDeltaTime;
-                velocity.y = Mathf.Clamp(velocity.y, -maxVyStickToGroundCorrectionVelocity,
-                    maxVyStickToGroundCorrectionVelocity);
+                velocity.y = Mathf.Clamp(velocity.y, -stats.maxVyStickToGroundCorrectionVelocity,
+                    stats.maxVyStickToGroundCorrectionVelocity);
             }
         }
 
@@ -82,7 +66,7 @@ namespace CharacterBehavior {
          * Check if the character is on ground, including stick to ground ray cast hit
          */
         public bool isOnGround() {
-            var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
+            var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.groundLayer);
             var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || stickToGroundHit;
             return isGrounded;
         }
@@ -111,24 +95,24 @@ namespace CharacterBehavior {
         // Check if the character is on ground, aka when the feet (or end of raycast in this case) actually touch the ground
         public void CheckRaycastGround() {
             var castOrigin = GetCastOrigin();
-            var groundedHit = Physics2D.Raycast(castOrigin, Vector2.down, groundCheckDistance, groundLayer);
-            // var boxCastSize = new Vector2(bodyCollider.bounds.size.x * 0.8f, groundCheckDistance);
-            // var groundedHit =
-                // Physics2D.BoxCast(castOrigin, boxCastSize, 0, Vector2.down, groundCheckDistance, groundLayer);
+            var groundedHit = Physics2D.Raycast(castOrigin, Vector2.down, stats.groundCheckDistance, stats.groundLayer);
             isWalkableGroundCheckPassed = groundedHit.collider is not null;
         }
-
-        public void GetGroundNormal() { }
 
         private void CheckOnSlope() {
             var groundCheckPos = new Vector2(bodyCollider.bounds.center.x, bodyCollider.bounds.min.y);
             SlopeCheckHorizontal(groundCheckPos);
             SlopeCheckVertical(groundCheckPos);
+            isOnWalkableSlope = isOnSlope && slopeDownAngle <= stats.maxSlopeAngle && slopeSideAngle <= stats.maxSlopeAngle;
+
         }
 
         private void SlopeCheckHorizontal(Vector2 checkPos) {
-            var slopeHitFront = Physics2D.Raycast(checkPos, transform.right, slopeCheckDistance, groundLayer);
-            var slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, slopeCheckDistance, groundLayer);
+            var slopeHitFront = Physics2D.Raycast(checkPos, transform.right, stats.slopeCheckDistance, stats.groundLayer);
+            var slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, stats.slopeCheckDistance, stats.groundLayer);
+            // debug draw ray
+            Debug.DrawRay(checkPos, transform.right * stats.slopeCheckDistance, Color.green);
+            Debug.DrawRay(checkPos, -transform.right * stats.slopeCheckDistance, Color.green);
             if (slopeHitFront) {
                 slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
                 isOnSlope = true;
@@ -144,15 +128,12 @@ namespace CharacterBehavior {
         }
 
         private void SlopeCheckVertical(Vector2 checkPos) {
-            var hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
+            var hit = Physics2D.Raycast(checkPos, Vector2.down, stats.slopeCheckDistance, stats.groundLayer);
+            Debug.DrawRay(checkPos, Vector2.down * stats.slopeCheckDistance, Color.green);
             if (hit) {
                 slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (!Mathf.Approximately(slopeDownAngle, lastSlopeAngle)) isOnSlope = true;
                 lastSlopeAngle = slopeDownAngle;
-                isOnWalkableSlope = isOnSlope && slopeDownAngle <= maxSlopeAngle && slopeSideAngle <= maxSlopeAngle;
-            }
-            else {
-                isOnWalkableSlope = false;
             }
         }
     }
