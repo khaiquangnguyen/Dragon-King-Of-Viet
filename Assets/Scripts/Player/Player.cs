@@ -34,10 +34,11 @@ public enum FacingDirection {
     Right
 }
 
+[RequireComponent(typeof(CharacterController2D))]
+[RequireComponent(typeof(CharacterBaseMovement))]
 public class Player : Character {
-    public float groundCheckDistance = 0.1f;
-    public float stickToGroundDistance = 0.5f;
-    private CharacterController2D characterController;
+    [HideInInspector]
+    public CharacterController2D characterController;
 
     private readonly IReadOnlyList<PlayerState> airStates = new List<PlayerState> {
         PlayerState.ManJump,
@@ -172,13 +173,12 @@ public class Player : Character {
     private DragonWallHang dragonWallHang;
     private DragonCeilHang dragonCeilHang;
     private DragonFloat dragonFloat;
-    public CharacterController2D humanController;
     #endregion
 
     private void OnEnable() {
-        characterBaseMovement = GetComponent<CharacterBaseMovement>();
         body = transform.GetComponent<Rigidbody2D>();
-        humanController = transform.Find("HumanBody").GetComponentInChildren<CharacterController2D>();
+        characterBaseMovement = GetComponent<CharacterBaseMovement>();
+        characterController = GetComponent<CharacterController2D>();
         dragonBody = transform.Find("DragonBody");
         humanBody = transform.Find("HumanBody");
         humanRenderer = humanBody.transform.Find("Renderer");
@@ -190,8 +190,6 @@ public class Player : Character {
         dashCooldownCountdown = -1f;
 
         stateMachine = new StateMachine();
-        // characterController = GetComponent<CharacterController2D>();
-        // characterController.move(new Vector3(2,0,0));
         stateMachine.AddState(manIdle = new ManIdle(this));
         stateMachine.AddState(manJump = new ManJump(this));
         stateMachine.AddState(manRun = new ManRun(this));
@@ -391,16 +389,9 @@ public class Player : Character {
     }
 
     public void CheckGround() {
-        if (environment == Environment.Air) { }
-
-        var isOnGround = humanController.isOnGround();
-        if (isOnGround) {
-            environment = Environment.Ground;
-        }
-        else {
-            coyoteTimeCountdown = -1f;
-            environment = Environment.Air;
-        }
+        environment = characterBaseMovement.CheckEnvironment();
+        if (environment == Environment.Air)
+            stateMachine.ChangeState(PlayerState.ManFall);
     }
 
     private void CheckEmpowerAndTransformInputs() {

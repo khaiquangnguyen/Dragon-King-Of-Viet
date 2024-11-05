@@ -661,7 +661,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1564824398}
+    m_TransformParent: {fileID: 2112427322}
     m_Modifications:
     - target: {fileID: 456351105955008342, guid: 9cac13eb699ad41528a3e9a00309aeea, type: 3}
       propertyPath: m_Name
@@ -1948,7 +1948,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1564824398}
   - component: {fileID: 1564824399}
-  - component: {fileID: 1564824400}
   m_Layer: 0
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -1968,8 +1967,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 480209193}
+  m_Children: []
   m_Father: {fileID: 2112427322}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &1564824399
@@ -2009,33 +2007,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.050039947, y: -0.016038775}
   m_Size: {x: 0.56039155, y: 1.8710725}
   m_Direction: 0
---- !u!114 &1564824400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1564824397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff9ab633ce02485d8df6f6554bcfbece, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundCheckDistance: 0.1
-  stickToGroundDistance: 1
-  slopeCheckDistance: 0.5
-  maxVyStickToGroundCorrectionVelocity: 10
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  stats: {fileID: 11400000, guid: ee135b0bf7a9b44b0ac2285307ceec83, type: 2}
-  body: {fileID: 1983922122}
-  bodyCollider: {fileID: 1564824399}
-  isOnSlope: 0
-  slopeSideAngle: 0
-  slopeDownAngle: 0
-  isRaycastGroundCheckPassed: 0
-  shouldStickToGround: 1
 --- !u!1 &1591875078
 GameObject:
   m_ObjectHideFlags: 0
@@ -2538,6 +2509,8 @@ GameObject:
   - component: {fileID: 1983922118}
   - component: {fileID: 1983922121}
   - component: {fileID: 1983922122}
+  - component: {fileID: 1983922124}
+  - component: {fileID: 1983922123}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2575,8 +2548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a76f0e7674f2da827ad6b0f62df41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheckDistance: 0.2
-  stickToGroundDistance: 0.5
+  characterController: {fileID: 0}
   inputDirectionX: 0
   facingDirection: 1
   isJumpCut: 0
@@ -2600,6 +2572,7 @@ MonoBehaviour:
   playerStats: {fileID: 11400000, guid: d0afaf364383a4747986ea3a6427f01a, type: 2}
   skillList: {fileID: 0}
   inputDisabled: 0
+  characterBaseMovement: {fileID: 0}
   environment: 0
   humanAnimator: {fileID: 0}
   humanRenderer: {fileID: 0}
@@ -2607,7 +2580,6 @@ MonoBehaviour:
   dragonAnimator: {fileID: 0}
   dragonBody: {fileID: 0}
   humanBody: {fileID: 0}
-  humanController: {fileID: 0}
 --- !u!50 &1983922122
 Rigidbody2D:
   serializedVersion: 5
@@ -2635,6 +2607,47 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &1983922123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff9ab633ce02485d8df6f6554bcfbece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundCheckDistance: 0.1
+  stickToGroundDistance: 1
+  slopeCheckDistance: 0.5
+  maxVyStickToGroundCorrectionVelocity: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  stats: {fileID: 11400000, guid: ee135b0bf7a9b44b0ac2285307ceec83, type: 2}
+  body: {fileID: 1983922122}
+  bodyCollider: {fileID: 1564824399}
+  isOnSlope: 0
+  slopeSideAngle: 0
+  slopeDownAngle: 0
+  isRaycastGroundCheckPassed: 0
+  shouldStickToGround: 1
+  velocity: {x: 0, y: 0}
+--- !u!114 &1983922124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4dcddf447624d3d902fed60c563b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  environment: 0
 --- !u!1 &2112427321
 GameObject:
   m_ObjectHideFlags: 0
@@ -2665,6 +2678,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1564824398}
+  - {fileID: 480209193}
   m_Father: {fileID: 1983922118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807

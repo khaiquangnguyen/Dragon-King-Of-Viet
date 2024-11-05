@@ -33,15 +33,34 @@ namespace CharacterBehavior {
             groundLayer = stats.groundLayer;
         }
 
+        public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
+            var accelerationFactor = velocity.magnitude > maxSpeed
+                ? deceleration
+                : acceleration;
+            var maxCurrentVelocity = Mathf.MoveTowards(velocity.magnitude, maxSpeed,
+                accelerationFactor * Time.fixedDeltaTime) * facingDirection;
+            MoveAlongGround(maxCurrentVelocity);
+        }
+
         public void MoveAlongGround(float movementVelocity) {
             var groundTangent = Vector2.one;
             var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
             if (hit) groundTangent = Vector2.Perpendicular(hit.normal).normalized;
-            // draw debug line from the ground hit back to the player
             velocity = new Vector2(movementVelocity * -groundTangent.x,
                 movementVelocity * -groundTangent.y);
             StickToGround();
-            MoveOnNonGround(velocity.x, velocity.y);
+            Move(velocity.x, velocity.y);
+        }
+
+        public void MoveOnAirWithGravityApplied(float accel, float decel, float maxSpeedX, float gravity, float gravityMult) {
+            var accelerationFactor = Mathf.Abs(velocity.x) > maxSpeedX
+                ? accel
+                : decel;
+            var vX = Mathf.MoveTowards(Mathf.Abs(velocity.x), maxSpeedX,
+                accelerationFactor * Time.fixedDeltaTime);
+            var vY = velocity.y;
+            vY += gravity * gravityMult * Time.fixedDeltaTime;
+            Move(vX, vY);
         }
 
         public void StickToGround() {
@@ -55,8 +74,8 @@ namespace CharacterBehavior {
         }
 
         /*
-     * Check if the character is on ground, including stick to ground ray cast hit
-     */
+         * Check if the character is on ground, including stick to ground ray cast hit
+         */
         public bool isOnGround() {
             var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
             var isGrounded = isRaycastGroundCheckPassed || isOnSlope || stickToGroundHit;
@@ -64,13 +83,13 @@ namespace CharacterBehavior {
         }
 
         /*
-     * Check if the character is on walkable ground, aka when the feet (or end of ground raycast in this case) actually touch the ground
-     */
+         * Check if the character is on walkable ground, aka when the feet (or end of ground raycast in this case) actually touch the ground
+         */
         public bool isOnWalkableGround() {
             return isRaycastGroundCheckPassed || isOnSlope;
         }
 
-        public void MoveOnNonGround(float newX, float newY) {
+        public void Move(float newX, float newY) {
             velocity.Set(newX, newY);
             body.MovePosition(body.position + new Vector2(newX, newY) * Time.fixedDeltaTime);
         }

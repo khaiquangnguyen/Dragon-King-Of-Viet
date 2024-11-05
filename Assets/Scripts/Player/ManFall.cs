@@ -9,30 +9,12 @@ public class ManFall : PlayerStateBehavior {
     }
 
     public override void FixedUpdate() {
-        // moveX
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
         var maxSpeedX = player.playerStats.manAirMaxSpeed;
-        // player.MoveX(acceleration, deceleration, maxSpeedX);
-        // vY
-        var velocityY = player.humanController.velocity.y;
         var gravityMult = player.GetGravityMult();
-        velocityY += player.playerStats.gravity * gravityMult * Time.fixedDeltaTime;
-        player.humanController.MoveOnNonGround(0, velocityY);
-        if (player.humanController.isOnWalkableGround()) {
-            if (player.inputDirectionX == 0)
-                player.stateMachine.ChangeState(PlayerState.ManIdle);
-            else
-                player.stateMachine.ChangeState(PlayerState.ManRun);
-        }
-        // if (player.environment == Environment.Ground) {
-        //     if (player.inputDirectionX == 0) {
-        //         player.humanController.Move(0,0);
-        //         player.stateMachine.ChangeState(PlayerState.ManIdle);
-        //     }
-        //     else
-        //         player.stateMachine.ChangeState(PlayerState.ManRun);
-        // }
+        player.characterBaseMovement.Fall(acceleration, deceleration, maxSpeedX, player.playerStats.gravity,
+            gravityMult);
     }
 
     public override void OnStateExit() {
