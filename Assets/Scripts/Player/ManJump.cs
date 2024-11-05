@@ -75,7 +75,7 @@ public class ManJump : PlayerStateBehavior {
                                   player.playerStats.jumpCutHeight;
             jumpMoveY = jumpHeightDelta / Time.fixedDeltaTime;
             if (Time.time - jumpCutTimestamp > player.playerStats.jumpCutDuration)
-                player.stateMachine.ChangeState(PlayerState.ManFall);
+                player.playerStateMachine.ChangeState(PlayerState.ManFall);
         }
         else {
             var jumpHeightCurrentPercentage =
@@ -86,7 +86,7 @@ public class ManJump : PlayerStateBehavior {
             jumpMoveY = jumpHeightDelta / Time.fixedDeltaTime;
             if (jumpHeightCurrentPercentage > 0.65) player.humanAnimator.Play("JumpMid");
             if (Time.time - jumpTimestamp > player.playerStats.jumpDuration)
-                player.stateMachine.ChangeState(PlayerState.ManFall);
+                player.playerStateMachine.ChangeState(PlayerState.ManFall);
         }
 
         player.characterController.Move(jumpMoveX, jumpMoveY);

@@ -2,8 +2,6 @@ using System;
 using UnityEngine;
 
 public class ManRun : PlayerStateBehavior {
-    private Rigidbody2D body => player.body;
-
     private int facingDirection => player.facingDirection;
 
     public ManRun(Player player) : base(player, PlayerState.ManRun, PlayerForm.Man) { }
@@ -15,12 +13,12 @@ public class ManRun : PlayerStateBehavior {
     public override void FixedUpdate() {
         player.humanAnimator.Play("Run");
         if (Mathf.Approximately(player.characterController.velocity.magnitude, 0))
-            player.stateMachine.ChangeState(PlayerState.ManIdle);
+            player.playerStateMachine.ChangeState(PlayerState.ManIdle);
         var acceleration = player.playerStats.manGroundAccel;
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeed = Mathf.Abs(player.playerStats.manGroundMaxSpeed * player.inputDirectionX);
         if (!player.characterController.isOnGround())
-            player.stateMachine.ChangeState(PlayerState.ManFall);
+            player.playerStateMachine.ChangeState(PlayerState.ManFall);
         else
             player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
     }

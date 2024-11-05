@@ -16,8 +16,7 @@ namespace CharacterBehavior {
         public bool isOnSlope;
         public Vector2 velocity;
 
-        public void OnEnable() {
-        }
+        public void OnEnable() { }
 
         public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
             var accelerationFactor = velocity.magnitude > maxSpeed
@@ -66,7 +65,8 @@ namespace CharacterBehavior {
          * Check if the character is on ground, including stick to ground ray cast hit
          */
         public bool isOnGround() {
-            var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.groundLayer);
+            var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance,
+                stats.groundLayer);
             var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || stickToGroundHit;
             return isGrounded;
         }
@@ -103,13 +103,15 @@ namespace CharacterBehavior {
             var groundCheckPos = new Vector2(bodyCollider.bounds.center.x, bodyCollider.bounds.min.y);
             SlopeCheckHorizontal(groundCheckPos);
             SlopeCheckVertical(groundCheckPos);
-            isOnWalkableSlope = isOnSlope && slopeDownAngle <= stats.maxSlopeAngle && slopeSideAngle <= stats.maxSlopeAngle;
-
+            isOnWalkableSlope = isOnSlope && slopeDownAngle <= stats.maxSlopeAngle &&
+                                slopeSideAngle <= stats.maxSlopeAngle;
         }
 
         private void SlopeCheckHorizontal(Vector2 checkPos) {
-            var slopeHitFront = Physics2D.Raycast(checkPos, transform.right, stats.slopeCheckDistance, stats.groundLayer);
-            var slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, stats.slopeCheckDistance, stats.groundLayer);
+            var slopeHitFront =
+                Physics2D.Raycast(checkPos, transform.right, stats.slopeCheckDistance, stats.groundLayer);
+            var slopeHitBack =
+                Physics2D.Raycast(checkPos, -transform.right, stats.slopeCheckDistance, stats.groundLayer);
             // debug draw ray
             Debug.DrawRay(checkPos, transform.right * stats.slopeCheckDistance, Color.green);
             Debug.DrawRay(checkPos, -transform.right * stats.slopeCheckDistance, Color.green);

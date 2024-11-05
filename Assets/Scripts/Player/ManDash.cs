@@ -34,12 +34,12 @@ public class ManDash : PlayerStateBehavior {
         else {
             if (player.environment == Environment.Ground) {
                 if (player.inputDirectionX == 0)
-                    player.stateMachine.ChangeState(PlayerState.ManIdle);
+                    player.playerStateMachine.ChangeState(PlayerState.ManIdle);
                 else
-                    player.stateMachine.ChangeState(PlayerState.ManRun);
+                    player.playerStateMachine.ChangeState(PlayerState.ManRun);
             }
             else if (player.environment == Environment.Air) {
-                player.stateMachine.ChangeState(PlayerState.ManFall);
+                player.playerStateMachine.ChangeState(PlayerState.ManFall);
             }
         }
     }

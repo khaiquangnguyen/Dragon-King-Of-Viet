@@ -32,7 +32,7 @@ MonoBehaviour:
   jumpCoyoteDuration: 0.085
   jumpBufferDuration: 0.065
   jumpMaxHeight: 7
-  jumpDuration: 0.36
+  jumpDuration: 0.4
   jumpHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -46,8 +46,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.60258114
-      value: 0.93544936
+      time: 0.8530694
+      value: 0.96148086
       inSlope: 0.44640422
       outSlope: 0.44640422
       tangentMode: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   jumpPeakHangThreshold: 0.9
-  maxFallSpeed: 10
+  maxFallSpeed: 30
   jumpCutHeight: 0.4
   jumpCutDuration: 0.1
   jumpCutHeightCurve:
@@ -96,7 +96,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   fastFallingGravityMult: 1.4
   coyoteTimeGravityMult: 0.5
-  gravity: -90
+  gravity: -50
   crouchMaxSpeed: 10
   empoweredFallMaxSpeed: 10
   empoweredFallStartupDuration: 0.1

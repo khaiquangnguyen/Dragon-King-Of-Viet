@@ -5,6 +5,7 @@ namespace CharacterBehavior {
         public string uniqueId { get; }
         public float damageMult { get; }
         public float abilityHaste { get; }
+        public int facingDirection;
         public abstract void OnDamageDealt(float damageDealt, Character character);
         public abstract float TakeDamage(float damage, Character damageDealer);
     }

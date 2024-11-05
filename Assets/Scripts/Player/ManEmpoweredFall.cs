@@ -33,6 +33,6 @@ public class ManEmpoweredFall : PlayerStateBehavior {
     }
 
     public void End() {
-        player.stateMachine.ChangeState(PlayerState.ManIdle);
+        player.playerStateMachine.ChangeState(PlayerState.ManIdle);
     }
 }

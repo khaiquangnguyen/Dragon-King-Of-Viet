@@ -59,7 +59,7 @@ public class ManAttack : PlayerStateBehavior {
                 newStateStartAt = Time.time;
             }
             else {
-                player.stateMachine.ChangeState(PlayerState.ManIdle);
+                player.playerStateMachine.ChangeState(PlayerState.ManIdle);
             }
         }
 

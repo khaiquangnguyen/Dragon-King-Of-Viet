@@ -17,7 +17,7 @@ public class DragonFloat : PlayerStateBehavior {
         var maxSpeedX = player.playerStats.dragonMaxSpeed;
         player.MoveX(acceleration, deceleration, maxSpeedX);
         if (Mathf.Approximately(player.body.linearVelocity.x, 0))
-            player.stateMachine.ChangeState(PlayerState.DragonHover);
+            player.playerStateMachine.ChangeState(PlayerState.DragonHover);
         var y = Mathf.PingPong(Time.time, 1f) - 0.5f;
         player.dragonBody.transform.localPosition = new Vector3(0, y, 0);
         player.UpdateVelocityY(0);

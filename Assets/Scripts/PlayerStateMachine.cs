@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class StateMachine {
+public class PlayerStateMachine {
     public PlayerState currentPlayerState;
 
     public readonly Dictionary<PlayerState, PlayerStateBehavior> states = new();

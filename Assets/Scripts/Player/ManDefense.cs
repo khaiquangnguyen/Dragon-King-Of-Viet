@@ -53,7 +53,7 @@ public class ManDefense : PlayerStateBehavior {
         else if (defenseState == DefenseState.Recovery) {
             player.humanAnimator.Play("IdleTransition");
             if (Time.time - newStateStartAt > player.playerStats.defenseRecoveryDuration)
-                player.stateMachine.ChangeState(PlayerState.ManIdle);
+                player.playerStateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
 }

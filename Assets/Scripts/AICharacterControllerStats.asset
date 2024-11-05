@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 014019fb36084d28a3f853d40cbd46a9, type: 3}
-  m_Name: BaseCharacterControllerStats
+  m_Name: AICharacterControllerStats
   m_EditorClassIdentifier: 
-  groundCheckDistance: 0.1
+  groundCheckDistance: 0.05
   stickToGroundDistance: 1
-  slopeCheckDistance: 0.3
+  slopeCheckDistance: 0.2
   maxVyStickToGroundCorrectionVelocity: 10
+  maxSlopeAngle: 70
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
