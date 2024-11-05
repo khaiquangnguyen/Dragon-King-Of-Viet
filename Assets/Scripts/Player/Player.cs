@@ -338,6 +338,7 @@ public class Player : Character {
     public float GetGravityMult() {
         var gravityMult = 1f;
         if (isFastFalling) gravityMult = playerStats.fastFallingGravityMult;
+        if (coyoteTimeCountdown > 0) gravityMult = playerStats.coyoteTimeGravityMult;
         return gravityMult;
     }
 

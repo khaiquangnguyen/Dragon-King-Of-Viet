@@ -67,7 +67,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   jumpPeakHangThreshold: 0.9
-  maxFallSpeed: 40
+  maxFallSpeed: 10
   jumpCutHeight: 0.4
   jumpCutDuration: 0.1
   jumpCutHeightCurve:

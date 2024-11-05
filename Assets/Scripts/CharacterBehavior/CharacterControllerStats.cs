@@ -7,6 +7,7 @@ namespace CharacterBehavior {
         public float stickToGroundDistance = 0.4f;
         public float slopeCheckDistance = 0.1f;
         public float maxVyStickToGroundCorrectionVelocity = 20f;
+        public float maxSlopeAngle = 70;
         public LayerMask groundLayer = LayerMask.GetMask("Ground");
     }
 }

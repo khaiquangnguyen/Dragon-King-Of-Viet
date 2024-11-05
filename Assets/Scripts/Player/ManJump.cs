@@ -53,12 +53,12 @@ public class ManJump : PlayerStateBehavior {
         // moveX
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
-        var maxSpeedX = player.playerStats.manAirMaxSpeed;
+        var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
         var accelerationFactor = Mathf.Abs(player.characterController.velocity.x) > maxSpeedX
             ? acceleration
             : deceleration;
         var jumpMoveX = Mathf.MoveTowards(Mathf.Abs(player.characterController.velocity.x), maxSpeedX,
-            accelerationFactor * Time.fixedDeltaTime) * player.facingDirection;        // jump cut
+            accelerationFactor * Time.fixedDeltaTime) * player.facingDirection; // jump cut
         if (player.isJumpCut) {
             if (!jumpCutStarted) {
                 jumpCutStarted = true;
@@ -88,8 +88,8 @@ public class ManJump : PlayerStateBehavior {
             if (Time.time - jumpTimestamp > player.playerStats.jumpDuration)
                 player.stateMachine.ChangeState(PlayerState.ManFall);
         }
-        player.characterController.Move(jumpMoveX, jumpMoveY);
 
+        player.characterController.Move(jumpMoveX, jumpMoveY);
     }
 
     public override void OnStateExit() { }

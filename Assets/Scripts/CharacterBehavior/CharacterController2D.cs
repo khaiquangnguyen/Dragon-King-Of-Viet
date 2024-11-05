@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CharacterBehavior {
     public class CharacterController2D : MonoBehaviour {
@@ -16,14 +17,14 @@ namespace CharacterBehavior {
         public CharacterControllerStats stats;
         public Rigidbody2D body;
         public Collider2D bodyCollider;
-        public bool isOnSlope;
+        public bool isOnWalkableSlope;
         public float slopeSideAngle;
         private float lastSlopeAngle;
         private float maxSlopeAngle;
-        private bool canWalkOnSlope;
         public float slopeDownAngle;
-        public bool isRaycastGroundCheckPassed;
+        public bool isWalkableGroundCheckPassed;
         public bool shouldStickToGround = true;
+        public bool isOnSlope;
         public Vector2 velocity;
 
         public void OnEnable() {
@@ -32,6 +33,7 @@ namespace CharacterBehavior {
             slopeCheckDistance = stats.slopeCheckDistance;
             maxVyStickToGroundCorrectionVelocity = stats.maxVyStickToGroundCorrectionVelocity;
             groundLayer = stats.groundLayer;
+            maxSlopeAngle = stats.maxSlopeAngle;
         }
 
         public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
@@ -68,7 +70,7 @@ namespace CharacterBehavior {
         public void StickToGround() {
             // can stick to ground but not on ground yet
             var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
-            if (!isRaycastGroundCheckPassed && !isOnSlope && hit && shouldStickToGround) {
+            if (!isWalkableGroundCheckPassed && !isOnWalkableSlope && hit && shouldStickToGround) {
                 velocity.y = -hit.distance / Time.fixedDeltaTime;
                 velocity.y = Mathf.Clamp(velocity.y, -maxVyStickToGroundCorrectionVelocity,
                     maxVyStickToGroundCorrectionVelocity);
@@ -80,7 +82,7 @@ namespace CharacterBehavior {
          */
         public bool isOnGround() {
             var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stickToGroundDistance, groundLayer);
-            var isGrounded = isRaycastGroundCheckPassed || isOnSlope || stickToGroundHit;
+            var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || stickToGroundHit;
             return isGrounded;
         }
 
@@ -88,7 +90,7 @@ namespace CharacterBehavior {
          * Check if the character is on walkable ground, aka when the feet (or end of ground raycast in this case) actually touch the ground
          */
         public bool isOnWalkableGround() {
-            return isRaycastGroundCheckPassed || isOnSlope;
+            return isWalkableGroundCheckPassed || isOnWalkableSlope;
         }
 
         public void Move(float newX, float newY) {
@@ -109,7 +111,10 @@ namespace CharacterBehavior {
         public void CheckRaycastGround() {
             var castOrigin = GetCastOrigin();
             var groundedHit = Physics2D.Raycast(castOrigin, Vector2.down, groundCheckDistance, groundLayer);
-            isRaycastGroundCheckPassed = groundedHit.collider is not null;
+            // var boxCastSize = new Vector2(bodyCollider.bounds.size.x * 0.8f, groundCheckDistance);
+            // var groundedHit =
+                // Physics2D.BoxCast(castOrigin, boxCastSize, 0, Vector2.down, groundCheckDistance, groundLayer);
+            isWalkableGroundCheckPassed = groundedHit.collider is not null;
         }
 
         public void GetGroundNormal() { }
@@ -124,12 +129,12 @@ namespace CharacterBehavior {
             var slopeHitFront = Physics2D.Raycast(checkPos, transform.right, slopeCheckDistance, groundLayer);
             var slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, slopeCheckDistance, groundLayer);
             if (slopeHitFront) {
-                isOnSlope = true;
                 slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
+                isOnSlope = true;
             }
             else if (slopeHitBack) {
-                isOnSlope = true;
                 slopeSideAngle = Vector2.Angle(slopeHitBack.normal, Vector2.up);
+                isOnSlope = true;
             }
             else {
                 slopeSideAngle = 0.0f;
@@ -143,12 +148,11 @@ namespace CharacterBehavior {
                 slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (!Mathf.Approximately(slopeDownAngle, lastSlopeAngle)) isOnSlope = true;
                 lastSlopeAngle = slopeDownAngle;
+                isOnWalkableSlope = isOnSlope && slopeDownAngle <= maxSlopeAngle && slopeSideAngle <= maxSlopeAngle;
             }
-
-            if (slopeDownAngle > maxSlopeAngle || slopeSideAngle > maxSlopeAngle)
-                canWalkOnSlope = false;
-            else
-                canWalkOnSlope = true;
+            else {
+                isOnWalkableSlope = false;
+            }
         }
     }
 }

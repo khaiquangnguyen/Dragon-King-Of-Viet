@@ -13,14 +13,16 @@ public class ManRun : PlayerStateBehavior {
     }
 
     public override void FixedUpdate() {
+        player.humanAnimator.Play("Run");
         if (Mathf.Approximately(player.characterController.velocity.magnitude, 0))
             player.stateMachine.ChangeState(PlayerState.ManIdle);
         var acceleration = player.playerStats.manGroundAccel;
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeed = Mathf.Abs(player.playerStats.manGroundMaxSpeed * player.inputDirectionX);
-        if (player.environment == Environment.Air) player.stateMachine.ChangeState(PlayerState.ManFall);
-        // human x movement is dependent on the environment
-        player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+        if (!player.characterController.isOnGround())
+            player.stateMachine.ChangeState(PlayerState.ManFall);
+        else
+            player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
     }
 
     public override void Update() { }
