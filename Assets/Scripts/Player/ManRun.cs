@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ManRun : PlayerStateBehavior {
     private Rigidbody2D body => player.body;
+
     private int facingDirection => player.facingDirection;
 
     public ManRun(Player player) : base(player, PlayerState.ManRun, PlayerForm.Man) { }
@@ -12,19 +13,21 @@ public class ManRun : PlayerStateBehavior {
     }
 
     public override void FixedUpdate() {
-        if (player.environment == Environment.Air) {
-            player.stateMachine.ChangeState(PlayerState.ManFall);
-        }
-        // human x movement is dependent on the environment
+        if (Mathf.Approximately(player.humanController.velocity.magnitude, 0))
+            player.stateMachine.ChangeState(PlayerState.ManIdle);
         var acceleration = player.playerStats.manGroundAccel;
         var deceleration = player.playerStats.manGroundDecel;
-        var maxSpeedX = player.playerStats.manGroundMaxSpeed;
-        player.MoveX(acceleration, deceleration, maxSpeedX);
+        var maxSpeed = Mathf.Abs(player.playerStats.manGroundMaxSpeed * player.inputDirectionX);
+        // greater than max speed and moving in the same direction, then decelerate
+        var accelerationFactor = body.linearVelocity.magnitude > maxSpeed
+            ? deceleration
+            : acceleration;
+        var maxCurrentVelocity = Mathf.MoveTowards(body.linearVelocity.magnitude, maxSpeed,
+            accelerationFactor) * facingDirection;
+        if (player.environment == Environment.Air) player.stateMachine.ChangeState(PlayerState.ManFall);
+        // human x movement is dependent on the environment
+        player.humanController.MoveAlongGround(maxCurrentVelocity);
         // simulated gravity on slope
-        player.body.linearVelocityY = player.body.linearVelocity.y + player.playerStats.gravity * Time.fixedDeltaTime;
-        if (Mathf.Approximately(player.body.linearVelocity.x, 0)) {
-            player.stateMachine.ChangeState(PlayerState.ManIdle);
-        }
     }
 
     public override void Update() { }

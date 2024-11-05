@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ManEmpoweredFall:PlayerStateBehavior {
+public class ManEmpoweredFall : PlayerStateBehavior {
     private SkillState state = SkillState.Ready;
     private float lastStateTimestamp;
 
@@ -25,9 +25,10 @@ public class ManEmpoweredFall:PlayerStateBehavior {
                 state = SkillState.Recovery;
                 lastStateTimestamp = Time.time;
             }
-            else if (state == SkillState.Recovery)
+            else if (state == SkillState.Recovery) {
                 if (Time.time - lastStateTimestamp > player.playerStats.empoweredFallRecoveryDuration)
                     End();
+            }
         }
     }
 

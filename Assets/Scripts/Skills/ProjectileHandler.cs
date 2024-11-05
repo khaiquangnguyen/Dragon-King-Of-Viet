@@ -1,4 +1,5 @@
 using System;
+using CharacterBehavior;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -31,7 +32,8 @@ public class ProjectileHandler : MonoBehaviour {
         projectileBody = GetComponent<Rigidbody2D>();
     }
 
-    public void InitWith(float newDamage, ProjectileSpecs projectileSpecs, LayerMask newCollidableLayerMask, bool newDestroyOnHit) {
+    public void InitWith(float newDamage, ProjectileSpecs projectileSpecs, LayerMask newCollidableLayerMask,
+        bool newDestroyOnHit) {
         damage = newDamage;
         specs = projectileSpecs;
         collidableLayerMask = newCollidableLayerMask;

@@ -1,25 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class DragonHover : PlayerStateBehavior {
     public DragonHover(Player player) : base(player, PlayerState.DragonHover, PlayerForm.Dragon) { }
     private float amplitude = 1f;
 
     public override void OnStateEnter() {
         player.dragonAnimator.Play("idle");
-        player.UpdateVelocity(0,0);
+        player.UpdateVelocity(0, 0);
     }
 
     public override void FixedUpdate() {
         // make the dragon float up and down in sine way
-
     }
 
-    public override void OnStateExit() {
-    }
+    public override void OnStateExit() { }
 }
-
 
 // public class DragonHover : PlayerStateBehavior {
 //     public DragonHover(Player player) : base(player, CharacterState.DragonHover, PlayerForm.Dragon) { }

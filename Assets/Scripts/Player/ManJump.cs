@@ -8,7 +8,7 @@ public enum JumpModifiers {
     JumpPlatform
 }
 
-public class ManJump : PlayerStateBehavior{
+public class ManJump : PlayerStateBehavior {
     private readonly Dictionary<JumpModifiers, bool> jumpModifiers = new(Enum.GetValues(typeof(JumpModifiers))
         .Cast<JumpModifiers>()
         .ToDictionary(state => state, _ => false));
@@ -25,7 +25,6 @@ public class ManJump : PlayerStateBehavior{
     private AnimationCurve jumpHeightCurve => player.playerStats.jumpHeightCurve;
     private AnimationCurve jumpCutHeightCurve => player.playerStats.jumpCutHeightCurve;
 
-
     public ManJump(Player player) : base(player, PlayerState.ManJump, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
@@ -36,6 +35,7 @@ public class ManJump : PlayerStateBehavior{
             jumpModifiers[JumpModifiers.DragonEmpowered] = true;
             player.ResetEmpowermentAfterTrigger();
         }
+
         jumpCutStarted = false;
         jumpMaxHeight = jumpModifiers[JumpModifiers.DragonEmpowered]
             ? player.playerStats.powerJumpMaxHeight
@@ -47,8 +47,7 @@ public class ManJump : PlayerStateBehavior{
         jumpTimestamp = Time.time;
     }
 
-    public override void Update() {
-    }
+    public override void Update() { }
 
     public override void FixedUpdate() {
         // moveX
@@ -63,33 +62,38 @@ public class ManJump : PlayerStateBehavior{
                 jumpCutTimestamp = Time.time;
                 player.humanAnimator.Play("JumpMid");
             }
-            var jumpHeightCurrentPercentage = jumpCutHeightCurve.Evaluate((Time.time - jumpCutTimestamp) / player.playerStats.jumpCutDuration);
-            var jumpHeightNextPercentage = jumpCutHeightCurve.Evaluate((Time.time - jumpTimestamp + Time.fixedDeltaTime) / player.playerStats.jumpCutDuration);
-            var jumpHeightDelta = (jumpHeightNextPercentage - jumpHeightCurrentPercentage) * player.playerStats.jumpCutHeight;
+
+            var jumpHeightCurrentPercentage =
+                jumpCutHeightCurve.Evaluate((Time.time - jumpCutTimestamp) / player.playerStats.jumpCutDuration);
+            var jumpHeightNextPercentage =
+                jumpCutHeightCurve.Evaluate((Time.time - jumpTimestamp + Time.fixedDeltaTime) /
+                                            player.playerStats.jumpCutDuration);
+            var jumpHeightDelta = (jumpHeightNextPercentage - jumpHeightCurrentPercentage) *
+                                  player.playerStats.jumpCutHeight;
             jumpMoveY = jumpHeightDelta / Time.fixedDeltaTime;
-            if (Time.time - jumpCutTimestamp > player.playerStats.jumpCutDuration) player.stateMachine.ChangeState(PlayerState.ManFall);
+            if (Time.time - jumpCutTimestamp > player.playerStats.jumpCutDuration)
+                player.stateMachine.ChangeState(PlayerState.ManFall);
         }
         else {
-            var jumpHeightCurrentPercentage = jumpHeightCurve.Evaluate((Time.time - jumpTimestamp) / player.playerStats.jumpDuration);
-            var jumpHeightNextPercentage = jumpHeightCurve.Evaluate((Time.time - jumpTimestamp + Time.fixedDeltaTime) / player.playerStats.jumpDuration);
+            var jumpHeightCurrentPercentage =
+                jumpHeightCurve.Evaluate((Time.time - jumpTimestamp) / player.playerStats.jumpDuration);
+            var jumpHeightNextPercentage = jumpHeightCurve.Evaluate((Time.time - jumpTimestamp + Time.fixedDeltaTime) /
+                                                                    player.playerStats.jumpDuration);
             var jumpHeightDelta = (jumpHeightNextPercentage - jumpHeightCurrentPercentage) * jumpMaxHeight;
             jumpMoveY = jumpHeightDelta / Time.fixedDeltaTime;
-            if (jumpHeightCurrentPercentage > 0.65) {
-                player.humanAnimator.Play("JumpMid");
-            }
-            if (Time.time - jumpTimestamp > player.playerStats.jumpDuration) {
+            if (jumpHeightCurrentPercentage > 0.65) player.humanAnimator.Play("JumpMid");
+            if (Time.time - jumpTimestamp > player.playerStats.jumpDuration)
                 player.stateMachine.ChangeState(PlayerState.ManFall);
-            }
-
         }
+
         player.UpdateVelocityY(jumpMoveY);
     }
 
-    public override void OnStateExit() {
-    }
+    public override void OnStateExit() { }
 
     public bool CanJumpCut() {
-        var jumpHeightCurrentPercentage = jumpHeightCurve.Evaluate((Time.time - jumpTimestamp) / player.playerStats.jumpDuration);
+        var jumpHeightCurrentPercentage =
+            jumpHeightCurve.Evaluate((Time.time - jumpTimestamp) / player.playerStats.jumpDuration);
         return jumpHeightCurrentPercentage < player.playerStats.jumpPeakHangThreshold;
     }
 }

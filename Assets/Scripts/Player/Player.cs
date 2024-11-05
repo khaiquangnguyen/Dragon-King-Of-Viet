@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using CharacterBehavior;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -34,7 +35,9 @@ public enum FacingDirection {
 }
 
 public class Player : Character {
-    private const float GROUND_CHECK_DISTANCE = 0.1f;
+    public float groundCheckDistance = 0.1f;
+    public float stickToGroundDistance = 0.5f;
+    private CharacterController2D characterController;
 
     private readonly IReadOnlyList<PlayerState> airStates = new List<PlayerState> {
         PlayerState.ManJump,
@@ -126,6 +129,7 @@ public class Player : Character {
     private float lastEmpoweredSkillUsageTimestamp = Time.time;
     private RaycastHit2D groundHit;
     private RaycastHit2D headHit;
+    public CharacterBaseMovement characterBaseMovement;
     [HideInInspector]
     public Environment environment = Environment.Ground;
 
@@ -168,10 +172,13 @@ public class Player : Character {
     private DragonWallHang dragonWallHang;
     private DragonCeilHang dragonCeilHang;
     private DragonFloat dragonFloat;
+    public CharacterController2D humanController;
     #endregion
 
     private void OnEnable() {
-        body = GetComponent<Rigidbody2D>();
+        characterBaseMovement = GetComponent<CharacterBaseMovement>();
+        body = transform.GetComponent<Rigidbody2D>();
+        humanController = transform.Find("HumanBody").GetComponentInChildren<CharacterController2D>();
         dragonBody = transform.Find("DragonBody");
         humanBody = transform.Find("HumanBody");
         humanRenderer = humanBody.transform.Find("Renderer");
@@ -183,6 +190,8 @@ public class Player : Character {
         dashCooldownCountdown = -1f;
 
         stateMachine = new StateMachine();
+        // characterController = GetComponent<CharacterController2D>();
+        // characterController.move(new Vector3(2,0,0));
         stateMachine.AddState(manIdle = new ManIdle(this));
         stateMachine.AddState(manJump = new ManJump(this));
         stateMachine.AddState(manRun = new ManRun(this));
@@ -242,15 +251,14 @@ public class Player : Character {
             CheckChangeToIdleState();
         }
 
-        if (stateMachine.currentPlayerState == PlayerState.ManDash) {
-            CheckChangeToIdleState();
-        }
+        if (stateMachine.currentPlayerState == PlayerState.ManDash) CheckChangeToIdleState();
 
         if (stateMachine.currentPlayerState == PlayerState.ManFall) {
             CheckChangeToManDashState();
             CheckChangeToManRunState();
             CheckChangeToIdleState();
         }
+
         if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
         // if (inputDirectionX != 0) {
         //     if (stateMachine.currentCharacterState == CharacterState.ManIdle)
@@ -277,7 +285,6 @@ public class Player : Character {
         // CheckChangeToManAttackState();
     }
 
-
     private void CheckChangeToManRunState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
@@ -292,6 +299,7 @@ public class Player : Character {
         var speedValidated = Mathf.Approximately(body.linearVelocity.x, 0);
         if (environmentValidated && formValidated && speedValidated) stateMachine.ChangeState(PlayerState.ManIdle);
     }
+
     private void CheckChangeToManDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = Input.GetButtonDown("Horizontal") && isEmpowering;
@@ -359,6 +367,7 @@ public class Player : Character {
             vX = Mathf.MoveTowards(body.linearVelocity.x, maxSpeedX * facingDirection,
                 accelerationFactor * Time.fixedDeltaTime);
         }
+
         UpdateVelocityX(vX);
     }
 
@@ -382,15 +391,11 @@ public class Player : Character {
     }
 
     public void CheckGround() {
-        var boxCastOrigin = new Vector2(humanBodyCollider.bounds.center.x, humanBodyCollider.bounds.min.y);
-        var boxCastSize = new Vector2(humanBodyCollider.bounds.size.x * 0.75f, GROUND_CHECK_DISTANCE);
-        var groundedHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0, Vector2.down, GROUND_CHECK_DISTANCE,
-            groundLayer);
+        if (environment == Environment.Air) { }
 
-        if (groundedHit.collider is not null) {
-            coyoteTimeCountdown = playerStats.jumpCoyoteDuration;
+        var isOnGround = humanController.isOnGround();
+        if (isOnGround) {
             environment = Environment.Ground;
-
         }
         else {
             coyoteTimeCountdown = -1f;

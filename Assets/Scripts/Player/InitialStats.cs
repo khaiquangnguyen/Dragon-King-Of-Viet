@@ -18,5 +18,4 @@ public class InitialStats : ScriptableObject {
     public float initialDragonHealthScale = 2;
     public float initialDragonHealthRegenRate = 0.1f;
     #endregion
-
 }

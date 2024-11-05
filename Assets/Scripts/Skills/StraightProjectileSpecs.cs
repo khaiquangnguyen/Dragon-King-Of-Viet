@@ -12,7 +12,7 @@ public class StraightProjectileSpecs : ProjectileSpecs {
         var spawnLocation = handler.spawnLocation;
         var direction = spawnRotation * Vector2.right;
         handler.projectileBody.MovePosition(spawnLocation +
-                                               direction * (movementCurve.Evaluate(t / lifetime) *
-                                                            distance));
+                                            direction * (movementCurve.Evaluate(t / lifetime) *
+                                                         distance));
     }
 }

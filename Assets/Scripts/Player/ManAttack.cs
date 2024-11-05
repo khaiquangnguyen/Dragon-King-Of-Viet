@@ -13,12 +13,10 @@ public class ManAttack : PlayerStateBehavior {
     public override void OnStateEnter() {
         // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
         // when player enter attack after previous attack has ended
-        if (Time.time - newStateStartAt >= player.playerStats.attackInputBufferPostAttackDuration) {
+        if (Time.time - newStateStartAt >= player.playerStats.attackInputBufferPostAttackDuration)
             attackMoveCount = 0;
-        }
-        else {
-            attackMoveCount = (attackMoveCount + 1 ) % player.playerStats.attackStats.Count;
-        }
+        else
+            attackMoveCount = (attackMoveCount + 1) % player.playerStats.attackStats.Count;
         newStateStartAt = 0;
         skillState = SkillState.Ready;
         player.ResetEmpowermentAfterTrigger();

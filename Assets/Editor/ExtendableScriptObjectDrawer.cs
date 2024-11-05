@@ -19,7 +19,8 @@ namespace Editor {
     public class ExtendedScriptableObjectDrawer : PropertyDrawer {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             var totalHeight = EditorGUIUtility.singleLineHeight;
-            if (property.objectReferenceValue == null || !(property.objectReferenceValue is ScriptableObject) || !AreAnySubPropertiesVisible(property)) return totalHeight;
+            if (property.objectReferenceValue == null || !(property.objectReferenceValue is ScriptableObject) ||
+                !AreAnySubPropertiesVisible(property)) return totalHeight;
             if (property.isExpanded) {
                 var data = property.objectReferenceValue as ScriptableObject;
                 if (data == null) return EditorGUIUtility.singleLineHeight;
@@ -29,7 +30,8 @@ namespace Editor {
                     do {
                         if (prop.name == "m_Script") continue;
                         var subProp = serializedObject.FindProperty(prop.name);
-                        var height = EditorGUI.GetPropertyHeight(subProp, null, true) + EditorGUIUtility.standardVerticalSpacing;
+                        var height = EditorGUI.GetPropertyHeight(subProp, null, true) +
+                                     EditorGUIUtility.standardVerticalSpacing;
                         totalHeight += height;
                     } while (prop.NextVisible(false));
 
@@ -40,7 +42,7 @@ namespace Editor {
             return totalHeight;
         }
 
-        static readonly List<string> ignoreClassFullNames = new() {"TMPro.TMP_FontAsset"};
+        private static readonly List<string> ignoreClassFullNames = new() { "TMPro.TMP_FontAsset" };
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.BeginProperty(position, label, property);
@@ -53,14 +55,18 @@ namespace Editor {
             }
 
             ScriptableObject propertySO = null;
-            if (!property.hasMultipleDifferentValues && property.serializedObject.targetObject != null && property.serializedObject.targetObject is ScriptableObject) propertySO = (ScriptableObject) property.serializedObject.targetObject;
+            if (!property.hasMultipleDifferentValues && property.serializedObject.targetObject != null &&
+                property.serializedObject.targetObject is ScriptableObject)
+                propertySO = (ScriptableObject)property.serializedObject.targetObject;
 
             var propertyRect = Rect.zero;
             var guiContent = new GUIContent(property.displayName);
-            var foldoutRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
+            var foldoutRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth,
+                EditorGUIUtility.singleLineHeight);
             if (property.objectReferenceValue != null && AreAnySubPropertiesVisible(property)) {
                 property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, guiContent, true);
-            } else {
+            }
+            else {
                 // So yeah having a foldout look like a label is a weird hack
                 // but both code paths seem to need to be a foldout or
                 // the object field control goes weird when the codepath changes.
@@ -71,17 +77,24 @@ namespace Editor {
 
             var indentedPosition = EditorGUI.IndentedRect(position);
             var indentOffset = indentedPosition.x - position.x;
-            propertyRect = new Rect(position.x + (EditorGUIUtility.labelWidth - indentOffset), position.y, position.width - (EditorGUIUtility.labelWidth - indentOffset), EditorGUIUtility.singleLineHeight);
+            propertyRect = new Rect(position.x + (EditorGUIUtility.labelWidth - indentOffset), position.y,
+                position.width - (EditorGUIUtility.labelWidth - indentOffset), EditorGUIUtility.singleLineHeight);
 
             EditorGUI.ObjectField(propertyRect, property, type, GUIContent.none);
             if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
 
-            if (property.propertyType == SerializedPropertyType.ObjectReference && property.objectReferenceValue != null) {
-                var data = (ScriptableObject) property.objectReferenceValue;
+            if (property.propertyType == SerializedPropertyType.ObjectReference &&
+                property.objectReferenceValue != null) {
+                var data = (ScriptableObject)property.objectReferenceValue;
 
                 if (property.isExpanded) {
                     // Draw a background that shows us clearly which fields are part of the ScriptableObject
-                    GUI.Box(new Rect(0, position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing - 1, Screen.width, position.height - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing), "");
+                    GUI.Box(
+                        new Rect(0,
+                            position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing -
+                            1, Screen.width,
+                            position.height - EditorGUIUtility.singleLineHeight -
+                            EditorGUIUtility.standardVerticalSpacing), "");
 
                     EditorGUI.indentLevel++;
                     using var serializedObject = new SerializedObject(data);
@@ -108,7 +121,7 @@ namespace Editor {
             EditorGUI.EndProperty();
         }
 
-        static void DrawScriptableObjectChildFields<T>(T objectReferenceValue) where T : ScriptableObject {
+        private static void DrawScriptableObjectChildFields<T>(T objectReferenceValue) where T : ScriptableObject {
             // Draw a background that shows us clearly which fields are part of the ScriptableObject
             EditorGUI.indentLevel++;
             EditorGUILayout.BeginVertical(GUI.skin.box);
@@ -130,8 +143,9 @@ namespace Editor {
         }
 
         // Creates a new ScriptableObject via the default Save File panel
-        static ScriptableObject CreateAssetWithSavePrompt(Type type, string path) {
-            path = EditorUtility.SaveFilePanelInProject("Save ScriptableObject", type.Name + ".asset", "asset", "Enter a file name for the ScriptableObject.", path);
+        private static ScriptableObject CreateAssetWithSavePrompt(Type type, string path) {
+            path = EditorUtility.SaveFilePanelInProject("Save ScriptableObject", type.Name + ".asset", "asset",
+                "Enter a file name for the ScriptableObject.", path);
             if (path == "") return null;
             var asset = ScriptableObject.CreateInstance(type);
             AssetDatabase.CreateAsset(asset, path);
@@ -142,16 +156,17 @@ namespace Editor {
             return asset;
         }
 
-        Type GetFieldType() {
+        private Type GetFieldType() {
             if (fieldInfo == null) return null;
             var type = fieldInfo.FieldType;
             if (type.IsArray) type = type.GetElementType();
-            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) type = type.GetGenericArguments()[0];
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                type = type.GetGenericArguments()[0];
             return type;
         }
 
-        static bool AreAnySubPropertiesVisible(SerializedProperty property) {
-            var data = (ScriptableObject) property.objectReferenceValue;
+        private static bool AreAnySubPropertiesVisible(SerializedProperty property) {
+            var data = (ScriptableObject)property.objectReferenceValue;
 
             if (null != data) {
                 using var serializedObject = new SerializedObject(data);

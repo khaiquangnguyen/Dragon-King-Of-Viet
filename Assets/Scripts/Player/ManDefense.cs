@@ -56,5 +56,4 @@ public class ManDefense : PlayerStateBehavior {
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
-
 }

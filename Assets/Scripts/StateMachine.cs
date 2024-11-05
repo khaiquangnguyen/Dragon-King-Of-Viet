@@ -6,7 +6,7 @@ using UnityEngine;
 public class StateMachine {
     public PlayerState currentPlayerState;
 
-    private readonly Dictionary<PlayerState, PlayerStateBehavior> states = new();
+    public readonly Dictionary<PlayerState, PlayerStateBehavior> states = new();
     public PlayerStateBehavior currentStateBehavior => states[currentPlayerState];
 
     public void ChangeState(PlayerState newPlayerState) {
@@ -25,10 +25,9 @@ public class StateMachine {
         currentStateBehavior.FixedUpdate();
     }
 
-    public void LateUpdate() {
-    }
+    public void LateUpdate() { }
 
     public void AddState(PlayerStateBehavior state) {
-        this.states.Add(state.name, state);
+        states.Add(state.name, state);
     }
 }

@@ -35,5 +35,5 @@ public enum PlayerState {
 
 public enum PlayerForm {
     Dragon,
-    Man,
+    Man
 }

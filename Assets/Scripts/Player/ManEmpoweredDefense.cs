@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ManEmpoweredDefense:PlayerStateBehavior {
+public class ManEmpoweredDefense : PlayerStateBehavior {
     public SkillState state = SkillState.Ready;
     public float lastStateTimestamp;
 
@@ -21,19 +21,20 @@ public class ManEmpoweredDefense:PlayerStateBehavior {
                 state = SkillState.Active;
                 lastStateTimestamp = Time.time;
             }
-
         }
         else if (state == SkillState.Active) {
             if (player.currentDragonEnergy < 0) {
                 state = SkillState.Recovery;
                 lastStateTimestamp = Time.time;
             }
-            else
+            else {
                 player.currentDragonEnergy -=
                     player.playerStats.empoweredDefenseBaseEnergyDrainRate * Time.fixedDeltaTime;
+            }
         }
         else if (state == SkillState.Recovery) {
-            if (Time.time - lastStateTimestamp > player.playerStats.empoweredDefenseRecoveryDuration || player.playerStats.empoweredDefenseAnimationCancellable)
+            if (Time.time - lastStateTimestamp > player.playerStats.empoweredDefenseRecoveryDuration ||
+                player.playerStats.empoweredDefenseAnimationCancellable)
                 End();
         }
     }

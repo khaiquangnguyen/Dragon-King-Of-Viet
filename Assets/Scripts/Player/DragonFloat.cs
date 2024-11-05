@@ -7,7 +7,6 @@ public class DragonFloat : PlayerStateBehavior {
     public override void OnStateEnter() {
         player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
         // player.dragonAnimator.Play("run");
-
     }
 
     public override void FixedUpdate() {
@@ -17,10 +16,9 @@ public class DragonFloat : PlayerStateBehavior {
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeedX = player.playerStats.dragonMaxSpeed;
         player.MoveX(acceleration, deceleration, maxSpeedX);
-        if (Mathf.Approximately(player.body.linearVelocity.x, 0)) {
+        if (Mathf.Approximately(player.body.linearVelocity.x, 0))
             player.stateMachine.ChangeState(PlayerState.DragonHover);
-        }
-        float y = Mathf.PingPong(Time.time, 1f) - 0.5f;
+        var y = Mathf.PingPong(Time.time, 1f) - 0.5f;
         player.dragonBody.transform.localPosition = new Vector3(0, y, 0);
         player.UpdateVelocityY(0);
     }

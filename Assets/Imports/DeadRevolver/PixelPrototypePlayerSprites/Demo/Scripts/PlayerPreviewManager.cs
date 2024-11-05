@@ -18,7 +18,7 @@ namespace DeadRevolver.PixelPrototypePlayer {
         public GameObject propRocks;
         public Animator gunFX;
         public Animator bulletImpactFX;
-        public List<PlayerPreviewAnimation> animations = new List<PlayerPreviewAnimation>();
+        public List<PlayerPreviewAnimation> animations = new();
         public UnityEvent<PlayerPreviewAnimation, int, List<PlayerPreviewAnimation>> onAnimationChanged;
         public UnityEvent onAnimationPrev;
         public UnityEvent onAnimationNext;
@@ -26,18 +26,18 @@ namespace DeadRevolver.PixelPrototypePlayer {
         private Animator _anim;
         private Vector2 _startPosition;
 
-        void Start() {
+        private void Start() {
             _anim = previewPlayer.GetComponent<Animator>();
             _startPosition = previewPlayer.transform.position;
             UpdateAnimation();
         }
 
-        void Update() {
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.A)) {
+        private void Update() {
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.DownArrow) ||
+                Input.GetKeyDown(KeyCode.A))
                 PreviousAnimation();
-            } else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.D)) {
-                NextAnimation();
-            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) ||
+                     Input.GetKeyDown(KeyCode.D)) NextAnimation();
         }
 
         private void PreviousAnimation() {
@@ -60,40 +60,43 @@ namespace DeadRevolver.PixelPrototypePlayer {
 
         private void UpdateAnimation() {
             previewPlayer.transform.position = _startPosition;
-            PlayerPreviewAnimation currentAnimation = animations[_currentAnimation];
+            var currentAnimation = animations[_currentAnimation];
             _anim.Play(currentAnimation.animationName);
             onAnimationChanged.Invoke(currentAnimation, _currentAnimation, animations);
 
-            if (currentAnimation.name == "Ledge Hang" || currentAnimation.name == "Ledge Climb" || currentAnimation.name == "Wall Slide" || currentAnimation.name == "Wall Jump" || currentAnimation.name == "Wall Climb" || currentAnimation.name == "Wall Climb Idle") {
+            if (currentAnimation.name == "Ledge Hang" || currentAnimation.name == "Ledge Climb" ||
+                currentAnimation.name == "Wall Slide" || currentAnimation.name == "Wall Jump" ||
+                currentAnimation.name == "Wall Climb" || currentAnimation.name == "Wall Climb Idle")
                 propLedge.SetActive(true);
-            } else {
+            else
                 propLedge.SetActive(false);
-            }
 
-            if (currentAnimation.name == "Ladder Climb" || currentAnimation.name == "Ladder Climb Finish") {
+            if (currentAnimation.name == "Ladder Climb" || currentAnimation.name == "Ladder Climb Finish")
                 propLadder.SetActive(true);
-            } else {
+            else
                 propLadder.SetActive(false);
-            }
 
-            if (currentAnimation.name == "Ladder Climb Horizontal") {
+            if (currentAnimation.name == "Ladder Climb Horizontal")
                 propLedgeClimb.SetActive(true);
-            } else {
+            else
                 propLedgeClimb.SetActive(false);
-            }
 
-            if (currentAnimation.name == "Climb Up (Left Hand)" || currentAnimation.name == "Climb Up (Right Hand)" || currentAnimation.name == "Climb Down (Left Hand)" || currentAnimation.name == "Climb Down (Right Hand)" || currentAnimation.name == "Climb Left" || currentAnimation.name == "Climb Right" || currentAnimation.name == "Climb Idle" || currentAnimation.name == "Climb Grab/Land" || currentAnimation.name == "Climb Jump Prepare") {
+            if (currentAnimation.name == "Climb Up (Left Hand)" || currentAnimation.name == "Climb Up (Right Hand)" ||
+                currentAnimation.name == "Climb Down (Left Hand)" ||
+                currentAnimation.name == "Climb Down (Right Hand)" || currentAnimation.name == "Climb Left" ||
+                currentAnimation.name == "Climb Right" || currentAnimation.name == "Climb Idle" ||
+                currentAnimation.name == "Climb Grab/Land" || currentAnimation.name == "Climb Jump Prepare")
                 propRocks.SetActive(true);
-            } else {
+            else
                 propRocks.SetActive(false);
-            }
 
             if (currentAnimation.animationName == "GunPreview") {
                 gunFX.gameObject.SetActive(true);
                 bulletImpactFX.gameObject.SetActive(true);
                 gunFX.Play("MuzzleFlash");
                 bulletImpactFX.Play("BulletImpact");
-            } else {
+            }
+            else {
                 gunFX.gameObject.SetActive(false);
                 bulletImpactFX.gameObject.SetActive(false);
             }

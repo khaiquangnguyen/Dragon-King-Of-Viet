@@ -41,5 +41,4 @@ public class SkillList : ScriptableObject {
         return skillRecords.Where(skillRecord => !skillRecord.enabled).Select(skillRecord => skillRecord.skill)
             .ToArray();
     }
-
 }

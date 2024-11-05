@@ -1,3 +1,4 @@
+using CharacterBehavior;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;

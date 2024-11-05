@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 [CreateAssetMenu(fileName = "DragonBlast", menuName = "Skills/DragonBlast", order = 0)]
 public class DragonBlast : Skill {
     public GameObject projectilePrefab;
-    public LayerMask projectileCollidableLayerMask = new LayerMask();
+    public LayerMask projectileCollidableLayerMask = new();
     public ProjectileSpecs projectileSpecs;
 
     public override void Use() {
@@ -17,6 +17,6 @@ public class DragonBlast : Skill {
         var rotation = ComputeProjectileDirection(spawnLocation, mousePosition);
         var spawnedProjectile = SpawnProjectileAt(projectilePrefab, spawnLocation, rotation);
         var spawnedProjectileBehavior = spawnedProjectile.GetComponent<ProjectileHandler>();
-        spawnedProjectileBehavior.InitWith(totalDamage, projectileSpecs, projectileCollidableLayerMask,true);
+        spawnedProjectileBehavior.InitWith(totalDamage, projectileSpecs, projectileCollidableLayerMask, true);
     }
 }
