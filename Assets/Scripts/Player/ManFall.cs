@@ -13,8 +13,12 @@ public class ManFall : PlayerStateBehavior {
         var deceleration = player.playerStats.manAirDecel;
         var maxSpeedX = player.playerStats.manAirMaxSpeed;
         var gravityMult = player.GetGravityMult();
-        player.characterBaseMovement.Fall(acceleration, deceleration, maxSpeedX, player.playerStats.gravity,
+        player.characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
+            player.playerStats.gravity,
             gravityMult);
+        if (player.characterController.isOnWalkableGround()) {
+            player.stateMachine.ChangeState(player.inputDirectionX != 0 ? PlayerState.ManRun : PlayerState.ManIdle);
+        }
     }
 
     public override void OnStateExit() {

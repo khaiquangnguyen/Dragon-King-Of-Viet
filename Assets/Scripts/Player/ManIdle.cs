@@ -11,7 +11,10 @@ public class ManIdle : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         player.characterController.Move(0, 0);
-        if (player.environment == Environment.Air) player.stateMachine.ChangeState(PlayerState.ManFall);
+        var isOnGround = player.characterController.isOnWalkableGround();
+        if (!isOnGround) {
+            player.stateMachine.ChangeState(PlayerState.ManFall);
+        }
     }
 
     public override void OnStateExit() { }

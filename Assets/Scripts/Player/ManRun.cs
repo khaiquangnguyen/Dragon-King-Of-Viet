@@ -20,7 +20,7 @@ public class ManRun : PlayerStateBehavior {
         var maxSpeed = Mathf.Abs(player.playerStats.manGroundMaxSpeed * player.inputDirectionX);
         if (player.environment == Environment.Air) player.stateMachine.ChangeState(PlayerState.ManFall);
         // human x movement is dependent on the environment
-        player.characterBaseMovement.RunOnGround(acceleration, deceleration, maxSpeed, facingDirection);
+        player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
     }
 
     public override void Update() { }

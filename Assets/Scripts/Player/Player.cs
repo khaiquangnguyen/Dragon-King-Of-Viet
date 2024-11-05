@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CharacterBehavior;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -35,7 +36,6 @@ public enum FacingDirection {
 }
 
 [RequireComponent(typeof(CharacterController2D))]
-[RequireComponent(typeof(CharacterBaseMovement))]
 public class Player : Character {
     [HideInInspector]
     public CharacterController2D characterController;
@@ -130,7 +130,6 @@ public class Player : Character {
     private float lastEmpoweredSkillUsageTimestamp = Time.time;
     private RaycastHit2D groundHit;
     private RaycastHit2D headHit;
-    public CharacterBaseMovement characterBaseMovement;
     [HideInInspector]
     public Environment environment = Environment.Ground;
 
@@ -152,6 +151,9 @@ public class Player : Character {
     public Component humanBody;
     [HideInInspector]
     public StateMachine stateMachine;
+
+    [ReadOnly]
+    public PlayerState currentPlayerState;
     private ManJump manJump;
     private ManIdle manIdle;
     private ManRun manRun;
@@ -177,7 +179,6 @@ public class Player : Character {
 
     private void OnEnable() {
         body = transform.GetComponent<Rigidbody2D>();
-        characterBaseMovement = GetComponent<CharacterBaseMovement>();
         characterController = GetComponent<CharacterController2D>();
         dragonBody = transform.Find("DragonBody");
         humanBody = transform.Find("HumanBody");
@@ -216,6 +217,7 @@ public class Player : Character {
     private void Start() { }
 
     private void Update() {
+        currentPlayerState = stateMachine.currentPlayerState;
         UpdateTimer();
         UpdateInputAndDirection();
         if (inputDisabled) return;
@@ -379,6 +381,7 @@ public class Player : Character {
     }
 
     private void FixedUpdate() {
+        print(stateMachine.currentPlayerState);
         CheckGround();
         stateMachine.FixedUpdate();
     }
@@ -389,7 +392,6 @@ public class Player : Character {
     }
 
     public void CheckGround() {
-        environment = characterBaseMovement.CheckEnvironment();
         if (environment == Environment.Air)
             stateMachine.ChangeState(PlayerState.ManFall);
     }

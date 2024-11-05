@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 namespace CharacterBehavior {
@@ -52,7 +53,8 @@ namespace CharacterBehavior {
             Move(velocity.x, velocity.y);
         }
 
-        public void MoveOnAirWithGravityApplied(float accel, float decel, float maxSpeedX, float gravity, float gravityMult) {
+        public void MoveOnAirWithGravityApplied(float accel, float decel, float maxSpeedX, float gravity,
+            float gravityMult) {
             var accelerationFactor = Mathf.Abs(velocity.x) > maxSpeedX
                 ? accel
                 : decel;
