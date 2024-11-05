@@ -14,7 +14,7 @@ public class ManFall : PlayerStateBehavior {
         var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
         var gravityMult = player.GetGravityMult();
         player.characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
-            player.playerStats.gravity, gravityMult, player.facingDirection);
+            player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxFallSpeed);
         if (player.characterController.isOnWalkableGround()) {
             if (player.inputDirectionX == 0) {
                 player.characterController.Move(0, 0);
