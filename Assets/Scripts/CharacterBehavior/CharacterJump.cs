@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace CharacterBehavior {
     public class CharacterJump : CharacterStateBehavior {
-        public CharacterJump(AICharacter character, CharacterController2D controller2D) : base(character, controller2D,
+        public CharacterJump(AIGameCharacter gameCharacter, CharacterController2D controller2D) : base(gameCharacter,
+            controller2D,
             CharacterState.Jumping) { }
 
         public override void OnStateEnter() {
@@ -10,22 +11,22 @@ namespace CharacterBehavior {
         }
 
         public void InitiateJump() {
-            character.jumpCount++;
+            gameCharacter.jumpCount++;
             // given max height and gravity, calculate initial jump velocity and duration
-            var jumpHeight = character.stats.jumpHeight;
-            var gravity = character.stats.gravity;
+            var jumpHeight = gameCharacter.stats.jumpHeight;
+            var gravity = gameCharacter.stats.gravity;
             var jumpVelocity = Mathf.Sqrt(Mathf.Abs(2 * jumpHeight * gravity));
-            characterController.Move(characterController.velocity.x,jumpVelocity);
+            characterController.Move(characterController.velocity.x, jumpVelocity);
         }
 
         public override void FixedUpdate() {
-            var acceleration = character.stats.airAccel;
-            var deceleration = character.stats.airDecel;
-            var maxSpeedX = character.stats.airMaxSpeed * Mathf.Abs(character.inputDirectionX);
+            var acceleration = gameCharacter.stats.airAccel;
+            var deceleration = gameCharacter.stats.airDecel;
+            var maxSpeedX = gameCharacter.stats.airMaxSpeed * Mathf.Abs(gameCharacter.inputDirectionX);
             characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
-                character.stats.gravity, 1, character.facingDirection, character.stats.maxFallSpeed);
+                gameCharacter.stats.gravity, 1, gameCharacter.facingDirection, gameCharacter.stats.maxFallSpeed);
             if (characterController.velocity.y <= 0) {
-                character.stateMachine.ChangeState(CharacterState.Falling);
+                gameCharacter.stateMachine.ChangeState(CharacterState.Falling);
             }
         }
 

@@ -17,6 +17,13 @@ MonoBehaviour:
   damageMult: 0
   abilityHaste: 0
   facingDirection: 0
-  groundAccel: 0
-  groundDecel: 0
-  groundMaxSpeed: 0
+  groundAccel: 20
+  groundDecel: 20
+  groundMaxSpeed: 15
+  airAccel: 20
+  airDecel: 20
+  airMaxSpeed: 15
+  gravity: -50
+  maxFallSpeed: 20
+  jumpHeight: 5
+  maxJumpsCount: 2

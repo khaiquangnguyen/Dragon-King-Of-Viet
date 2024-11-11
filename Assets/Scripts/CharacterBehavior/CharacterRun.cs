@@ -2,21 +2,22 @@ using UnityEngine;
 
 namespace CharacterBehavior {
     public class CharacterRun : CharacterStateBehavior {
-        private int facingDirection => character.facingDirection;
+        private int facingDirection => gameCharacter.facingDirection;
 
-        public CharacterRun(AICharacter character, CharacterController2D controller2D) : base(character, controller2D,
+        public CharacterRun(AIGameCharacter gameCharacter, CharacterController2D controller2D) : base(gameCharacter,
+            controller2D,
             CharacterState.Running) { }
 
         public override void OnStateEnter() { }
 
         public override void FixedUpdate() {
             if (Mathf.Approximately(characterController.velocity.magnitude, 0))
-                character.stateMachine.ChangeState(CharacterState.Idle);
-            var acceleration = character.stats.groundAccel;
-            var deceleration = character.stats.groundDecel;
-            var maxSpeed = Mathf.Abs(character.stats.groundMaxSpeed * character.inputDirectionX);
+                gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
+            var acceleration = gameCharacter.stats.groundAccel;
+            var deceleration = gameCharacter.stats.groundDecel;
+            var maxSpeed = Mathf.Abs(gameCharacter.stats.groundMaxSpeed * gameCharacter.inputDirectionX);
             if (!characterController.isOnGround())
-                character.stateMachine.ChangeState(CharacterState.Falling);
+                gameCharacter.stateMachine.ChangeState(CharacterState.Falling);
             else
                 characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
         }

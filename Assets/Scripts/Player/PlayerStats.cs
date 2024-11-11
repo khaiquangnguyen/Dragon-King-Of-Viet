@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-[Serializable]
-public struct AttackStats {
-    public float startupDuration;
-    public float activeDuration;
-    public float recoveryDuration;
-    public float attackCancelableAfter;
-    public bool cancelable;
-}
-
 [CreateAssetMenu(fileName = "PlayerMStats", menuName = "PlayerStats", order = 0)]
 public class PlayerStats : ScriptableObject {
     public float empoweredNextMoveBufferDuration = 0.05f;
@@ -154,7 +145,6 @@ public class PlayerStats : ScriptableObject {
     [Header("Attack")]
     public List<AttackStats> attackStats = new();
     public float attackInputBufferDuration = 0.1f;
-    [FormerlySerializedAs("attackInputBufferAfterLastAttackDuration")]
     public float attackInputBufferPostAttackDuration = 0.2f;
     #endregion
 

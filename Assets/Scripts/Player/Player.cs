@@ -19,24 +19,8 @@ public enum Environment {
     Water
 }
 
-internal enum DragonStates {
-    Hover,
-    Fly,
-    Claw,
-    Fireball,
-    Defense,
-    Counter,
-    TransformFromMan,
-    TransformToMan
-}
-
-public enum FacingDirection {
-    Left,
-    Right
-}
-
 [RequireComponent(typeof(CharacterController2D))]
-public class Player : Character {
+public class Player : GameCharacter {
     [HideInInspector]
     public CharacterController2D characterController;
 
@@ -55,16 +39,12 @@ public class Player : Character {
 
     #region --------------------- State Attributes -------------------------------------
     private Forms form = Forms.Man;
-    private readonly Dictionary<DragonStates, bool> dragonStates = new(Enum.GetValues(typeof(DragonStates))
-        .Cast<DragonStates>()
-        .ToDictionary(state => state, _ => false));
     #endregion
 
     #region --------------------- Movement Attributes -------------------------------------
     [HideInInspector]
     public int inputDirectionX;
     [HideInInspector]
-    public int facingDirection = 1;
     #endregion
 
     #region --------------------- Jump Attributes -------------------------------------
@@ -175,6 +155,7 @@ public class Player : Character {
     private DragonWallHang dragonWallHang;
     private DragonCeilHang dragonCeilHang;
     private DragonFloat dragonFloat;
+    public CircleCollider2D manAttackCollider;
     #endregion
 
     private void OnEnable() {
@@ -189,6 +170,9 @@ public class Player : Character {
         humanBodyCollider = humanBody.transform.Find("BodyCollider").GetComponent<CapsuleCollider2D>();
         dashCooldown = playerStats.baseDashCooldown;
         dashCooldownCountdown = -1f;
+        healthManager = GetComponent<HealthManager>();
+        projectileLayer = LayerMask.NameToLayer("PlayerProjectile");
+        attackLayer = LayerMask.NameToLayer("PlayerAttack");
 
         playerStateMachine = new PlayerStateMachine();
         playerStateMachine.AddState(manIdle = new ManIdle(this));
@@ -511,12 +495,18 @@ public class Player : Character {
     }
     #endregion
 
-    public override void OnDamageDealt(float damageDealt, Character character) {
+    public override void OnDealDamage(int damageDealt, IDamageTaker gameCharacter) {
+        gameCharacter.OnTakeDamage(damageDealt, this);
+    }
+
+    public override DamageResult OnTakeDamage(int damage, IDamageDealer damageDealer) {
         throw new NotImplementedException();
     }
 
-    public override float TakeDamage(float damage, Character damageDealer) {
-        throw new NotImplementedException();
+    public void OnSkillOrAttackHit(int baseDamage, GameCharacter damagedCharacter) {
+        // calculate real skill damage
+        var damage = (int)(baseDamage * damageMult);
+        OnDealDamage(damage, damagedCharacter);
     }
 
     public float abilityHaste { get; }

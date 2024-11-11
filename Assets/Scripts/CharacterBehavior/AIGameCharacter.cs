@@ -7,8 +7,7 @@ namespace CharacterBehavior {
     [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
-
-    public class AICharacter : Character {
+    public class AIGameCharacter : GameCharacter {
         public CharacterStateMachine stateMachine = new();
         [HideInInspector]
         public CharacterController2D controller;
@@ -30,8 +29,9 @@ namespace CharacterBehavior {
             controller = GetComponent<CharacterController2D>();
             controller.body = GetComponent<Rigidbody2D>();
             controller.bodyCollider = GetComponent<Collider2D>();
+            healthManager = GetComponent<HealthManager>();
             stateMachine.AddState(characterRun = new CharacterRun(this, controller));
-            stateMachine.AddState(characterFall =  new CharacterFall(this, controller));
+            stateMachine.AddState(characterFall = new CharacterFall(this, controller));
             stateMachine.AddState(characterIdle = new CharacterIdle(this, controller));
             stateMachine.AddState(characterJump = new CharacterJump(this, controller));
             stateMachine.ChangeState(CharacterState.Idle);
@@ -52,12 +52,12 @@ namespace CharacterBehavior {
                     }
                     else {
                         characterJump.InitiateJump();
-
                     }
                 }
-                triggerJump = false;
 
+                triggerJump = false;
             }
+
             stateMachine.Update();
         }
 
@@ -65,12 +65,21 @@ namespace CharacterBehavior {
             stateMachine.FixedUpdate();
         }
 
-        public override void OnDamageDealt(float damageDealt, Character character) {
+        public override void OnDealDamage(int damageDealt, IDamageTaker gameCharacter) {
             throw new NotImplementedException();
         }
 
-        public override float TakeDamage(float damage, Character damageDealer) {
-            throw new NotImplementedException();
+        public override DamageResult OnTakeDamage(int damage, IDamageDealer damageDealer) {
+            var currentHealth = this.healthManager.currentHealth;
+            this.healthManager.TakeDamage(damage);
+            var newHealth = this.healthManager.currentHealth;
+            var healthLost = currentHealth - newHealth;
+            var damageResult = new DamageResult {
+                incomingDamage = damage,
+                healthLost = healthLost,
+                healthRemaining = newHealth,
+            };
+            return damageResult;
         }
     }
 }

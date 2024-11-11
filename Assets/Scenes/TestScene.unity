@@ -396,6 +396,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &292952717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 292952718}
+  - component: {fileID: 292952719}
+  m_Layer: 8
+  m_Name: MeleeAttackHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &292952718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292952717}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.8, y: 0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1983922118}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &292952719
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292952717}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
 --- !u!1 &377846234
 GameObject:
   m_ObjectHideFlags: 3
@@ -2275,7 +2343,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: dd3d07cf56aab4f78a0da4f0c3c3d0cb, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2521,6 +2589,7 @@ GameObject:
   - component: {fileID: 1766946050}
   - component: {fileID: 1766946049}
   - component: {fileID: 1766946048}
+  - component: {fileID: 1766946054}
   m_Layer: 6
   m_Name: AICharacter
   m_TagString: Untagged
@@ -2540,10 +2609,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e368bc9e5f5b46f09d7a584ba0087729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageMult: 0
   facingDirection: 0
+  healthManager: {fileID: 0}
   controller: {fileID: 0}
   stats: {fileID: 11400000, guid: e0535496b86064c45a2593bdbe1cbe82, type: 2}
   inputDirectionX: 0
+  characterState: 0
+  triggerJump: 0
+  jumpCount: 0
 --- !u!50 &1766946049
 Rigidbody2D:
   serializedVersion: 5
@@ -2700,6 +2774,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1766946054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766946047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e25e7c234440af83aba0e0f878a95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameCharacter: {fileID: 1766946048}
+  currentHealth: 100
+  maxHealth: 100
+  healthRegen: 1
+  healthBar: {fileID: 0}
+  canRegen: 1
+  canHeal: 1
+  canTakeDamage: 1
+  regenRate: 1
+  timeSinceLastRegen: 0
+  allowOverHeal: 0
+  noDamageUntilRegenDuration: 3
+  damageLastTakenAt: 0
 --- !u!1 &1983922114
 GameObject:
   m_ObjectHideFlags: 0
@@ -2712,6 +2811,7 @@ GameObject:
   - component: {fileID: 1983922121}
   - component: {fileID: 1983922122}
   - component: {fileID: 1983922123}
+  - component: {fileID: 1983922124}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -2735,6 +2835,7 @@ Transform:
   - {fileID: 1628240369}
   - {fileID: 1758442622}
   - {fileID: 2112427322}
+  - {fileID: 292952718}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1983922121
@@ -2749,10 +2850,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a76f0e7674f2da827ad6b0f62df41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageMult: 1
   facingDirection: 1
+  healthManager: {fileID: 1983922124}
   characterController: {fileID: 0}
   inputDirectionX: 0
-  facingDirection: 1
   isJumpCut: 0
   isFastFalling: 0
   isEmpowering: 0
@@ -2782,6 +2884,7 @@ MonoBehaviour:
   dragonBody: {fileID: 0}
   humanBody: {fileID: 0}
   currentPlayerState: 0
+  manAttackCollider: {fileID: 292952719}
 --- !u!50 &1983922122
 Rigidbody2D:
   serializedVersion: 5
@@ -2831,6 +2934,31 @@ MonoBehaviour:
   shouldStickToGround: 1
   isOnSlope: 0
   velocity: {x: 0, y: 0}
+--- !u!114 &1983922124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e25e7c234440af83aba0e0f878a95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameCharacter: {fileID: 0}
+  currentHealth: 100
+  maxHealth: 100
+  healthRegen: 5
+  healthBar: {fileID: 0}
+  canRegen: 1
+  canHeal: 1
+  canTakeDamage: 1
+  regenRate: 0
+  timeSinceLastRegen: 0
+  allowOverHeal: 0
+  noDamageUntilRegenDuration: 0
+  damageLastTakenAt: 0
 --- !u!1 &2112427321
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using CharacterBehavior;
 using UnityEngine;
 
 public class ManAttack : PlayerStateBehavior {
@@ -7,8 +9,8 @@ public class ManAttack : PlayerStateBehavior {
     private SkillState skillState = SkillState.Ready;
     private float newStateStartAt;
     private float attackStartTimestamp;
-
     public ManAttack(Player player) : base(player, PlayerState.ManAttack, PlayerForm.Man) { }
+    public List<GameCharacter> hitCharacters = new List<GameCharacter>();
 
     public override void OnStateEnter() {
         // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
@@ -29,6 +31,7 @@ public class ManAttack : PlayerStateBehavior {
         var attackRecoveryTime = player.playerStats.attackStats[attackMoveCount].recoveryDuration;
 
         if (skillState == SkillState.Ready) {
+            hitCharacters.Clear();
             player.humanAnimator.Play("Attack_" + (attackMoveCount + 1) + "_Startup");
             player.attackInputBufferCountdown = -1;
             skillState = SkillState.Startup;
@@ -36,6 +39,7 @@ public class ManAttack : PlayerStateBehavior {
             attackStartTimestamp = Time.time;
         }
         else if (skillState == SkillState.Startup) {
+            hitCharacters.Clear();
             if (Time.time - newStateStartAt > attackStartupTime) {
                 player.humanAnimator.Play("Attack_" + (attackMoveCount + 1) + "_Active");
                 skillState = SkillState.Active;
@@ -48,8 +52,11 @@ public class ManAttack : PlayerStateBehavior {
                 skillState = SkillState.Recovery;
                 newStateStartAt = Time.time;
             }
+
+            CheckAttackHit();
         }
         else if (skillState == SkillState.Recovery) {
+            hitCharacters.Clear();
             if (Time.time - newStateStartAt < attackRecoveryTime) return;
             // once attack recovery is done and next attack input is ready, go to next attack
             if (player.attackInputBufferCountdown > 0 &&
@@ -67,6 +74,65 @@ public class ManAttack : PlayerStateBehavior {
             player.UpdateVelocity(0, 0);
         else
             player.UpdateVelocity(0, player.body.linearVelocity.y);
+    }
+
+    public void CheckAttackHit() {
+        var hitboxCollider = player.manAttackCollider;
+        if (hitboxCollider == null) return;
+        //get all colliders that are in the hitbox
+        var collidedCharacters = Physics2D.OverlapBoxAll(hitboxCollider.bounds.center, hitboxCollider.bounds.size, 0);
+        foreach (var character in collidedCharacters) {
+            if (character.GetComponent<GameCharacter>() is not null) {
+                var gameCharacter = character.GetComponent<GameCharacter>();
+                if (gameCharacter == player) continue;
+                if (hitCharacters.Contains(gameCharacter)) continue;
+                player.OnSkillOrAttackHit(player.playerStats.attackStats[attackMoveCount].damage, gameCharacter);
+                hitCharacters.Add(gameCharacter);
+            }
+            // if (gameCharacter == player) continue;
+            // if (gameCharacter.isInvulnerable) continue;
+            // if (gameCharacter.isDead) continue;
+            // if (gameCharacter.isImmune) continue;
+            // if (gameCharacter.isStunned) continue;
+            // if (gameCharacter.isKnockedBack) continue;
+            // if (gameCharacter.isKnockedUp) continue;
+            // if (gameCharacter.isSilenced) continue;
+            // if (gameCharacter.isFeared) continue;
+            // if (gameCharacter.isCharmed) continue;
+            // if (gameCharacter.isTaunted) continue;
+            // if (gameCharacter.isRooted) continue;
+            // if (gameCharacter.isDisarmed) continue;
+            // if (gameCharacter.isBlind) continue;
+            // if (gameCharacter.isSlowed) continue;
+            // if (gameCharacter.isStasis) continue;
+            // if (gameCharacter.isAirborne) continue;
+            // if (gameCharacter.isGrounded) continue;
+            // if (gameCharacter.isCasting) continue;
+            // if (gameCharacter.isChanneling) continue;
+            // if (gameCharacter.isDodging) continue;
+            // if (gameCharacter.isDashing) continue;
+            // if (gameCharacter.isTeleporting) continue;
+            // if (gameCharacter.isInvisible) continue;
+            // if (gameCharacter.isStealthed) continue;
+            // if (gameCharacter.isRevealed) continue;
+            // if (gameCharacter.isDisguised) continue;
+            // if (gameCharacter.isTransformed) continue;
+            // if (gameCharacter.isMounted) continue;
+            // if (gameCharacter.isFlying) continue;
+            // if (gameCharacter.isHovering) continue;
+            // if (gameCharacter.isGrounded) continue;
+            // if (gameCharacter.isUnderground) continue;
+            // if (gameCharacter.isUnderwater) continue;
+            // if (gameCharacter.isSubmerged) continue;
+            // if (gameCharacter.isSwimming) continue;
+            // if (gameCharacter.isBurning) continue;
+            // if (gameCharacter.isBleeding) continue;
+            // if (gameCharacter.isPoisoned) continue;
+            // if (gameCharacter.isCrippled) continue;
+            // if (gameCharacter.isSlowed) continue;
+            // if (gameCharacter.isStunned) continue;
+            // if (gameCharacter.isSilenced) continue;
+        }
     }
 
     public void End() { }

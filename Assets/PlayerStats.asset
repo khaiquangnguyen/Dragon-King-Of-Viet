@@ -132,20 +132,23 @@ MonoBehaviour:
   dragonEnergyRegenDelayDuration: 1
   attackStats:
   - startupDuration: 0.1
-    activeDuration: 0.2
+    activeDuration: 0.1
     recoveryDuration: 0.1
-    attackCancelableAfter: 0
+    attackCancelableAfter: 0.1
+    damage: 1
     cancelable: 1
   - startupDuration: 0.1
-    activeDuration: 0.2
+    activeDuration: 0.1
     recoveryDuration: 0.1
-    attackCancelableAfter: 0
+    attackCancelableAfter: 0.1
+    damage: 2
     cancelable: 1
   - startupDuration: 0.1
-    activeDuration: 0.2
+    activeDuration: 0.1
     recoveryDuration: 0.1
-    attackCancelableAfter: 0
-    cancelable: 0
+    attackCancelableAfter: 0.1
+    damage: 3
+    cancelable: 1
   attackInputBufferDuration: 0.5
   attackInputBufferPostAttackDuration: 0.2
   defenseStartupDuration: 0.1
