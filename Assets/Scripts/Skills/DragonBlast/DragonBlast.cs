@@ -12,7 +12,6 @@ public class DragonBlast : Skill {
     public float distance;
     public float lifetime;
 
-
     public void OnEnable() {
         skillName = "Dragon Blast";
     }
@@ -28,6 +27,7 @@ public class DragonBlast : Skill {
         if (!projectileScript) {
             projectileScript = spawnedProjectile.AddComponent<DragonBlastProjectile>();
         }
+
         projectileScript.selfDestructEffect = projectileSelfDestructPrefab;
         projectileScript.impactEffect = projectileImpactPrefab;
         projectileScript.movementCurve = projectileMovementCurve;

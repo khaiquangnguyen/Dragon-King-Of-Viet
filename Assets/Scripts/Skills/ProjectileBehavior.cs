@@ -30,7 +30,7 @@ public class ProjectileBehavior : MonoBehaviour {
     public float createdAt;
     public float distance;
     public float lifetime;
-    public List<IDamageTaker> damagedCharacters = new ();
+    public List<IDamageTaker> damagedCharacters = new();
 
     private void Awake() {
         body = GetComponent<Rigidbody2D>();
@@ -44,12 +44,12 @@ public class ProjectileBehavior : MonoBehaviour {
         spawnRotation = transform.rotation;
         spawnLocation = transform.position;
         createdAt = Time.time;
-        // Invoke(nameof(DestroyOnExpired), lifetime);
+        Invoke(nameof(DestroyOnExpired), lifetime);
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
         var damageTaker = other.gameObject.GetComponent<GameCharacter>();
-        if (damageTaker != null && damagedCharacters.Contains(damageTaker) == false){
+        if (damageTaker != null && damagedCharacters.Contains(damageTaker) == false) {
             OnHit(damageTaker);
             damagedCharacters.Add(damageTaker);
             if (destroyOnHit) DestroyOnHit();
@@ -71,5 +71,4 @@ public class ProjectileBehavior : MonoBehaviour {
         ParentSkill.OnDealDamage(damage, damageTaker);
         Caster.OnDealDamage(damage, damageTaker);
     }
-
 }

@@ -14,18 +14,23 @@ public abstract class Skill : ScriptableObject {
     protected GameCharacter Caster;
     private float currentCooldown => baseCooldown / (1 + Caster.abilityHaste);
     private float cooldownTimerCountdown;
+    public AnimationClip skillStartupAnimation;
+    public AnimationClip skillActiveAnimation;
+    public AnimationClip skillRecoveryAnimation;
 
     public void Init(GameCharacter caster) {
         Caster = caster;
         cooldownTimerCountdown = 0;
     }
 
-    protected GameObject SpawnProjectileAt<T> (GameObject projectilePrefab, Vector3 position, Quaternion rotation) where T: ProjectileBehavior {
+    protected GameObject SpawnProjectileAt<T>(GameObject projectilePrefab, Vector3 position, Quaternion rotation)
+        where T : ProjectileBehavior {
         var projectile = Instantiate(projectilePrefab, position, rotation);
-        var  projectileBehavior = projectile.GetComponent<T>();
+        var projectileBehavior = projectile.GetComponent<T>();
         if (!projectileBehavior) {
             projectileBehavior = projectile.AddComponent<T>();
         }
+
         projectileBehavior.ParentSkill = this;
         projectileBehavior.Caster = Caster;
         projectileBehavior.UniqueId = Caster.uniqueId + "-" + skillName + "-" + Time.time;

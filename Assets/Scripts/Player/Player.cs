@@ -358,7 +358,7 @@ public class Player : GameCharacter {
     }
 
     public void UpdateVelocity(float vX, float vY) {
-        body.linearVelocity = new Vector2(vX, vY);
+        characterController.Move(vX, vY);
     }
 
     public void CheckIdleState() {

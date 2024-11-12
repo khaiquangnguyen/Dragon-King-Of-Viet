@@ -46,8 +46,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.8530694
-      value: 0.96148086
+      time: 0.88583004
+      value: 0.9875009
       inSlope: 0.44640422
       outSlope: 0.44640422
       tangentMode: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   fastFallingGravityMult: 1.4
   coyoteTimeGravityMult: 0.5
-  gravity: -50
+  gravity: -60
   crouchMaxSpeed: 10
   empoweredFallMaxSpeed: 10
   empoweredFallStartupDuration: 0.1

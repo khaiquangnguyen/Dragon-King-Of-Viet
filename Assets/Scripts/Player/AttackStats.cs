@@ -9,4 +9,7 @@ public struct AttackStats {
     public float attackCancelableAfter;
     public int damage;
     public bool cancelable;
+    public AnimationClip startupAnimation;
+    public AnimationClip activeAnimation;
+    public AnimationClip recoveryAnimation;
 }

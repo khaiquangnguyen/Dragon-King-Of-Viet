@@ -17,13 +17,20 @@ namespace CharacterBehavior {
         private CharacterIdle characterIdle;
         private CharacterFall characterFall;
         private CharacterJump characterJump;
+        private BaseCharacterAttack baseCharacterAttack;
+        private CharacterSkillCast characterSkillCast;
+        private CharacterDefense characterDefense;
+
         public float inputDirectionX;
         [ReadOnly]
         public CharacterState characterState;
-        [FormerlySerializedAs("shouldTryJump")]
         public bool triggerJump;
         [ReadOnly]
         public int jumpCount = 0;
+        public AICharacterCombatStats combatStats;
+        public Animator animator;
+        public Environment environment;
+        public Collider2D attackCollider;
 
         public void OnEnable() {
             controller = GetComponent<CharacterController2D>();
@@ -34,6 +41,9 @@ namespace CharacterBehavior {
             stateMachine.AddState(characterFall = new CharacterFall(this, controller));
             stateMachine.AddState(characterIdle = new CharacterIdle(this, controller));
             stateMachine.AddState(characterJump = new CharacterJump(this, controller));
+            stateMachine.AddState(baseCharacterAttack = new CharacterBasicAttack(this, controller));
+            stateMachine.AddState(characterSkillCast = new CharacterSkillCast(this, controller));
+            stateMachine.AddState(characterDefense = new CharacterDefense(this, controller));
             stateMachine.ChangeState(CharacterState.Idle);
         }
 
@@ -80,6 +90,11 @@ namespace CharacterBehavior {
                 healthRemaining = newHealth,
             };
             return damageResult;
+        }
+
+        public void OnSkillOrAttackHit(int baseDamage, GameCharacter damagedCharacter) {
+            var damage = (int)(baseDamage * damageMult);
+            OnDealDamage(damage, damagedCharacter);
         }
     }
 }

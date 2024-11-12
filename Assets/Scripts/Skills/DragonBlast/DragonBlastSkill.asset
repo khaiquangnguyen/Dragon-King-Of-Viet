@@ -12,12 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b2174c2cdc44208d40ebcf105e369f, type: 3}
   m_Name: DragonBlastSkill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: Dragon Blast
   icon: {fileID: 0}
   baseCooldown: 10
-  damage: 5
+  damage: 2
   projectilePrefab: {fileID: 6319345273986289958, guid: 90b2dbbd9ec554650b0baa7ad118ebe4, type: 3}
-  projectileCollidableLayerMask:
+  projectileImpactPrefab: {fileID: 5143368176362401076, guid: d734a1fef82cf4ed084715af4dd75461, type: 3}
+  projectileSelfDestructPrefab: {fileID: 2525048466207748641, guid: 8c835183bb8f6494dafd4569d3213266, type: 3}
+  projectileMovementCurve:
     serializedVersion: 2
-    m_Bits: 0
-  projectileSpecs: {fileID: 11400000, guid: 0c222fcd8134f4d3fb2c3b3429add3a7, type: 2}
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  distance: 25
+  lifetime: 1

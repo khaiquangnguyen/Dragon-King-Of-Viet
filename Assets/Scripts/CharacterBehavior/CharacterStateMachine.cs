@@ -27,7 +27,7 @@ namespace CharacterBehavior {
         public void LateUpdate() { }
 
         public void AddState(CharacterStateBehavior state) {
-            states.Add(state.name, state);
+            states.Add(state.characterState, state);
         }
     }
 }
