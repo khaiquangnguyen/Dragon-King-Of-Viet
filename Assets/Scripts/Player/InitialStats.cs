@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "InitialStats", menuName = "InitialStats", order = 0)]
 public class InitialStats : ScriptableObject {

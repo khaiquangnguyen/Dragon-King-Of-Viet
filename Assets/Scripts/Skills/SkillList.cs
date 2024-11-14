@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "SkillList", menuName = "Skill List", order = 0)]
 public class SkillList : ScriptableObject {

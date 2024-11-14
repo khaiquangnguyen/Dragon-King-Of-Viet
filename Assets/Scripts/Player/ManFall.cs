@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public class ManFall : PlayerStateBehavior {
     public ManFall(Player player) : base(player, PlayerState.ManFall, PlayerForm.Man) { }
@@ -18,11 +17,11 @@ public class ManFall : PlayerStateBehavior {
         if (player.characterController.isOnWalkableGround()) {
             if (player.inputDirectionX == 0) {
                 player.characterController.Move(0, 0);
-                player.playerStateMachine.ChangeState(PlayerState.ManIdle);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
             else {
                 player.characterController.Move(maxSpeedX, 0);
-                player.playerStateMachine.ChangeState(PlayerState.ManRun);
+                player.stateMachine.ChangeState(PlayerState.ManRun);
             }
         }
     }

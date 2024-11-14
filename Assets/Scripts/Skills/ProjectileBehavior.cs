@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using CharacterBehavior;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class ProjectileBehavior : MonoBehaviour {
     private GameObject target;

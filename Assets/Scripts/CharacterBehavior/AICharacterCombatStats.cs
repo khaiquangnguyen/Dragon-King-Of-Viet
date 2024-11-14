@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CharacterBehavior {
     [CreateAssetMenu(fileName = "Character Basic Combat Stats", menuName = "AI Character Basic Combat Stats",

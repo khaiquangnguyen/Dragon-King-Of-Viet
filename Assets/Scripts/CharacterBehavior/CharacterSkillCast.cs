@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterBehavior {
@@ -13,9 +12,11 @@ namespace CharacterBehavior {
         public AnimationClip skillActiveAnimation;
         public AnimationClip skillRecoveryAnimation;
 
-        public CharacterSkillCast(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter, controller, CharacterState.CastSkill) { }
+        public CharacterSkillCast(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
+            controller, CharacterState.CastSkill) { }
 
-        public void SetSkillData(float startupTime, float activeTime, float recoveryTime, AnimationClip startupAnimation, AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
+        public void SetSkillData(float startupTime, float activeTime, float recoveryTime,
+            AnimationClip startupAnimation, AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
             skillStartupTime = startupTime;
             skillActiveTime = activeTime;
             skillRecoveryTime = recoveryTime;
@@ -23,6 +24,7 @@ namespace CharacterBehavior {
             skillActiveAnimation = activeAnimation;
             skillRecoveryAnimation = recoveryAnimation;
         }
+
         public override void OnStateEnter() {
             skillState = SkillState.Ready;
             newStateStartAt = 0;

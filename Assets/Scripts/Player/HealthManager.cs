@@ -62,6 +62,7 @@ public class HealthManager : MonoBehaviour {
         timeSinceLastRegen += Time.deltaTime;
         RegenHealth();
         UpdateHealthBar();
+        currentHealth = Mathf.Max(currentHealth, 0);
         if (!allowOverHeal) {
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         }

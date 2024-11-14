@@ -2621,6 +2621,10 @@ MonoBehaviour:
   characterState: 0
   triggerJump: 0
   jumpCount: 0
+  combatStats: {fileID: 0}
+  animator: {fileID: 0}
+  environment: 0
+  attackCollider: {fileID: 0}
 --- !u!50 &1766946049
 Rigidbody2D:
   serializedVersion: 5

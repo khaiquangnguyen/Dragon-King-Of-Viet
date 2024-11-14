@@ -1,7 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "DragonBlast", menuName = "Skills/DragonBlast", order = 0)]
 public class DragonBlast : Skill {

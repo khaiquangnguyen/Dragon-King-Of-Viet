@@ -83,6 +83,22 @@ namespace CharacterBehavior {
             body.MovePosition(body.position + new Vector2(newX, newY) * Time.fixedDeltaTime);
         }
 
+        public void MoveX(float newX) {
+            velocity.Set(newX, velocity.y);
+            Move(velocity.x, velocity.y);
+        }
+
+        public void MoveY(float newY) {
+            velocity.Set(velocity.x, newY);
+            Move(velocity.x, velocity.y);
+        }
+
+        public void MoveToX(float newX) {
+            var newVelocityX = newX - body.position.x;
+            velocity.Set(newVelocityX, velocity.y);
+            body.MovePosition(new Vector2(newX, body.position.y));
+        }
+
         public void FixedUpdate() {
             CheckOnSlope();
             CheckRaycastGround();

@@ -6,7 +6,8 @@ namespace CharacterBehavior {
         private float defenseStartTimestamp;
         private DefenseState defenseState = DefenseState.Ready;
 
-        public CharacterDefense(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter, controller, CharacterState.Defense) { }
+        public CharacterDefense(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
+            controller, CharacterState.Defense) { }
 
         public override void OnStateEnter() {
             characterController.Move(0, 0);

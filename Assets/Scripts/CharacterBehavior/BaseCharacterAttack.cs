@@ -48,10 +48,10 @@ namespace CharacterBehavior {
 
         public void CheckAttackHit() {
             var hitboxCollider = gameCharacter.attackCollider;
-            if (hitboxCollider == null) return;
+            if (!hitboxCollider) return;
             //get all colliders that are in the hitbox
             var collidedCharacters =
-                Physics2D.OverlapBoxAll(hitboxCollider.bounds.center, hitboxCollider.bounds.size, 0);
+                Physics2D.OverlapCircleAll(hitboxCollider.bounds.center, hitboxCollider.radius);
             foreach (var character in collidedCharacters) {
                 if (character.GetComponent<GameCharacter>() is not null) {
                     var otherCharacter = character.GetComponent<GameCharacter>();

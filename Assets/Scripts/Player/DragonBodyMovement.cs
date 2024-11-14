@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class DragonBodyMovement : MonoBehaviour {
     public int segmentCount = 50;

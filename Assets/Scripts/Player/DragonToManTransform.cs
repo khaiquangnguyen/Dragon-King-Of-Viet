@@ -27,12 +27,12 @@ public class DragonToManTransform : PlayerStateBehavior {
             player.transform.rotation = Quaternion.identity;
             player.CheckGround();
             if (player.environment == Environment.Ground) {
-                if (player.inputDirectionX != 0) player.playerStateMachine.ChangeState(PlayerState.ManRun);
+                if (player.inputDirectionX != 0) player.stateMachine.ChangeState(PlayerState.ManRun);
                 else
-                    player.playerStateMachine.ChangeState(PlayerState.ManIdle);
+                    player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
             else {
-                player.playerStateMachine.ChangeState(PlayerState.ManFall);
+                player.stateMachine.ChangeState(PlayerState.ManFall);
             }
         }
     }

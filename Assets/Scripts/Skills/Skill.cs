@@ -1,9 +1,6 @@
-using System;
 using CharacterBehavior;
 using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class Skill : ScriptableObject {
     [ReadOnly]
@@ -14,6 +11,9 @@ public abstract class Skill : ScriptableObject {
     protected GameCharacter Caster;
     private float currentCooldown => baseCooldown / (1 + Caster.abilityHaste);
     private float cooldownTimerCountdown;
+    public float skillStartupDuration;
+    public float skillActiveDuration;
+    public float skillRecoveryDuration;
     public AnimationClip skillStartupAnimation;
     public AnimationClip skillActiveAnimation;
     public AnimationClip skillRecoveryAnimation;

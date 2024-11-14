@@ -1,7 +1,6 @@
 using System;
 using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CharacterBehavior {
     [RequireComponent(typeof(CharacterController2D))]
@@ -30,7 +29,7 @@ namespace CharacterBehavior {
         public AICharacterCombatStats combatStats;
         public Animator animator;
         public Environment environment;
-        public Collider2D attackCollider;
+        public CircleCollider2D attackCollider;
 
         public void OnEnable() {
             controller = GetComponent<CharacterController2D>();

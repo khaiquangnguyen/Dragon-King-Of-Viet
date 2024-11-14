@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -38,6 +37,17 @@ public class PlayerStats : ScriptableObject {
     public float dashSpeed => dashDistance / dashDuration;
     public float doublePressDashBufferDuration = 0.1f;
     public float baseDashCooldown = 0.5f;
+    #endregion
+
+    #region Dodge Hop
+    [Header("Man Dodge Hope")]
+    public float dodgeHopDuration = 0.2f;
+    public float dodgeHopDistance = 5f;
+    public AnimationCurve dodgeHopDistanceCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public float dodgeHopCooldown = 0.2f;
+    public AnimationClip dodgeHopStartupAnimation;
+    public AnimationClip dodgeHopActiveAnimation;
+    public AnimationClip dodgeHopRecoveryAnimation;
     #endregion
 
     #region Jump
@@ -152,8 +162,12 @@ public class PlayerStats : ScriptableObject {
     [Header("Defense")]
     public float defenseStartupDuration = 0.1f;
     public float defenseActivePreCounterDuration = 0.1f;
-    [FormerlySerializedAs("defenseActiveCounterDuration")]
     public float defenseActiveDuringCounterDuration = 0.1f;
     public float defenseRecoveryDuration = 0.1f;
+    public AnimationClip defenseStartupAnimation;
+    public AnimationClip defenseActivePreCounterAnimation;
+    public AnimationClip defenseActiveDuringCounterAnimation;
+    public AnimationClip defenseActivePostCounterAnimation;
+    public AnimationClip defenseRecoveryAnimation;
     #endregion
 }

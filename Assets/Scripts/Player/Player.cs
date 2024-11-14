@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CharacterBehavior;
+using DefaultNamespace;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 internal enum Forms {
     Dragon,
@@ -20,6 +19,7 @@ public enum Environment {
 }
 
 [RequireComponent(typeof(CharacterController2D))]
+[RequireComponent(typeof(EnergyManager))]
 public class Player : GameCharacter {
     [HideInInspector]
     public CharacterController2D characterController;
@@ -130,7 +130,7 @@ public class Player : GameCharacter {
     [HideInInspector]
     public Component humanBody;
     [HideInInspector]
-    public PlayerStateMachine playerStateMachine;
+    public PlayerStateMachine stateMachine;
 
     [ReadOnly]
     public PlayerState currentPlayerState;
@@ -141,12 +141,12 @@ public class Player : GameCharacter {
     private ManDash manDash;
     private ManAttack manAttack;
     private ManFall manFall;
+    private ManCastSkill manCastSkill;
     private ManDefense manDefense;
     private ManEmpoweredAttack manEmpoweredAttack;
     private ManEmpoweredDefense manEmpoweredDefense;
     private ManEmpoweredFall manEmpoweredFall;
-    private ManDashAttack manDashAttack;
-    private ManRunAttack manRunAttack;
+    private ManDodge manDodgeHop;
     private ManToDragonTransform dragonFromManTransform;
     private DragonToManTransform dragonToManTransform;
     private DragonHover dragonHover;
@@ -156,9 +156,13 @@ public class Player : GameCharacter {
     private DragonCeilHang dragonCeilHang;
     private DragonFloat dragonFloat;
     public CircleCollider2D manAttackCollider;
+    private EnergyManager energyManager;
     #endregion
 
     private void OnEnable() {
+        // we only use the collider to sphere cast, so no need to actually enable it
+        manAttackCollider.enabled = false;
+        energyManager = GetComponent<EnergyManager>();
         body = transform.GetComponent<Rigidbody2D>();
         characterController = GetComponent<CharacterController2D>();
         dragonBody = transform.Find("DragonBody");
@@ -174,53 +178,54 @@ public class Player : GameCharacter {
         projectileLayer = LayerMask.NameToLayer("PlayerProjectile");
         attackLayer = LayerMask.NameToLayer("PlayerAttack");
 
-        playerStateMachine = new PlayerStateMachine();
-        playerStateMachine.AddState(manIdle = new ManIdle(this));
-        playerStateMachine.AddState(manJump = new ManJump(this));
-        playerStateMachine.AddState(manRun = new ManRun(this));
-        playerStateMachine.AddState(manDash = new ManDash(this));
-        playerStateMachine.AddState(manAttack = new ManAttack(this));
-        playerStateMachine.AddState(manDefense = new ManDefense(this));
-        playerStateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this));
-        playerStateMachine.AddState(manEmpoweredDefense = new ManEmpoweredDefense(this));
-        playerStateMachine.AddState(manFall = new ManFall(this));
-        playerStateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
-        playerStateMachine.AddState(manDashAttack = new ManDashAttack(this));
-        playerStateMachine.AddState(manRunAttack = new ManRunAttack(this));
-        playerStateMachine.AddState(manCrouch = new ManCrouch(this));
-        playerStateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
-        playerStateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
-        playerStateMachine.AddState(dragonHover = new DragonHover(this));
-        playerStateMachine.AddState(dragonFly = new DragonFly(this));
-        playerStateMachine.AddState(dragonGroundHang = new DragonGroundHang(this));
-        playerStateMachine.AddState(dragonWallHang = new DragonWallHang(this));
-        playerStateMachine.AddState(dragonCeilHang = new DragonCeilHang(this));
-        playerStateMachine.AddState(dragonFloat = new DragonFloat(this));
+        stateMachine = new PlayerStateMachine();
+        stateMachine.AddState(manIdle = new ManIdle(this));
+        stateMachine.AddState(manJump = new ManJump(this));
+        stateMachine.AddState(manRun = new ManRun(this));
+        stateMachine.AddState(manDash = new ManDash(this));
+        stateMachine.AddState(manAttack = new ManAttack(this));
+        stateMachine.AddState(manDefense = new ManDefense(this));
+        stateMachine.AddState(manCastSkill = new ManCastSkill(this));
+        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this));
+        stateMachine.AddState(manEmpoweredDefense = new ManEmpoweredDefense(this));
+        stateMachine.AddState(manFall = new ManFall(this));
+        stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
+        stateMachine.AddState(manCrouch = new ManCrouch(this));
+        stateMachine.AddState(manDodgeHop = new ManDodge(this));
+        stateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
+        stateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
+        stateMachine.AddState(dragonHover = new DragonHover(this));
+        stateMachine.AddState(dragonFly = new DragonFly(this));
+        stateMachine.AddState(dragonGroundHang = new DragonGroundHang(this));
+        stateMachine.AddState(dragonWallHang = new DragonWallHang(this));
+        stateMachine.AddState(dragonCeilHang = new DragonCeilHang(this));
+        stateMachine.AddState(dragonFloat = new DragonFloat(this));
     }
 
     private void Start() { }
 
     private void Update() {
-        currentPlayerState = playerStateMachine.currentPlayerState;
+        currentPlayerState = stateMachine.currentPlayerState;
         UpdateTimer();
         UpdateInputAndDirection();
         if (inputDisabled) return;
         CheckManJumpInputs();
-        if (playerStateMachine.currentPlayerState == PlayerState.ManIdle) {
+        if (stateMachine.currentPlayerState == PlayerState.ManIdle) {
+            CheckChangeToManRunState();
+            CheckChangeToManDashState();
+            CheckChangeToManAttackState();
+            CheckChangeToManDefenseState();
+            CheckChangeToManDodgeHope();
+        }
+
+        if (stateMachine.currentPlayerState == PlayerState.ManRun) {
             CheckChangeToManRunState();
             CheckChangeToManDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
         }
 
-        if (playerStateMachine.currentPlayerState == PlayerState.ManRun) {
-            CheckChangeToManRunState();
-            CheckChangeToManDashState();
-            CheckChangeToManAttackState();
-            CheckChangeToManDefenseState();
-        }
-
-        if (playerStateMachine.currentPlayerState == PlayerState.ManAttack) {
+        if (stateMachine.currentPlayerState == PlayerState.ManAttack) {
             CheckChangeToManAttackState();
             if (manAttack.GetAttackAnimationCancellable()) {
                 CheckChangeToManDashState();
@@ -228,14 +233,14 @@ public class Player : GameCharacter {
             }
         }
 
-        if (playerStateMachine.currentPlayerState == PlayerState.ManDefense) {
+        if (stateMachine.currentPlayerState == PlayerState.ManDefense) {
             CheckChangeToManDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
             CheckChangeToIdleState();
         }
 
-        if (playerStateMachine.currentPlayerState == PlayerState.ManDash) CheckChangeToIdleState();
+        if (stateMachine.currentPlayerState == PlayerState.ManDash) CheckChangeToIdleState();
 
         // if (stateMachine.currentPlayerState == PlayerState.ManFall) {
         //     CheckChangeToManDashState();
@@ -243,7 +248,7 @@ public class Player : GameCharacter {
         //     CheckChangeToIdleState();
         // }
 
-        if (playerStateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
+        if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
         // if (inputDirectionX != 0) {
         //     if (stateMachine.currentCharacterState == CharacterState.ManIdle)
         //         stateMachine.ChangeState(CharacterState.ManRun);
@@ -256,48 +261,59 @@ public class Player : GameCharacter {
         //         stateMachine.ChangeState(CharacterState.DragonFloat);
         // }
 
-        if (playerStateMachine.currentStateBehavior.form == PlayerForm.Dragon && Input.GetButtonDown("Empower"))
-            playerStateMachine.ChangeState(PlayerState.DragonFly);
+        if (stateMachine.currentStateBehavior.form == PlayerForm.Dragon && Input.GetButtonDown("Empower"))
+            stateMachine.ChangeState(PlayerState.DragonFly);
 
-        if (playerStateMachine.currentPlayerState == PlayerState.DragonFly && Input.GetButtonUp("Empower"))
-            playerStateMachine.ChangeState(PlayerState.DragonHover);
+        if (stateMachine.currentPlayerState == PlayerState.DragonFly && Input.GetButtonUp("Empower"))
+            stateMachine.ChangeState(PlayerState.DragonHover);
 
-        playerStateMachine.Update();
+        stateMachine.Update();
         transform.localScale = new Vector3(facingDirection, transform.localScale.y, transform.localScale.z);
         CheckEmpowerAndTransformInputs();
         CheckSkillTrigger();
         // CheckChangeToManAttackState();
     }
 
+    private void CheckChangeToManDodgeHope() {
+        var dodgeBack = Input.GetButtonDown("DodgeBack");
+        var dodgeForward = Input.GetButtonDown("DodgeForward");
+        var isDodgeHop = dodgeBack || dodgeForward;
+        if (isDodgeHop) {
+            var dodgeDirection = dodgeBack ? -1 : 1;
+            manDodgeHop.SetDodgeDirection(dodgeDirection);
+            stateMachine.ChangeState(PlayerState.ManDodgeHop);
+        }
+    }
+
     private void CheckChangeToManRunState() {
-        var formValidated = playerStateMachine.currentStateBehavior.form == PlayerForm.Man;
+        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
         var environmentValidated = environment == Environment.Ground;
         var canRun = formValidated && inputValidated && environmentValidated;
-        if (canRun) playerStateMachine.ChangeState(PlayerState.ManRun);
+        if (canRun) stateMachine.ChangeState(PlayerState.ManRun);
     }
 
     private void CheckChangeToIdleState() {
-        var formValidated = playerStateMachine.currentStateBehavior.form == PlayerForm.Man;
+        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var environmentValidated = environment == Environment.Ground;
         var speedValidated = Mathf.Approximately(body.linearVelocity.x, 0);
         if (environmentValidated && formValidated && speedValidated)
-            playerStateMachine.ChangeState(PlayerState.ManIdle);
+            stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
     private void CheckChangeToManDashState() {
-        var formValidated = playerStateMachine.currentStateBehavior.form == PlayerForm.Man;
+        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = Input.GetButtonDown("Horizontal") && isEmpowering;
         var cooldownValidated = dashCooldownCountdown <= 0;
         var canDash = formValidated && inputValidated && cooldownValidated;
-        if (canDash) playerStateMachine.ChangeState(PlayerState.ManDash);
+        if (canDash) stateMachine.ChangeState(PlayerState.ManDash);
     }
 
     private void CheckChangeToManAttackState() {
         var inputValidated = Input.GetButtonDown("Attack");
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
-            playerStateMachine.ChangeState(PlayerState.ManAttack);
+            stateMachine.ChangeState(PlayerState.ManAttack);
         }
     }
 
@@ -305,7 +321,7 @@ public class Player : GameCharacter {
         var inputValidated = Input.GetButtonDown("Defense");
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
-            playerStateMachine.ChangeState(PlayerState.ManDefense);
+            stateMachine.ChangeState(PlayerState.ManDefense);
         }
     }
 
@@ -363,12 +379,12 @@ public class Player : GameCharacter {
 
     public void CheckIdleState() {
         if (body.linearVelocity.x == 0 && environment == Environment.Ground)
-            playerStateMachine.ChangeState(PlayerState.ManIdle);
+            stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
     private void FixedUpdate() {
         CheckGround();
-        playerStateMachine.FixedUpdate();
+        stateMachine.FixedUpdate();
     }
 
     public void ResetEmpowermentAfterTrigger() {
@@ -378,7 +394,7 @@ public class Player : GameCharacter {
 
     public void CheckGround() {
         if (environment == Environment.Air)
-            playerStateMachine.ChangeState(PlayerState.ManFall);
+            stateMachine.ChangeState(PlayerState.ManFall);
     }
 
     private void CheckEmpowerAndTransformInputs() {
@@ -408,7 +424,7 @@ public class Player : GameCharacter {
         if (Input.GetButtonUp("Jump"))
             // if release jump button before even jump, or during jumping, trigger jump cut
             if (jumpBufferCountdown > 0 ||
-                (playerStateMachine.currentPlayerState == PlayerState.ManJump && manJump.CanJumpCut())) {
+                (stateMachine.currentPlayerState == PlayerState.ManJump && manJump.CanJumpCut())) {
                 isJumpCut = true;
                 isFastFalling = true;
             }
@@ -420,7 +436,7 @@ public class Player : GameCharacter {
         var canJump = isJumpCountValid && isJumpBufferPeriod && (isGrounded || isJumpGracePeriod);
         if (canJump) {
             jumpBufferCountdown = -1;
-            playerStateMachine.ChangeState(PlayerState.ManJump);
+            stateMachine.ChangeState(PlayerState.ManJump);
         }
     }
 
@@ -477,7 +493,7 @@ public class Player : GameCharacter {
             if (!dragonForcedHoverInPlace) {
                 dragonForcedHoverInPlace = true;
                 dragonFlyTowardPosition = body.position;
-                playerStateMachine.ChangeState(PlayerState.DragonHover);
+                stateMachine.ChangeState(PlayerState.DragonHover);
             }
         }
         else {
@@ -489,8 +505,16 @@ public class Player : GameCharacter {
     private void CheckSkillTrigger() {
         if (Input.GetButtonDown("Skill1")) {
             var firstSkill = skillList.GetEnabledSkills().First();
+            manCastSkill.SetSkillData(
+                firstSkill,
+                firstSkill.skillStartupDuration,
+                firstSkill.skillActiveDuration,
+                firstSkill.skillRecoveryDuration,
+                firstSkill.skillStartupAnimation,
+                firstSkill.skillActiveAnimation,
+                firstSkill.skillRecoveryAnimation);
+            stateMachine.ChangeState(PlayerState.ManCastSkill);
             firstSkill.Init(this);
-            firstSkill.Use();
         }
     }
     #endregion

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-
 public class DragonHover : PlayerStateBehavior {
     public DragonHover(Player player) : base(player, PlayerState.DragonHover, PlayerForm.Dragon) { }
     private float amplitude = 1f;

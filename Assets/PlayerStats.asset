@@ -137,21 +137,35 @@ MonoBehaviour:
     attackCancelableAfter: 0.1
     damage: 1
     cancelable: 1
+    startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
+    activeAnimation: {fileID: 7400000, guid: 288c1dd47f3b14df0b8dbfc0f543f80b, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: b056222186f8246d7b14a4d3e28c5088, type: 2}
   - startupDuration: 0.1
     activeDuration: 0.1
     recoveryDuration: 0.1
     attackCancelableAfter: 0.1
     damage: 2
     cancelable: 1
+    startupAnimation: {fileID: 7400000, guid: 8873066722f33453b99899e712c861a5, type: 2}
+    activeAnimation: {fileID: 7400000, guid: d03e9e38e61c841d7b3cac7dc2f6cbed, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: 94646b9c16e2e450ba37250700e24c23, type: 2}
   - startupDuration: 0.1
     activeDuration: 0.1
     recoveryDuration: 0.1
     attackCancelableAfter: 0.1
     damage: 3
     cancelable: 1
+    startupAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
+    activeAnimation: {fileID: 7400000, guid: a9550dcad71764ba7b553ae93770b3c8, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
   attackInputBufferDuration: 0.5
   attackInputBufferPostAttackDuration: 0.2
   defenseStartupDuration: 0.1
   defenseActivePreCounterDuration: 0
   defenseActiveDuringCounterDuration: 0.4
   defenseRecoveryDuration: 0.1
+  defenseStartupAnimation: {fileID: 0}
+  defenseActivePreCounterAnimation: {fileID: 0}
+  defenseActiveDuringCounterAnimation: {fileID: 0}
+  defenseActivePostCounterAnimation: {fileID: 0}
+  defenseRecoveryAnimation: {fileID: 0}

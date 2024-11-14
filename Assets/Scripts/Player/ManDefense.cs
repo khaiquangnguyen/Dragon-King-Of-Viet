@@ -27,33 +27,33 @@ public class ManDefense : PlayerStateBehavior {
             newStateStartAt = Time.time;
         }
         else if (defenseState == DefenseState.Startup) {
-            player.humanAnimator.Play("DefenseStartup");
+            player.humanAnimator.Play(player.playerStats.defenseStartupAnimation.name);
             if (Time.time - newStateStartAt > player.playerStats.defenseStartupDuration) {
                 defenseState = DefenseState.ActivePreCounter;
                 newStateStartAt = Time.time;
             }
         }
         else if (defenseState == DefenseState.ActivePreCounter) {
-            player.humanAnimator.Play("Defense");
+            player.humanAnimator.Play(player.playerStats.defenseActivePreCounterAnimation.name);
             if (Time.time - newStateStartAt > player.playerStats.defenseActivePreCounterDuration) {
                 defenseState = DefenseState.ActiveDuringCounter;
                 newStateStartAt = Time.time;
             }
         }
         else if (defenseState == DefenseState.ActiveDuringCounter) {
-            player.humanAnimator.Play("Counter");
+            player.humanAnimator.Play(player.playerStats.defenseActiveDuringCounterAnimation.name);
             if (Time.time - newStateStartAt > player.playerStats.defenseActiveDuringCounterDuration) {
                 defenseState = DefenseState.ActivePostCounter;
                 newStateStartAt = Time.time;
             }
         }
         else if (defenseState == DefenseState.ActivePostCounter) {
-            player.humanAnimator.Play("Defense");
+            player.humanAnimator.Play(player.playerStats.defenseActivePostCounterAnimation.name);
         }
         else if (defenseState == DefenseState.Recovery) {
-            player.humanAnimator.Play("IdleTransition");
+            player.humanAnimator.Play(player.playerStats.defenseRecoveryAnimation.name);
             if (Time.time - newStateStartAt > player.playerStats.defenseRecoveryDuration)
-                player.playerStateMachine.ChangeState(PlayerState.ManIdle);
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
 }
