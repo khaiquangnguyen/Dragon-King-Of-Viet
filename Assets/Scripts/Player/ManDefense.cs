@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ManDefense : PlayerStateBehavior {
     private float newStateStartAt;
-    private float defenseStartTimestamp;
     private DefenseState defenseState = DefenseState.Ready;
 
     public ManDefense(Player player) : base(player, PlayerState.ManDefense, PlayerForm.Man) { }
@@ -23,32 +22,24 @@ public class ManDefense : PlayerStateBehavior {
     public override void FixedUpdate() {
         if (defenseState == DefenseState.Ready) {
             defenseState = DefenseState.Startup;
-            defenseStartTimestamp = Time.time;
             newStateStartAt = Time.time;
         }
         else if (defenseState == DefenseState.Startup) {
             player.humanAnimator.Play(player.playerStats.defenseStartupAnimation.name);
             if (Time.time - newStateStartAt > player.playerStats.defenseStartupDuration) {
-                defenseState = DefenseState.ActivePreCounter;
+                defenseState = DefenseState.ActiveCounter;
                 newStateStartAt = Time.time;
             }
         }
-        else if (defenseState == DefenseState.ActivePreCounter) {
-            player.humanAnimator.Play(player.playerStats.defenseActivePreCounterAnimation.name);
-            if (Time.time - newStateStartAt > player.playerStats.defenseActivePreCounterDuration) {
-                defenseState = DefenseState.ActiveDuringCounter;
+        else if (defenseState == DefenseState.ActiveCounter) {
+            player.humanAnimator.Play(player.playerStats.defenseActiveCounterAnimation.name);
+            if (Time.time - newStateStartAt > player.playerStats.defenseActiveCounterDuration) {
+                defenseState = DefenseState.ActiveNoCounter;
                 newStateStartAt = Time.time;
             }
         }
-        else if (defenseState == DefenseState.ActiveDuringCounter) {
-            player.humanAnimator.Play(player.playerStats.defenseActiveDuringCounterAnimation.name);
-            if (Time.time - newStateStartAt > player.playerStats.defenseActiveDuringCounterDuration) {
-                defenseState = DefenseState.ActivePostCounter;
-                newStateStartAt = Time.time;
-            }
-        }
-        else if (defenseState == DefenseState.ActivePostCounter) {
-            player.humanAnimator.Play(player.playerStats.defenseActivePostCounterAnimation.name);
+        else if (defenseState == DefenseState.ActiveNoCounter) {
+            player.humanAnimator.Play(player.playerStats.defenseActiveNoCounterAnimation.name);
         }
         else if (defenseState == DefenseState.Recovery) {
             player.humanAnimator.Play(player.playerStats.defenseRecoveryAnimation.name);

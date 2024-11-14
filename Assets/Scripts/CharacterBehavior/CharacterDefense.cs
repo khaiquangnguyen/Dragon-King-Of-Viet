@@ -32,7 +32,7 @@ namespace CharacterBehavior {
             else if (defenseState == DefenseState.ActiveNoCounter) {
                 gameCharacter.animator.Play(gameCharacter.combatStats.defenseActiveAnimation.name);
                 if (Time.time - newStateStartAt > gameCharacter.combatStats.defenseActiveDuration) {
-                    defenseState = DefenseState.ActiveDuringCounter;
+                    defenseState = DefenseState.ActiveCounter;
                     newStateStartAt = Time.time;
                 }
             }

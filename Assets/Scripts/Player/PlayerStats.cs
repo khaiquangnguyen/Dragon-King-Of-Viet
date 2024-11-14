@@ -170,13 +170,11 @@ public class PlayerStats : ScriptableObject {
     #region Defense
     [Header("Defense")]
     public float defenseStartupDuration = 0.1f;
-    public float defenseActivePreCounterDuration = 0.1f;
-    public float defenseActiveDuringCounterDuration = 0.1f;
+    public float defenseActiveCounterDuration = 0.1f;
     public float defenseRecoveryDuration = 0.1f;
     public AnimationClip defenseStartupAnimation;
-    public AnimationClip defenseActivePreCounterAnimation;
-    public AnimationClip defenseActiveDuringCounterAnimation;
-    public AnimationClip defenseActivePostCounterAnimation;
+    public AnimationClip defenseActiveCounterAnimation;
+    public AnimationClip defenseActiveNoCounterAnimation;
     public AnimationClip defenseRecoveryAnimation;
     #endregion
 }

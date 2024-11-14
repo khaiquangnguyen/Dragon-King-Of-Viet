@@ -151,11 +151,9 @@ public class Player : GameCharacter {
     private DragonToManTransform dragonToManTransform;
     private DragonHover dragonHover;
     private DragonFly dragonFly;
-    private DragonGroundHang dragonGroundHang;
-    private DragonWallHang dragonWallHang;
-    private DragonCeilHang dragonCeilHang;
     private DragonFloat dragonFloat;
     public CircleCollider2D manAttackCollider;
+    public CircleCollider2D dragonAttackCollider;
     private EnergyManager energyManager;
     #endregion
 
@@ -197,10 +195,8 @@ public class Player : GameCharacter {
         stateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
         stateMachine.AddState(dragonHover = new DragonHover(this));
         stateMachine.AddState(dragonFly = new DragonFly(this));
-        stateMachine.AddState(dragonGroundHang = new DragonGroundHang(this));
-        stateMachine.AddState(dragonWallHang = new DragonWallHang(this));
-        stateMachine.AddState(dragonCeilHang = new DragonCeilHang(this));
         stateMachine.AddState(dragonFloat = new DragonFloat(this));
+        stateMachine.ChangeState(PlayerState.DragonHover);
     }
 
     private void Start() { }
@@ -529,7 +525,7 @@ public class Player : GameCharacter {
                 firstSkill.skillStartupAnimation,
                 firstSkill.skillActiveAnimation,
                 firstSkill.skillRecoveryAnimation);
-            stateMachine.ChangeState(PlayerState.ManCastSkill);
+            stateMachine.ChangeState(PlayerState.ManCastSpell);
             firstSkill.Init(this);
         }
     }

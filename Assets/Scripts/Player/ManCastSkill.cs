@@ -15,7 +15,7 @@ public class ManCastSkill : PlayerStateBehavior {
     public Skill currentSkill;
     public bool skillUsed = false;
 
-    public ManCastSkill(Player player) : base(player, PlayerState.ManCastSkill, PlayerForm.Man) { }
+    public ManCastSkill(Player player) : base(player, PlayerState.ManCastSpell, PlayerForm.Man) { }
 
     public void SetSkillData(Skill skill, float startupTime, float activeTime, float recoveryTime,
         AnimationClip startupAnimation,

@@ -6,7 +6,7 @@ namespace CharacterBehavior {
         Jumping,
         Falling,
         Landing,
-        CastSkill,
+        CastSpell,
         BasicAttack,
         Defense,
         SpecialAttack1,

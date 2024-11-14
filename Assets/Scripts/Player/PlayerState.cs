@@ -14,13 +14,13 @@ public enum PlayerState {
     ManDefense,
     ManExecution,
     ManCounter,
-    ManCastSkill,
+    ManCastSpell,
     // hover is in place
     DragonHover,
     // float is movement, left and right
     DragonFloat,
     DragonFly,
-    DragonClaw,
+    DragonAttack,
     DragonFire,
     DragonDefense,
     DragonCounter,
@@ -29,7 +29,7 @@ public enum PlayerState {
     DragonCeilHang,
     DragonGroundHang,
     DragonToMan,
-    DragonCastAbility
+    DragonCastSpell
 }
 
 public enum PlayerForm {

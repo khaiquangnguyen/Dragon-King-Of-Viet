@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace CharacterBehavior {
-    public class CharacterSkillCast : CharacterStateBehavior {
+public class BaseSpellCast: BasePlayerAction {
         private SkillState skillState = SkillState.Ready;
         private float skillStartTimestamp;
         private float newStateStartAt;
@@ -12,8 +11,7 @@ namespace CharacterBehavior {
         public AnimationClip skillActiveAnimation;
         public AnimationClip skillRecoveryAnimation;
 
-        public CharacterSkillCast(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
-            controller, CharacterState.CastSkill) { }
+        public BaseSpellCast(Player player, PlayerState state, PlayerForm form) : base(player, state, form) { }
 
         public void SetSkillData(float startupTime, float activeTime, float recoveryTime,
             AnimationClip startupAnimation, AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
@@ -29,40 +27,27 @@ namespace CharacterBehavior {
             skillState = SkillState.Ready;
             newStateStartAt = 0;
             skillState = SkillState.Ready;
-            characterController.Move(0, 0);
+            player.characterController.Move(0, 0);
         }
 
         public override void FixedUpdate() {
             if (skillState == SkillState.Ready) {
-                gameCharacter.animator.Play(skillStartupAnimation.name);
-                skillState = SkillState.Startup;
-                newStateStartAt = Time.time;
-                skillStartTimestamp = Time.time;
+              EnterStartup(skillStartupAnimation);
             }
             else if (skillState == SkillState.Startup) {
                 if (Time.time - newStateStartAt > skillStartupTime) {
-                    gameCharacter.animator.Play(skillActiveAnimation.name);
-                    skillState = SkillState.Active;
-                    newStateStartAt = Time.time;
+                   EnterActive(skillActiveAnimation);
                 }
             }
             else if (skillState == SkillState.Active) {
                 if (Time.time - newStateStartAt > skillActiveTime) {
-                    gameCharacter.animator.Play(skillRecoveryAnimation.name);
-                    skillState = SkillState.Recovery;
-                    newStateStartAt = Time.time;
+                   EnterRecovery(skillRecoveryAnimation);
                 }
             }
             else if (skillState == SkillState.Recovery) {
                 if (Time.time - newStateStartAt >= skillRecoveryTime) {
-                    gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
+                    player.stateMachine.ChangeState(PlayerState.ManIdle);
                 }
             }
-
-            if (gameCharacter.environment == Environment.Ground)
-                characterController.Move(0, 0);
-            else
-                characterController.Move(0, characterController.velocity.y);
         }
-    }
 }

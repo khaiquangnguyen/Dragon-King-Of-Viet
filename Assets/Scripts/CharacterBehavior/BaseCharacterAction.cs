@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterBehavior {
-    public abstract class BaseCharacterAttack : CharacterStateBehavior {
+    public abstract class BaseCharacterAction : CharacterStateBehavior {
         private int attackMoveCount = 0;
         private SkillState skillState = SkillState.Ready;
         private float attackStartTimestamp;
         private float newStateStartAt;
         public List<GameCharacter> hitCharacters = new List<GameCharacter>();
 
-        public BaseCharacterAttack(AIGameCharacter gameCharacter, CharacterController2D controller,
+        public BaseCharacterAction(AIGameCharacter gameCharacter, CharacterController2D controller,
             CharacterState characterState) : base(gameCharacter, controller, characterState) { }
 
         public override void OnStateEnter() {
@@ -20,7 +20,7 @@ namespace CharacterBehavior {
             characterController.Move(0, 0);
         }
 
-        public void EnterStartupCurrentAttack(AnimationClip startupAnimation) {
+        public void EnterStartup(AnimationClip startupAnimation) {
             if (skillState == SkillState.Ready) {
                 hitCharacters.Clear();
                 gameCharacter.animator.Play(startupAnimation.name);
@@ -30,7 +30,7 @@ namespace CharacterBehavior {
             }
         }
 
-        public void EnterActiveCurrentAttack(AnimationClip activeAnimation) {
+        public void EnterActive(AnimationClip activeAnimation) {
             if (skillState == SkillState.Startup) {
                 gameCharacter.animator.Play(activeAnimation.name);
                 skillState = SkillState.Active;
@@ -38,7 +38,7 @@ namespace CharacterBehavior {
             }
         }
 
-        public void EnterRecoveryCurrentAttack(AnimationClip recoveryAnimation) {
+        public void EnterRecovery(AnimationClip recoveryAnimation) {
             if (skillState == SkillState.Active) {
                 gameCharacter.animator.Play(recoveryAnimation.name);
                 skillState = SkillState.Recovery;

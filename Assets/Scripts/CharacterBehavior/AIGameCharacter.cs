@@ -16,8 +16,8 @@ namespace CharacterBehavior {
         private CharacterIdle characterIdle;
         private CharacterFall characterFall;
         private CharacterJump characterJump;
-        private BaseCharacterAttack baseCharacterAttack;
-        private CharacterSkillCast characterSkillCast;
+        private BaseCharacterAction baseCharacterAction;
+        private CharacterSpellCast characterSpellCast;
         private CharacterDefense characterDefense;
 
         public float inputDirectionX;
@@ -40,8 +40,8 @@ namespace CharacterBehavior {
             stateMachine.AddState(characterFall = new CharacterFall(this, controller));
             stateMachine.AddState(characterIdle = new CharacterIdle(this, controller));
             stateMachine.AddState(characterJump = new CharacterJump(this, controller));
-            stateMachine.AddState(baseCharacterAttack = new CharacterBasicAttack(this, controller));
-            stateMachine.AddState(characterSkillCast = new CharacterSkillCast(this, controller));
+            stateMachine.AddState(baseCharacterAction = new CharacterBasicAction(this, controller));
+            stateMachine.AddState(characterSpellCast = new CharacterSpellCast(this, controller));
             stateMachine.AddState(characterDefense = new CharacterDefense(this, controller));
             stateMachine.ChangeState(CharacterState.Idle);
         }

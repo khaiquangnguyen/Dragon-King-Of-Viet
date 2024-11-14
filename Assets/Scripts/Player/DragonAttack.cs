@@ -1,25 +1,11 @@
-using System;
-using System.Collections.Generic;
-using CharacterBehavior;
 using UnityEngine;
 
-public class ManAttack : BasePlayerAction {
-    private int attackMoveCount = 0;
-    private SkillState skillState = SkillState.Ready;
-    private float attackStartTimestamp;
-    public ManAttack(Player player) : base(player, PlayerState.ManAttack, PlayerForm.Man) { }
+public class DragonSwipe: BasePlayerAction {
+    public DragonSwipe(Player player) : base(player, PlayerState.DragonAttack, PlayerForm.Dragon) { }
+    public float dragonHoverBufferCountdown;
 
     public override void OnStateEnter() {
-        // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
-        // when player enter attack after previous attack has ended
-        if (Time.time - newStateStartAt >= player.playerStats.attackInputBufferPostAttackDuration)
-            attackMoveCount = 0;
-        else
-            attackMoveCount = (attackMoveCount + 1) % player.playerStats.attackStats.Count;
-        newStateStartAt = 0;
-        skillState = SkillState.Ready;
-        player.ResetEmpowermentAfterTrigger();
-        player.UpdateVelocity(0, 0);
+        player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
     }
 
     public override void FixedUpdate() {
@@ -40,7 +26,7 @@ public class ManAttack : BasePlayerAction {
             if (Time.time - newStateStartAt > attackActiveTime) {
                 EnterRecovery(recoveryAnimation);
             }
-            CheckAttackHit(player.manAttackCollider);
+            CheckAttackHit(player.dragonAttackCollider);
         }
         else if (skillState == SkillState.Recovery) {
             hitCharacters.Clear();
@@ -63,13 +49,7 @@ public class ManAttack : BasePlayerAction {
             player.UpdateVelocity(0, player.body.linearVelocity.y);
     }
 
-    public void AfterManAirAttackHit() { }
-
-    public void AfterManWaterAttackHit() { }
-
-    public bool GetAttackAnimationCancellable() {
-        var cancelable = player.playerStats.attackStats[attackMoveCount].cancelable;
-        var attackCancelableAfter = player.playerStats.attackStats[attackMoveCount].attackCancelableAfter;
-        return cancelable && Time.time - attackStartTimestamp > attackCancelableAfter;
+    public override void OnStateExit() {
+        player.transform.localRotation = Quaternion.identity;
     }
 }

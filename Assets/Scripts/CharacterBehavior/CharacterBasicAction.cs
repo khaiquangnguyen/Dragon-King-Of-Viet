@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterBehavior {
-    public class CharacterBasicAttack : BaseCharacterAttack {
+    public class CharacterBasicAction : BaseCharacterAction {
         private int attackMoveCount = 0;
         private SkillState skillState = SkillState.Ready;
         private float attackStartTimestamp;
         private float newStateStartAt;
         public List<GameCharacter> hitCharacters = new();
 
-        public CharacterBasicAttack(AIGameCharacter gameCharacter, CharacterController2D controller) : base(
+        public CharacterBasicAction(AIGameCharacter gameCharacter, CharacterController2D controller) : base(
             gameCharacter, controller, CharacterState.BasicAttack) { }
 
         public override void FixedUpdate() {
@@ -20,17 +20,17 @@ namespace CharacterBehavior {
             var activeAnimation = gameCharacter.combatStats.attackStats[attackMoveCount].activeAnimation;
             var recoveryAnimation = gameCharacter.combatStats.attackStats[attackMoveCount].recoveryAnimation;
             if (skillState == SkillState.Ready) {
-                EnterStartupCurrentAttack(startupAnimation);
+                EnterStartup(startupAnimation);
             }
             else if (skillState == SkillState.Startup) {
                 if (Time.time - newStateStartAt > attackStartupTime) {
-                    EnterActiveCurrentAttack(activeAnimation);
+                    EnterActive(activeAnimation);
                 }
             }
             else if (skillState == SkillState.Active) {
                 CheckAttackHit();
                 if (Time.time - newStateStartAt > attackActiveTime) {
-                    EnterRecoveryCurrentAttack(recoveryAnimation);
+                    EnterRecovery(recoveryAnimation);
                 }
             }
             else if (skillState == SkillState.Recovery) {

@@ -11,7 +11,6 @@ public class DragonFloat : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         // human x movement is dependent on the environment
-
         var acceleration = player.playerStats.manGroundAccel;
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeedX = player.playerStats.dragonMaxSpeed;

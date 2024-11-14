@@ -27,8 +27,64 @@ MonoBehaviour:
   manWaterMaxSpeed: 100
   dashDuration: 0.2
   dashDistance: 10
-  doublePressDashBufferDuration: 0.1
   baseDashCooldown: 0.5
+  dashDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dashStartupAnimation: {fileID: 0}
+  dashActiveAnimation: {fileID: 0}
+  dashRecoveryAnimation: {fileID: 0}
+  dodgeHopDuration: 0.1
+  dodgeHopDistance: 2
+  dodgeHopDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dodgeHopCooldown: 0.2
+  dodgeHopStartupAnimation: {fileID: 0}
+  dodgeHopActiveAnimation: {fileID: 0}
+  dodgeHopRecoveryAnimation: {fileID: 0}
   jumpCoyoteDuration: 0.085
   jumpBufferDuration: 0.065
   jumpMaxHeight: 7
@@ -131,8 +187,8 @@ MonoBehaviour:
   dragonHoverAllowedDistanceToMouse: 0.5
   dragonEnergyRegenDelayDuration: 1
   attackStats:
-  - startupDuration: 0.1
-    activeDuration: 0.1
+  - startupDuration: 0.035
+    activeDuration: 0.2
     recoveryDuration: 0.1
     attackCancelableAfter: 0.1
     damage: 1
@@ -140,8 +196,8 @@ MonoBehaviour:
     startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
     activeAnimation: {fileID: 7400000, guid: 288c1dd47f3b14df0b8dbfc0f543f80b, type: 2}
     recoveryAnimation: {fileID: 7400000, guid: b056222186f8246d7b14a4d3e28c5088, type: 2}
-  - startupDuration: 0.1
-    activeDuration: 0.1
+  - startupDuration: 0.035
+    activeDuration: 0.2
     recoveryDuration: 0.1
     attackCancelableAfter: 0.1
     damage: 2
@@ -149,8 +205,8 @@ MonoBehaviour:
     startupAnimation: {fileID: 7400000, guid: 8873066722f33453b99899e712c861a5, type: 2}
     activeAnimation: {fileID: 7400000, guid: d03e9e38e61c841d7b3cac7dc2f6cbed, type: 2}
     recoveryAnimation: {fileID: 7400000, guid: 94646b9c16e2e450ba37250700e24c23, type: 2}
-  - startupDuration: 0.1
-    activeDuration: 0.1
+  - startupDuration: 0.035
+    activeDuration: 0.2
     recoveryDuration: 0.1
     attackCancelableAfter: 0.1
     damage: 3
@@ -160,6 +216,10 @@ MonoBehaviour:
     recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
   attackInputBufferDuration: 0.5
   attackInputBufferPostAttackDuration: 0.2
+  blackFlashFrameDuration: 0.05
+  blackFlashPrefab: {fileID: 2525048466207748641, guid: 8c835183bb8f6494dafd4569d3213266, type: 3}
+  executionDuration: 0.5
+  executionAnimation: {fileID: 0}
   defenseStartupDuration: 0.1
   defenseActivePreCounterDuration: 0
   defenseActiveDuringCounterDuration: 0.4
