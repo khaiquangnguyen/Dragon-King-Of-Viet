@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CharacterBehavior;
 using UnityEngine;
@@ -23,13 +24,21 @@ public class ManAttack : PlayerStateBehavior {
         player.UpdateVelocity(0, 0);
     }
 
-    public override void FixedUpdate() {
+    public (float, float, float, AnimationClip, AnimationClip, AnimationClip) GetAttackTimingAndAnimation() {
         var attackStartupTime = player.playerStats.attackStats[attackMoveCount].startupDuration;
         var attackActiveTime = player.playerStats.attackStats[attackMoveCount].activeDuration;
         var attackRecoveryTime = player.playerStats.attackStats[attackMoveCount].recoveryDuration;
         var startupAnimation = player.playerStats.attackStats[attackMoveCount].startupAnimation;
         var activeAnimation = player.playerStats.attackStats[attackMoveCount].activeAnimation;
         var recoveryAnimation = player.playerStats.attackStats[attackMoveCount].recoveryAnimation;
+        return (attackStartupTime, attackActiveTime, attackRecoveryTime, startupAnimation, activeAnimation,
+            recoveryAnimation);
+    }
+
+    public override void FixedUpdate() {
+        // get angle of ray cast hit line compared to x axis
+        var (attackStartupTime, attackActiveTime, attackRecoveryTime, startupAnimation, activeAnimation,
+            recoveryAnimation) = GetAttackTimingAndAnimation();
 
         if (skillState == SkillState.Ready) {
             hitCharacters.Clear();
@@ -53,6 +62,7 @@ public class ManAttack : PlayerStateBehavior {
                 skillState = SkillState.Recovery;
                 newStateStartAt = Time.time;
             }
+
             CheckAttackHit();
         }
         else if (skillState == SkillState.Recovery) {
@@ -92,7 +102,11 @@ public class ManAttack : PlayerStateBehavior {
         }
     }
 
-    public void End() { }
+    public void AfterManAttackHit() { }
+
+    public void AfterManAirAttackHit() { }
+
+    public void AfterManWaterAttackHit() { }
 
     public bool GetAttackAnimationCancellable() {
         var cancelable = player.playerStats.attackStats[attackMoveCount].cancelable;

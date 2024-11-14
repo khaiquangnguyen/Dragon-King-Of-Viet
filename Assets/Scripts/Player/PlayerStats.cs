@@ -33,10 +33,11 @@ public class PlayerStats : ScriptableObject {
     [Header("Man Dash")]
     public float dashDuration = 0.2f;
     public float dashDistance = 5f;
-    // the time when the dash has to happen and can't be canceled
-    public float dashSpeed => dashDistance / dashDuration;
-    public float doublePressDashBufferDuration = 0.1f;
     public float baseDashCooldown = 0.5f;
+    public AnimationCurve dashDistanceCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public AnimationClip dashStartupAnimation;
+    public AnimationClip dashActiveAnimation;
+    public AnimationClip dashRecoveryAnimation;
     #endregion
 
     #region Dodge Hop
@@ -156,6 +157,14 @@ public class PlayerStats : ScriptableObject {
     public List<AttackStats> attackStats = new();
     public float attackInputBufferDuration = 0.1f;
     public float attackInputBufferPostAttackDuration = 0.2f;
+    public float blackFlashFrameDuration = 0.05f;
+    public GameObject blackFlashPrefab;
+    #endregion
+
+    #region Execution
+    [Header("Execution")]
+    public float executionDuration = 0.5f;
+    public AnimationClip executionAnimation;
     #endregion
 
     #region Defense

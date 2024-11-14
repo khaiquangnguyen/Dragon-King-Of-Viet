@@ -5,7 +5,10 @@ public class ManDash : PlayerStateBehavior {
     private float speedBeforeDash;
     private float dashTimestamp;
     private float dashDuration;
-    private float dashSpeed;
+    private float dashDistance;
+    private Vector2 dashStartingPosition;
+    private AnimationCurve dashDistanceCurve => player.playerStats.dashDistanceCurve;
+    private int direction;
 
     private Environment environment => player.environment;
     private PlayerStats playerStats => player.playerStats;
@@ -13,34 +16,32 @@ public class ManDash : PlayerStateBehavior {
     public ManDash(Player player) : base(player, PlayerState.ManDash, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        player.humanAnimator.Play("Dash");
+        MonoBehaviour.print("Dashing");
+        dashStartingPosition = player.body.position;
         player.inputDisabled = true;
         player.ResetEmpowermentAfterTrigger();
         speedBeforeDash = player.body.linearVelocity.x;
         // get parameters
         dashTimestamp = Time.time;
         dashDuration = player.playerStats.dashDuration;
-        dashSpeed = player.playerStats.dashSpeed;
-        player.UpdateVelocity(dashSpeed * player.facingDirection, 0);
+        dashDistance = player.playerStats.dashDistance;
+    }
+
+    public void SetDirection(int newDirection) {
+        this.direction = newDirection;
     }
 
     public override void Update() { }
 
     public override void FixedUpdate() {
-        if (Time.time - dashTimestamp < dashDuration) {
-            player.UpdateVelocity(dashSpeed * player.facingDirection, 0);
+        MonoBehaviour.print("Dashing");
+        if (Time.time - dashTimestamp <= dashDuration) {
+            var currentDashDistance =
+                dashDistanceCurve.Evaluate((Time.time - dashTimestamp) / dashDuration) * dashDistance;
+            player.characterController.MoveToX(currentDashDistance * direction + dashStartingPosition.x);
         }
-        // out of dash duration, set to false
         else {
-            if (player.environment == Environment.Ground) {
-                if (player.inputDirectionX == 0)
-                    player.stateMachine.ChangeState(PlayerState.ManIdle);
-                else
-                    player.stateMachine.ChangeState(PlayerState.ManRun);
-            }
-            else if (player.environment == Environment.Air) {
-                player.stateMachine.ChangeState(PlayerState.ManFall);
-            }
+            player.SetStateAfterMovement();
         }
     }
 

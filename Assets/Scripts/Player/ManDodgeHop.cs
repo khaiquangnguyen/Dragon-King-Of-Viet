@@ -10,8 +10,6 @@ public class ManDodge : PlayerStateBehavior {
     private AnimationCurve dodgeHopDistanceCurve => player.playerStats.dodgeHopDistanceCurve;
     private Vector2 hopStartingPosition;
     private int direction;
-
-
     private Environment environment => player.environment;
     private PlayerStats playerStats => player.playerStats;
 
@@ -25,11 +23,9 @@ public class ManDodge : PlayerStateBehavior {
         hopTimestamp = Time.time;
         hopeDuration = player.playerStats.dodgeHopDuration;
         hopDistance = player.playerStats.dodgeHopDistance;
-        hopSpeed = hopDistance / hopeDuration;
-        player.characterController.Move(hopSpeed * direction, 0);
     }
 
-    public void SetDodgeDirection(int dodgeDirection) {
+    public void SetDirection(int dodgeDirection) {
         this.direction = dodgeDirection;
     }
 
@@ -37,20 +33,12 @@ public class ManDodge : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         if (Time.time - hopTimestamp <= hopeDuration) {
-            var currentHopDistance = dodgeHopDistanceCurve.Evaluate((Time.time - hopTimestamp) / hopeDuration) * hopDistance;
+            var currentHopDistance =
+                dodgeHopDistanceCurve.Evaluate((Time.time - hopTimestamp) / hopeDuration) * hopDistance;
             player.characterController.MoveToX(currentHopDistance * direction + hopStartingPosition.x);
         }
-        // out of dash duration, set to false
         else {
-            if (player.environment == Environment.Ground) {
-                if (player.inputDirectionX == 0)
-                    player.stateMachine.ChangeState(PlayerState.ManIdle);
-                else
-                    player.stateMachine.ChangeState(PlayerState.ManRun);
-            }
-            else if (player.environment == Environment.Air) {
-                player.stateMachine.ChangeState(PlayerState.ManFall);
-            }
+            player.SetStateAfterMovement();
         }
     }
 

@@ -17,7 +17,8 @@ public class ManCastSkill : PlayerStateBehavior {
 
     public ManCastSkill(Player player) : base(player, PlayerState.ManCastSkill, PlayerForm.Man) { }
 
-    public void SetSkillData(Skill skill, float startupTime, float activeTime, float recoveryTime, AnimationClip startupAnimation,
+    public void SetSkillData(Skill skill, float startupTime, float activeTime, float recoveryTime,
+        AnimationClip startupAnimation,
         AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
         currentSkill = skill;
         skillStartupTime = startupTime;
@@ -55,6 +56,7 @@ public class ManCastSkill : PlayerStateBehavior {
                 currentSkill.Use();
                 skillUsed = true;
             }
+
             if (Time.time - newStateStartAt > skillActiveTime) {
                 skillState = SkillState.Recovery;
                 newStateStartAt = Time.time;

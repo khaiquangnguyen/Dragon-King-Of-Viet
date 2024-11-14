@@ -70,7 +70,6 @@ public class Player : GameCharacter {
     #region --------------------- Dragon Movement Attributes ----------------------------
     [HideInInspector]
     public Vector3 dragonMoveDirection;
-    [FormerlySerializedAs("dragonMoveTargetPosition")]
     [HideInInspector]
     public Vector3 dragonFlyTowardPosition;
     private float dragonHoverBufferCountdown;
@@ -146,6 +145,7 @@ public class Player : GameCharacter {
     private ManEmpoweredAttack manEmpoweredAttack;
     private ManEmpoweredDefense manEmpoweredDefense;
     private ManEmpoweredFall manEmpoweredFall;
+    private ManExecution manExecution;
     private ManDodge manDodgeHop;
     private ManToDragonTransform dragonFromManTransform;
     private DragonToManTransform dragonToManTransform;
@@ -192,6 +192,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
         stateMachine.AddState(manCrouch = new ManCrouch(this));
         stateMachine.AddState(manDodgeHop = new ManDodge(this));
+        stateMachine.AddState(manExecution = new ManExecution(this));
         stateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
         stateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
         stateMachine.AddState(dragonHover = new DragonHover(this));
@@ -204,6 +205,19 @@ public class Player : GameCharacter {
 
     private void Start() { }
 
+    public void SetStateAfterMovement() {
+        // out of dash duration, set to false
+        if (environment == Environment.Ground) {
+            if (inputDirectionX == 0)
+                stateMachine.ChangeState(PlayerState.ManIdle);
+            else
+                stateMachine.ChangeState(PlayerState.ManRun);
+        }
+        else if (environment == Environment.Air) {
+            stateMachine.ChangeState(PlayerState.ManFall);
+        }
+    }
+
     private void Update() {
         currentPlayerState = stateMachine.currentPlayerState;
         UpdateTimer();
@@ -212,15 +226,14 @@ public class Player : GameCharacter {
         CheckManJumpInputs();
         if (stateMachine.currentPlayerState == PlayerState.ManIdle) {
             CheckChangeToManRunState();
-            CheckChangeToManDashState();
+            CheckChangeToManDodgeHopDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
-            CheckChangeToManDodgeHope();
         }
 
         if (stateMachine.currentPlayerState == PlayerState.ManRun) {
             CheckChangeToManRunState();
-            CheckChangeToManDashState();
+            CheckChangeToManDodgeHopDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
         }
@@ -228,19 +241,17 @@ public class Player : GameCharacter {
         if (stateMachine.currentPlayerState == PlayerState.ManAttack) {
             CheckChangeToManAttackState();
             if (manAttack.GetAttackAnimationCancellable()) {
-                CheckChangeToManDashState();
+                CheckChangeToManDodgeHopDashState();
                 CheckChangeToManDefenseState();
             }
         }
 
         if (stateMachine.currentPlayerState == PlayerState.ManDefense) {
-            CheckChangeToManDashState();
+            CheckChangeToManDodgeHopDashState();
             CheckChangeToManAttackState();
             CheckChangeToManDefenseState();
             CheckChangeToIdleState();
         }
-
-        if (stateMachine.currentPlayerState == PlayerState.ManDash) CheckChangeToIdleState();
 
         // if (stateMachine.currentPlayerState == PlayerState.ManFall) {
         //     CheckChangeToManDashState();
@@ -248,7 +259,7 @@ public class Player : GameCharacter {
         //     CheckChangeToIdleState();
         // }
 
-        if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDashState();
+        if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDodgeHopDashState();
         // if (inputDirectionX != 0) {
         //     if (stateMachine.currentCharacterState == CharacterState.ManIdle)
         //         stateMachine.ChangeState(CharacterState.ManRun);
@@ -274,17 +285,6 @@ public class Player : GameCharacter {
         // CheckChangeToManAttackState();
     }
 
-    private void CheckChangeToManDodgeHope() {
-        var dodgeBack = Input.GetButtonDown("DodgeBack");
-        var dodgeForward = Input.GetButtonDown("DodgeForward");
-        var isDodgeHop = dodgeBack || dodgeForward;
-        if (isDodgeHop) {
-            var dodgeDirection = dodgeBack ? -1 : 1;
-            manDodgeHop.SetDodgeDirection(dodgeDirection);
-            stateMachine.ChangeState(PlayerState.ManDodgeHop);
-        }
-    }
-
     private void CheckChangeToManRunState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
@@ -301,12 +301,28 @@ public class Player : GameCharacter {
             stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
-    private void CheckChangeToManDashState() {
+    private void CheckChangeToManDodgeHopDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
-        var inputValidated = Input.GetButtonDown("Horizontal") && isEmpowering;
+        var dodgeBack = Input.GetButtonDown("DodgeBack");
+        var dodgeForward = Input.GetButtonDown("DodgeForward");
         var cooldownValidated = dashCooldownCountdown <= 0;
-        var canDash = formValidated && inputValidated && cooldownValidated;
-        if (canDash) stateMachine.ChangeState(PlayerState.ManDash);
+        var inputValidated = dodgeBack || dodgeForward;
+        if (!isEmpowering) {
+            var canHop = formValidated && inputValidated && cooldownValidated;
+            if (canHop) {
+                var direction = dodgeBack ? -1 : 1;
+                manDodgeHop.SetDirection(direction);
+                stateMachine.ChangeState(PlayerState.ManDodgeHop);
+            }
+        }
+        else {
+            var canDash = formValidated && inputValidated && cooldownValidated;
+            if (canDash) {
+                var direction = dodgeBack ? -1 : 1;
+                manDash.SetDirection(direction);
+                stateMachine.ChangeState(PlayerState.ManDash);
+            }
+        }
     }
 
     private void CheckChangeToManAttackState() {
