@@ -3,11 +3,11 @@ public class DragonHover : PlayerStateBehavior {
     private float amplitude = 1f;
 
     public override void OnStateEnter() {
-        player.dragonAnimator.Play("idle");
         player.UpdateVelocity(0, 0);
     }
 
     public override void FixedUpdate() {
+        player.CheckChangeToDragonFloat();
         // make the dragon float up and down in sine way
     }
 

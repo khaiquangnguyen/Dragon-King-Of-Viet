@@ -12,7 +12,7 @@ namespace CharacterBehavior {
             var acceleration = gameCharacter.stats.airAccel;
             var deceleration = gameCharacter.stats.airDecel;
             var maxSpeedX = gameCharacter.stats.airMaxSpeed * Mathf.Abs(gameCharacter.inputDirectionX);
-            characterController.MoveOnAirWithGravityApplied(acceleration, deceleration, maxSpeedX,
+            characterController.MoveOnNonGroundHorizontal(acceleration, deceleration, maxSpeedX,
                 gameCharacter.stats.gravity, 1, gameCharacter.facingDirection, gameCharacter.stats.maxFallSpeed);
             if (characterController.isOnWalkableGround()) {
                 gameCharacter.jumpCount = 0;

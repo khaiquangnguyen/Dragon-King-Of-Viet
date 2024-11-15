@@ -23,11 +23,9 @@ public enum PlayerState {
     DragonAttack,
     DragonFire,
     DragonDefense,
-    DragonCounter,
+    DragonEmpoweredDefense,
+    DragonJump,
     ManToDragon,
-    DragonWallHang,
-    DragonCeilHang,
-    DragonGroundHang,
     DragonToMan,
     DragonCastSpell
 }

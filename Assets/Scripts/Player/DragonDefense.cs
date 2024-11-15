@@ -1,5 +1,3 @@
 namespace DefaultNamespace {
-    public class DragonDefense {
-
-    }
+    public class DragonDefense { }
 }

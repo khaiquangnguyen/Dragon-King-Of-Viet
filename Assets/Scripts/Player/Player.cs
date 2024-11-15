@@ -44,6 +44,7 @@ public class Player : GameCharacter {
     #region --------------------- Movement Attributes -------------------------------------
     [HideInInspector]
     public int inputDirectionX;
+    public int inputDirectionY;
     [HideInInspector]
     #endregion
 
@@ -267,13 +268,6 @@ public class Player : GameCharacter {
         //     if (stateMachine.currentCharacterState == CharacterState.DragonHover)
         //         stateMachine.ChangeState(CharacterState.DragonFloat);
         // }
-
-        if (stateMachine.currentStateBehavior.form == PlayerForm.Dragon && Input.GetButtonDown("Empower"))
-            stateMachine.ChangeState(PlayerState.DragonFly);
-
-        if (stateMachine.currentPlayerState == PlayerState.DragonFly && Input.GetButtonUp("Empower"))
-            stateMachine.ChangeState(PlayerState.DragonHover);
-
         stateMachine.Update();
         transform.localScale = new Vector3(facingDirection, transform.localScale.y, transform.localScale.z);
         CheckEmpowerAndTransformInputs();
@@ -281,12 +275,24 @@ public class Player : GameCharacter {
         // CheckChangeToManAttackState();
     }
 
-    private void CheckChangeToManRunState() {
+    public void CheckChangeToManRunState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
         var environmentValidated = environment == Environment.Ground;
         var canRun = formValidated && inputValidated && environmentValidated;
         if (canRun) stateMachine.ChangeState(PlayerState.ManRun);
+    }
+
+    public void CheckChangeToDragonFloat() {
+        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Dragon;
+        var inputValidated = inputDirectionX != 0 && !isEmpowering;
+        var canFloat = formValidated && inputValidated;
+        if (canFloat) stateMachine.ChangeState(PlayerState.DragonFloat);
+    }
+
+    public void CheckChangeToDragonFly() {
+        var input = Input.GetButtonDown("Jump");
+        if (input) stateMachine.ChangeState(PlayerState.DragonFly);
     }
 
     private void CheckChangeToIdleState() {
@@ -339,6 +345,7 @@ public class Player : GameCharacter {
 
     private void UpdateInputAndDirection() {
         inputDirectionX = (int)Input.GetAxisRaw("Horizontal");
+        inputDirectionY = (int)Input.GetAxisRaw("Vertical");
         facingDirection = inputDirectionX switch {
             < 0 => -1,
             > 0 => 1,
@@ -405,8 +412,8 @@ public class Player : GameCharacter {
     }
 
     public void CheckGround() {
-        if (environment == Environment.Air)
-            stateMachine.ChangeState(PlayerState.ManFall);
+        // if (environment == Environment.Air)
+        //     stateMachine.ChangeState(PlayerState.ManFall);
     }
 
     private void CheckEmpowerAndTransformInputs() {

@@ -176,6 +176,7 @@ MonoBehaviour:
   dragonMaxSpeed: 15
   dragonAccelTime: 0.6
   dragonDecelTime: 0.6
+  dragonTurnSpeed: 5
   dragonCarrySpeed: 0
   dragonCarrySpeedBufferDuration: 0.3
   dragonHoverMaxSpeed: 6
@@ -221,11 +222,9 @@ MonoBehaviour:
   executionDuration: 0.5
   executionAnimation: {fileID: 0}
   defenseStartupDuration: 0.1
-  defenseActivePreCounterDuration: 0
-  defenseActiveDuringCounterDuration: 0.4
+  defenseActiveCounterDuration: 0.1
   defenseRecoveryDuration: 0.1
   defenseStartupAnimation: {fileID: 0}
-  defenseActivePreCounterAnimation: {fileID: 0}
-  defenseActiveDuringCounterAnimation: {fileID: 0}
-  defenseActivePostCounterAnimation: {fileID: 0}
+  defenseActiveCounterAnimation: {fileID: 0}
+  defenseActiveNoCounterAnimation: {fileID: 0}
   defenseRecoveryAnimation: {fileID: 0}

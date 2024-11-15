@@ -1,3 +1,1 @@
-public class DragonEmpoweredAttack {
-
-}
+public class DragonEmpoweredAttack { }

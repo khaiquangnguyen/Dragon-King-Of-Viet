@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using CharacterBehavior;
 using UnityEngine;
 
-public abstract class BasePlayerAction: PlayerStateBehavior {
+public abstract class BasePlayerAction : PlayerStateBehavior {
     public int attackMoveCount = 0;
     public SkillState skillState = SkillState.Ready;
     public float newStateStartAt;
@@ -11,7 +11,8 @@ public abstract class BasePlayerAction: PlayerStateBehavior {
     public readonly List<GameCharacter> hitCharacters = new();
     public Animator animator;
 
-    public BasePlayerAction(Player player, PlayerState playerState, PlayerForm playerForm) : base(player, playerState, playerForm) { }
+    public BasePlayerAction(Player player, PlayerState playerState, PlayerForm playerForm) : base(player, playerState,
+        playerForm) { }
 
     public (float, float, float, AnimationClip, AnimationClip, AnimationClip) GetAttackTimingAndAnimation() {
         var attackStartupTime = attackStatsList[attackMoveCount].startupDuration;
@@ -54,7 +55,6 @@ public abstract class BasePlayerAction: PlayerStateBehavior {
         skillState = SkillState.Ready;
         newStateStartAt = 0;
     }
-
 
     public void CheckAttackHit(CircleCollider2D hitboxCollider) {
         if (hitboxCollider == null) return;

@@ -34,16 +34,16 @@ namespace CharacterBehavior {
 
         public override void FixedUpdate() {
             if (skillState == SkillState.Ready) {
-              EnterStartup(skillStartupAnimation);
+                EnterStartup(skillStartupAnimation);
             }
             else if (skillState == SkillState.Startup) {
                 if (Time.time - newStateStartAt > skillStartupTime) {
-                   EnterActive(skillActiveAnimation);
+                    EnterActive(skillActiveAnimation);
                 }
             }
             else if (skillState == SkillState.Active) {
                 if (Time.time - newStateStartAt > skillActiveTime) {
-                   EnterRecovery(skillRecoveryAnimation);
+                    EnterRecovery(skillRecoveryAnimation);
                 }
             }
             else if (skillState == SkillState.Recovery) {

@@ -129,6 +129,7 @@ public class PlayerStats : ScriptableObject {
     public float dragonDecelTime = 0.6f;
     public float dragonAccel => dragonMaxSpeed / dragonAccelTime;
     public float dragonDecel => dragonMaxSpeed / dragonDecelTime;
+    public float dragonTurnSpeed = 5f;
     // carry speed is the speed the dragon transformation gains from the previous character movements
     // for now, we use a fixed number
     public float dragonCarrySpeed = 2f;

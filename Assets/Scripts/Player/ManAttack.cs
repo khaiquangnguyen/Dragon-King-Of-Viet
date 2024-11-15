@@ -40,6 +40,7 @@ public class ManAttack : BasePlayerAction {
             if (Time.time - newStateStartAt > attackActiveTime) {
                 EnterRecovery(recoveryAnimation);
             }
+
             CheckAttackHit(player.manAttackCollider);
         }
         else if (skillState == SkillState.Recovery) {

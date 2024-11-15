@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DragonSwipe: BasePlayerAction {
+public class DragonSwipe : BasePlayerAction {
     public DragonSwipe(Player player) : base(player, PlayerState.DragonAttack, PlayerForm.Dragon) { }
     public float dragonHoverBufferCountdown;
 
@@ -26,6 +26,7 @@ public class DragonSwipe: BasePlayerAction {
             if (Time.time - newStateStartAt > attackActiveTime) {
                 EnterRecovery(recoveryAnimation);
             }
+
             CheckAttackHit(player.dragonAttackCollider);
         }
         else if (skillState == SkillState.Recovery) {

@@ -37,7 +37,7 @@ namespace CharacterBehavior {
             Move(velocity.x, velocity.y);
         }
 
-        public void MoveOnAirWithGravityApplied(float accel, float decel, float maxSpeedX, float gravity,
+        public void MoveOnNonGroundHorizontal(float accel, float decel, float maxSpeedX, float gravity,
             float gravityMult, int facingDirection, float maxFallSpeed = 10000) {
             var accelerationFactor = Mathf.Abs(velocity.x) > maxSpeedX
                 ? accel
@@ -47,6 +47,18 @@ namespace CharacterBehavior {
             var vY = velocity.y;
             vY += gravity * gravityMult * Time.fixedDeltaTime;
             vY = Mathf.Clamp(vY, -maxFallSpeed, maxFallSpeed);
+            Move(vX, vY);
+        }
+
+        public void MoveOnNonGroundAnyDirection(float accel, float decel, float maxSpeed, float gravity,
+            float gravityMult, Vector2 direction) {
+            var accelerationFactor = Mathf.Abs(velocity.magnitude) > maxSpeed
+                ? accel
+                : decel;
+            var speed = Mathf.MoveTowards(velocity.magnitude, maxSpeed,
+                accelerationFactor * Time.fixedDeltaTime);
+            var vX =  direction.normalized.x * speed;
+            var vY = direction.normalized.y * speed;
             Move(vX, vY);
         }
 

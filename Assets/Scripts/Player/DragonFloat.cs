@@ -10,14 +10,12 @@ public class DragonFloat : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         // human x movement is dependent on the environment
-        var acceleration = player.playerStats.manGroundAccel;
-        var deceleration = player.playerStats.manGroundDecel;
-        var maxSpeedX = player.playerStats.dragonMaxSpeed;
-        player.MoveX(acceleration, deceleration, maxSpeedX);
-        if (Mathf.Approximately(player.body.linearVelocity.x, 0))
-            player.stateMachine.ChangeState(PlayerState.DragonHover);
-        var y = Mathf.PingPong(Time.time, 1f) - 0.5f;
-        player.dragonBody.transform.localPosition = new Vector3(0, y, 0);
-        player.UpdateVelocityY(0);
+        var acceleration = player.playerStats.dragonAccel;
+        var deceleration = player.playerStats.dragonDecel;
+        var inputDirection = new Vector2(player.inputDirectionX, player.inputDirectionY);
+        var normalizedInputDirection = inputDirection.normalized;
+        var direction = normalizedInputDirection;
+        // rotate current direction toward input direction at a certain rate
+        player.characterController.MoveOnNonGroundAnyDirection(acceleration,deceleration,player.playerStats.dragonMaxSpeed, 0, 0, direction);
     }
 }

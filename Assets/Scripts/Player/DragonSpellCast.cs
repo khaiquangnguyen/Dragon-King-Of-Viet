@@ -1,4 +1,3 @@
-public class DragonSpellCast:BaseSpellCast {
+public class DragonSpellCast : BaseSpellCast {
     public DragonSpellCast(Player player) : base(player, PlayerState.DragonCastSpell, PlayerForm.Dragon) { }
-
 }
