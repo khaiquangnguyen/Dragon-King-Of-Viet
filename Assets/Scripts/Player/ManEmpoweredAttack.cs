@@ -2,17 +2,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ManEmpoweredAttack : BasePlayerAction {
-    private float attackStartTime;
 
-    public ManEmpoweredAttack(Player player, List<AttackStats> attackStatsList) : base(player,
+    public ManEmpoweredAttack(Player player) : base(player,
         PlayerState.ManEmpoweredAttack, PlayerForm.Man) {
-        this.attackStatsList = attackStatsList;
+        animator = player.humanAnimator;
+        attackStatsList = player.playerStats.manEmpoweredAttackStats;
     }
 
     public override void FixedUpdate() {
         var (attackStartupTime, attackActiveTime, attackRecoveryTime, startupAnimation, activeAnimation,
             recoveryAnimation) = GetAttackTimingAndAnimation();
-
         if (skillState == SkillState.Ready) {
             player.attackInputBufferCountdown = -1;
             EnterStartup(startupAnimation, attackStartupTime);

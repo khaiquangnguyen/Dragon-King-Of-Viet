@@ -6,7 +6,12 @@ public class ManIdle : PlayerStateBehavior {
     }
 
     public override void Update() {
-        player.CheckTransformIntoDragonAndBack();
+        if (player.CheckChangeToManRunState()) return;
+        if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
+        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManDefenseState()) return;
+        if (player.CheckChangeToManAttackState()) return;
+        if (player.CheckTransformIntoDragonAndBack()) return;
     }
 
     public override void FixedUpdate() {

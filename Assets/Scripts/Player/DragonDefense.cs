@@ -1,4 +1,3 @@
-using CharacterBehavior;
 using UnityEngine;
 
 namespace DefaultNamespace {

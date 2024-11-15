@@ -114,10 +114,15 @@ public class PlayerStats : ScriptableObject {
     public List<AttackStats> manEmpoweredAttackStats = new();
     #endregion
 
-    #region Man Power Jump
+    #region Man Empowered Jump
     [Header("Man Power Jump")]
-    public float powerJumpMaxHeight = 8;
-    public float powerJumpPeakHangDuration = 0.15f;
+    public float empoweredJumpMaxHeight = 8;
+    public float empoweredJumpDuration = 0.35f;
+    public float empoweredJumpInputLockDuration = 0.1f;
+    public float empoweredJumpCutHeight = 0.5f;
+    public float empoweredJumpCutDuration = 0.1f;
+    public AnimationCurve empoweredJumpHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public AnimationCurve empoweredJumpCutHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
     #endregion
 
     #region Attack

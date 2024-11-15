@@ -164,8 +164,59 @@ MonoBehaviour:
   empoweredDefenseActiveNoCounterAnimation: {fileID: 0}
   empoweredDefenseRecoveryAnimation: {fileID: 0}
   manEmpoweredAttackStats: []
-  powerJumpMaxHeight: 6
-  powerJumpPeakHangDuration: 0.065
+  empoweredJumpMaxHeight: 8
+  empoweredJumpDuration: 0.35
+  empoweredJumpInputLockDuration: 0.1
+  empoweredJumpCutHeight: 0.5
+  empoweredJumpCutDuration: 0.1
+  empoweredJumpHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  empoweredJumpCutHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   manAttackStats:
   - startupDuration: 0.2
     activeDuration: 0.2
@@ -187,15 +238,15 @@ MonoBehaviour:
     recoveryAnimation: {fileID: 7400000, guid: 94646b9c16e2e450ba37250700e24c23, type: 2}
   - startupDuration: 0.1
     activeDuration: 0.2
-    recoveryDuration: 0.2
+    recoveryDuration: 0.3
     attackCancelableAfter: 0.4
     damage: 0
     cancelable: 1
-    startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
+    startupAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
     activeAnimation: {fileID: 7400000, guid: a9550dcad71764ba7b553ae93770b3c8, type: 2}
-    recoveryAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
   attackInputBufferDuration: 0.5
-  attackInputBufferPostAttackDuration: 0.2
+  attackInputBufferPostAttackDuration: 0.4
   blackFlashFrameDuration: 0.05
   blackFlashPrefab: {fileID: 2525048466207748641, guid: 8c835183bb8f6494dafd4569d3213266, type: 3}
   executionDuration: 0.5
@@ -203,10 +254,10 @@ MonoBehaviour:
   defenseStartupDuration: 0.1
   defenseActiveCounterDuration: 0.1
   defenseRecoveryDuration: 0.1
-  defenseStartupAnimation: {fileID: 0}
-  defenseActiveCounterAnimation: {fileID: 0}
-  defenseActiveNoCounterAnimation: {fileID: 0}
-  defenseRecoveryAnimation: {fileID: 0}
+  defenseStartupAnimation: {fileID: 7400000, guid: 8dd58b78602ee4ed5a38324be46b52bc, type: 2}
+  defenseActiveCounterAnimation: {fileID: 7400000, guid: c81e99615881547ae84252469e25d1d7, type: 2}
+  defenseActiveNoCounterAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
+  defenseRecoveryAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
   manToDragonTransformDuration: 0.3
   dragonToManTransformDuration: 0.4
   ManToDragonTransformIframeDuration: 0.5

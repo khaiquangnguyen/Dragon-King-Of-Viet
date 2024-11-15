@@ -1,6 +1,3 @@
-using System.Linq;
-using UnityEngine;
-
 public abstract class PlayerStateBehavior {
     public readonly PlayerState name;
     public readonly PlayerForm form;

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CharacterBehavior;
 using DefaultNamespace;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
-
+using EditorAttributes;
 public enum Environment {
     Ground,
     Air,
@@ -50,14 +49,13 @@ public class Player : GameCharacter {
     public bool isJumpCut;
     [HideInInspector]
     public bool isFastFalling;
-    private int jumpCount;
     private const int MAX_JUMP_COUNT = 1;
     #endregion
 
     #region --------------------- Empower Attributes -------------------------------------
     private float empoweredHoldDuration = 0;
     private float empoweredNextMoveBufferCountdown;
-    [HideInInspector]
+    [ReadOnly]
     public bool isEmpowering = false;
     public float dashCooldown;
     public float dashCooldownCountdown;
@@ -105,7 +103,7 @@ public class Player : GameCharacter {
     private float lastEmpoweredSkillUsageTimestamp = Time.time;
     private RaycastHit2D groundHit;
     private RaycastHit2D headHit;
-    [HideInInspector]
+    [ReadOnly]
     public Environment environment = Environment.Ground;
 
     // other components
@@ -136,11 +134,12 @@ public class Player : GameCharacter {
     private ManDash manDash;
     private ManAttack manAttack;
     private ManFall manFall;
-    private ManCastSkill manCastSkill;
+    private ManCastSpell manCastSpell;
     private ManDefense manDefense;
     private ManEmpoweredAttack manEmpoweredAttack;
     private ManEmpoweredDefense manEmpoweredDefense;
     private ManEmpoweredFall manEmpoweredFall;
+    private ManEmpoweredJump manEmpoweredJump;
     private ManExecution manExecution;
     private ManDodge manDodgeHop;
     private ManToDragonTransform dragonFromManTransform;
@@ -179,9 +178,10 @@ public class Player : GameCharacter {
         stateMachine.AddState(manDash = new ManDash(this));
         stateMachine.AddState(manAttack = new ManAttack(this));
         stateMachine.AddState(manDefense = new ManDefense(this));
-        stateMachine.AddState(manCastSkill = new ManCastSkill(this));
-        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this, playerStats.manEmpoweredAttackStats));
+        stateMachine.AddState(manCastSpell = new ManCastSpell(this));
+        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this));
         stateMachine.AddState(manEmpoweredDefense = new ManEmpoweredDefense(this));
+        stateMachine.AddState(manEmpoweredJump = new ManEmpoweredJump(this));
         stateMachine.AddState(manFall = new ManFall(this));
         stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
         stateMachine.AddState(manCrouch = new ManCrouch(this));
@@ -213,9 +213,9 @@ public class Player : GameCharacter {
     private void Update() {
         currentPlayerState = stateMachine.currentPlayerState;
         UpdateTimer();
+        UpdateEnvironment();
         UpdateInputAndDirection();
         if (inputDisabled) return;
-        CheckManJumpInputs();
         if (stateMachine.currentPlayerState == PlayerState.ManIdle) {
             CheckChangeToManRunState();
             CheckChangeToManDodgeHopDashState();
@@ -236,13 +236,6 @@ public class Player : GameCharacter {
                 CheckChangeToManDodgeHopDashState();
                 CheckChangeToManDefenseState();
             }
-        }
-
-        if (stateMachine.currentPlayerState == PlayerState.ManDefense) {
-            CheckChangeToManDodgeHopDashState();
-            CheckChangeToManAttackState();
-            CheckChangeToManDefenseState();
-            CheckChangeToIdleState();
         }
 
         // if (stateMachine.currentPlayerState == PlayerState.ManFall) {
@@ -270,12 +263,46 @@ public class Player : GameCharacter {
         // CheckChangeToManAttackState();
     }
 
-    public void CheckChangeToManRunState() {
+    public bool CheckChangeToManFallFromNonAirState() {
+        if (environment == Environment.Air) {
+            stateMachine.ChangeState(PlayerState.ManFall);
+            return true;
+        }
+        return false;
+    }
+
+    public void UpdateEnvironment() {
+        if (characterController.isOnGround()) {
+            environment = Environment.Ground;
+        }
+        else if (characterController.isOnWater()) {
+            environment = Environment.Water;
+        }
+        else {
+            environment = Environment.Air;
+        }
+    }
+
+    // Change to idle should be add to fixed update movement
+    // since if you put it in update like other CheckChange functions,
+    // it will trigger almost immediately
+    public bool CheckChangeToManIdle() {
+        if (form != PlayerForm.Man) return false;
+        var notMoving = Mathf.Approximately(characterController.velocity.magnitude, 0);
+        if (notMoving && environment == Environment.Ground) {
+                stateMachine.ChangeState(PlayerState.ManIdle);
+                return true;
+        }
+        return false;
+    }
+
+    public bool CheckChangeToManRunState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
         var environmentValidated = environment == Environment.Ground;
         var canRun = formValidated && inputValidated && environmentValidated;
-        if (canRun) stateMachine.ChangeState(PlayerState.ManRun);
+        if (canRun) {stateMachine.ChangeState(PlayerState.ManRun);}
+        return canRun;
     }
 
     public void CheckChangeToDragonFloat() {
@@ -290,7 +317,7 @@ public class Player : GameCharacter {
         if (input) stateMachine.ChangeState(PlayerState.DragonFly);
     }
 
-    private void CheckChangeToIdleState() {
+    public void CheckChangeToIdleState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var environmentValidated = environment == Environment.Ground;
         var speedValidated = Mathf.Approximately(body.linearVelocity.x, 0);
@@ -298,44 +325,54 @@ public class Player : GameCharacter {
             stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
-    private void CheckChangeToManDodgeHopDashState() {
+    public bool CheckChangeToManDodgeHopDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var dodgeBack = Input.GetButtonDown("DodgeBack");
         var dodgeForward = Input.GetButtonDown("DodgeForward");
         var cooldownValidated = dashCooldownCountdown <= 0;
         var inputValidated = dodgeBack || dodgeForward;
         if (!isEmpowering) {
-            var canHop = formValidated && inputValidated && cooldownValidated;
+            // can only hop on ground and water
+            var environmentValidated = environment is Environment.Ground or Environment.Water;
+            var canHop = formValidated && inputValidated && cooldownValidated && environmentValidated;
             if (canHop) {
                 var direction = dodgeBack ? -1 : 1;
                 manDodgeHop.SetDirection(direction);
                 stateMachine.ChangeState(PlayerState.ManDodgeHop);
+                return true;
             }
         }
         else {
+            // can dash in all environment
             var canDash = formValidated && inputValidated && cooldownValidated;
             if (canDash) {
                 var direction = dodgeBack ? -1 : 1;
                 manDash.SetDirection(direction);
                 stateMachine.ChangeState(PlayerState.ManDash);
+                return true;
             }
         }
+
+        return false;
     }
 
-    private void CheckChangeToManAttackState() {
+    public bool CheckChangeToManAttackState() {
         var inputValidated = Input.GetButtonDown("Attack");
-        if (inputValidated) {
-            attackInputBufferCountdown = playerStats.attackInputBufferDuration;
-            stateMachine.ChangeState(PlayerState.ManAttack);
-        }
+        if (!inputValidated) return false;
+        attackInputBufferCountdown = playerStats.attackInputBufferDuration;
+        stateMachine.ChangeState(isEmpowering ? PlayerState.ManEmpoweredAttack : PlayerState.ManAttack);
+        return true;
     }
 
-    private void CheckChangeToManDefenseState() {
+    public bool CheckChangeToManDefenseState() {
         var inputValidated = Input.GetButtonDown("Defense");
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
             stateMachine.ChangeState(PlayerState.ManDefense);
+            return true;
         }
+
+        return false;
     }
 
     private void UpdateInputAndDirection() {
@@ -347,8 +384,6 @@ public class Player : GameCharacter {
             _ => facingDirection
         };
     }
-
-    public void CommonManInputChecks() { }
 
     public float GetGravityMult() {
         var gravityMult = 1f;
@@ -391,11 +426,6 @@ public class Player : GameCharacter {
         characterController.Move(vX, vY);
     }
 
-    public void CheckIdleState() {
-        if (body.linearVelocity.x == 0 && environment == Environment.Ground)
-            stateMachine.ChangeState(PlayerState.ManIdle);
-    }
-
     private void FixedUpdate() {
         CheckGround();
         stateMachine.FixedUpdate();
@@ -429,30 +459,54 @@ public class Player : GameCharacter {
                        Time.time - lastEmpoweredSkillUsageTimestamp > playerStats.empowerCooldown;
     }
 
-    private void CheckManJumpInputs() {
-        if (form != PlayerForm.Man) return;
+    public bool CheckChangeToManJumpOrEmpoweredJumpState() {
+        if (form != PlayerForm.Man) return false;
         if (Input.GetButtonDown("Jump")) {
-            isJumpCut = false;
-            jumpBufferCountdown = playerStats.jumpBufferDuration;
+            var canReceiveJumpInput = true;
+            if (stateMachine.currentPlayerState is PlayerState.ManJump or PlayerState.ManEmpoweredJump) {
+                if (!isEmpowering) {
+                    canReceiveJumpInput = false;
+                }
+                else {
+                    print("empowering");
+                }
+            }
+            if (canReceiveJumpInput) {
+                isJumpCut = false;
+                jumpBufferCountdown = playerStats.jumpBufferDuration;
+            }
         }
-
-        if (Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp("Jump")) {
             // if release jump button before even jump, or during jumping, trigger jump cut
-            if (jumpBufferCountdown > 0 ||
-                (stateMachine.currentPlayerState == PlayerState.ManJump && manJump.CanJumpCut())) {
+            var canRegularJumpCut = stateMachine.currentPlayerState == PlayerState.ManJump && manJump.CanJumpCut();
+            var canEmpoweredJumpCut = stateMachine.currentPlayerState == PlayerState.ManEmpoweredJump &&
+                                     manEmpoweredJump.CanEmpoweredJumpCut();
+            if (jumpBufferCountdown > 0 || canRegularJumpCut || canEmpoweredJumpCut) {
                 isJumpCut = true;
                 isFastFalling = true;
             }
-
-        var isJumpCountValid = jumpCount < MAX_JUMP_COUNT;
+        }
         var isJumpGracePeriod = coyoteTimeCountdown > 0;
         var isJumpBufferPeriod = jumpBufferCountdown > 0;
         var isGrounded = environment == Environment.Ground;
-        var canJump = isJumpCountValid && isJumpBufferPeriod && (isGrounded || isJumpGracePeriod);
-        // if (canJump) {
-        //     jumpBufferCountdown = -1;
-        //     stateMachine.ChangeState(PlayerState.ManJump);
-        // }
+        // check for empowered jump
+        if (isEmpowering) {
+            var canJump = isJumpBufferPeriod;
+            if (canJump) {
+                jumpBufferCountdown = -1;
+                stateMachine.ChangeState(PlayerState.ManEmpoweredJump);
+                return true;
+            }
+        }
+        else {
+            var canJump = isJumpBufferPeriod && (isGrounded || isJumpGracePeriod);
+            if (canJump) {
+                jumpBufferCountdown = -1;
+                stateMachine.ChangeState(PlayerState.ManJump);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void UpdateTimer() {
@@ -466,21 +520,6 @@ public class Player : GameCharacter {
 
     private void UpdateCountdownTimer(ref float timer) {
         timer = Mathf.Max(timer - Time.deltaTime, -1f);
-    }
-
-    public void DragonMove(Vector3 targetPosition) {
-        dragonMoveDirection = targetPosition - transform.position;
-        var angle = Mathf.Atan2(dragonMoveDirection.y, dragonMoveDirection.x) * Mathf.Rad2Deg;
-        // rotate along the axis by angle
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        // transform.up = Vector3.Lerp(transform.up,
-        //     Time.fixedDeltaTime * dragonRotationSpeed);
-        // set rotation to toward direction + 90
-        var movementAcceleration = Mathf.Abs(body.linearVelocity.magnitude) < dragonMaxSpeed
-            ? playerStats.dragonAccel
-            : playerStats.dragonDecel;
-        var dragonSpeed = playerStats.dragonMaxSpeed;
-        body.linearVelocity = dragonMoveDirection.normalized * dragonSpeed;
     }
 
     #region ------------------- Utils Methods ----------------------------------
@@ -501,25 +540,11 @@ public class Player : GameCharacter {
     }
     #endregion
 
-    public void CheckDragonForcedHover() {
-        var isDownButtonHold = Input.GetAxisRaw("Vertical") < 0;
-        if (isDownButtonHold) {
-            if (!dragonForcedHoverInPlace) {
-                dragonForcedHoverInPlace = true;
-                dragonFlyTowardPosition = body.position;
-                stateMachine.ChangeState(PlayerState.DragonIdle);
-            }
-        }
-        else {
-            dragonForcedHoverInPlace = false;
-        }
-    }
-
     #region ------------------- Skills Usage ----------------------------------
     private void CheckSkillTrigger() {
         if (Input.GetButtonDown("Skill1")) {
             var firstSkill = skillList.GetEnabledSkills().First();
-            manCastSkill.SetSkillData(
+            manCastSpell.SetSkillData(
                 firstSkill,
                 firstSkill.skillStartupDuration,
                 firstSkill.skillActiveDuration,
@@ -570,21 +595,25 @@ public class Player : GameCharacter {
         dragonBody.SetActive(true);
     }
 
-    public void CheckTransformIntoDragonAndBack() {
-        var isEmpoweringHold = Input.GetButton("Empower");
-        if (isEmpoweringHold) {
-            empoweredHoldDuration += Time.deltaTime;
-            if (empoweredHoldDuration >= playerStats.empowerHoldDurationBeforeTransform) {
-                if (form == PlayerForm.Man) {
-                    ChangeToDragon();
-                }
-                else {
-                    ChangeToMan();
-                }
-            }
-        }
-        else {
-            empoweredHoldDuration = 0;
-        }
+    public bool CheckTransformIntoDragonAndBack() {
+        // var isEmpoweringHold = Input.GetButton("Empower");
+        // if (isEmpoweringHold) {
+        //     empoweredHoldDuration += Time.deltaTime;
+        //     if (empoweredHoldDuration >= playerStats.empowerHoldDurationBeforeTransform) {
+        //         if (form == PlayerForm.Man) {
+        //             ChangeToDragon();
+        //             return true;
+        //         }
+        //         else {
+        //             ChangeToMan();
+        //             return true;
+        //         }
+        //     }
+        // }
+        // else {
+        //     empoweredHoldDuration = 0;
+        // }
+
+        return false;
     }
 }

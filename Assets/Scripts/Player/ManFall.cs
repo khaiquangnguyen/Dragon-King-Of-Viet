@@ -7,6 +7,13 @@ public class ManFall : PlayerStateBehavior {
         player.humanAnimator.Play("JumpFall");
     }
 
+    public override void Update() {
+        if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
+        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManDefenseState()) return;
+        if (player.CheckChangeToManAttackState()) return;
+        if (player.CheckTransformIntoDragonAndBack()) return;
+    }
     public override void FixedUpdate() {
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;

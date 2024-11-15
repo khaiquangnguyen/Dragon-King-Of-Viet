@@ -9,6 +9,7 @@ public enum PlayerState {
     ManCrouch,
     ManEmpoweredAttack,
     ManEmpoweredDefense,
+    ManEmpoweredJump,
     ManEmpoweredFall,
     ManFall,
     ManDefense,

@@ -9,19 +9,24 @@ public class ManRun : PlayerStateBehavior {
         player.humanAnimator.Play("Run");
     }
 
+    public override void Update() {
+        if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
+        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManDefenseState()) return;
+        if (player.CheckChangeToManAttackState()) return;
+        if (player.CheckTransformIntoDragonAndBack()) return;
+        if (player.CheckChangeToManFallFromNonAirState()) return;
+    }
     public override void FixedUpdate() {
+        if (!player.characterController.isOnGround()) return;
         player.humanAnimator.Play("Run");
-        if (Mathf.Approximately(player.characterController.velocity.magnitude, 0))
-            player.stateMachine.ChangeState(PlayerState.ManIdle);
         var acceleration = player.playerStats.manGroundAccel;
         var deceleration = player.playerStats.manGroundDecel;
         var maxSpeed = Mathf.Abs(player.playerStats.manGroundMaxSpeed * player.inputDirectionX);
-        if (!player.characterController.isOnGround())
-            player.stateMachine.ChangeState(PlayerState.ManFall);
-        else
-            player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+        player.characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+        if (player.CheckChangeToManIdle()) return;
+
     }
 
-    public override void Update() { }
     public override void OnStateExit() { }
 }

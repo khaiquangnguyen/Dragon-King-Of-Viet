@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using CharacterBehavior;
 using UnityEngine;
 
 public class ManAttack : BasePlayerAction {

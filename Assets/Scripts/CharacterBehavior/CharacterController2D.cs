@@ -83,6 +83,10 @@ namespace CharacterBehavior {
             return isGrounded;
         }
 
+        public bool isOnWater() {
+            return false;
+        }
+
         /*
          * Check if the character is on walkable ground, aka when the feet (or end of ground raycast in this case) actually touch the ground
          */
