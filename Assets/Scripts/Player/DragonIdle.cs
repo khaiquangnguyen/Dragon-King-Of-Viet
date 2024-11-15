@@ -7,6 +7,7 @@ public class DragonIdle : PlayerStateBehavior {
     }
 
     public override void Update() {
+        player.CheckTransformIntoDragonAndBack();
         player.CheckChangeToDragonFly();
         player.CheckChangeToDragonFloat();
     }

@@ -2,10 +2,12 @@ public class ManIdle : PlayerStateBehavior {
     public ManIdle(Player player) : base(player, PlayerState.ManIdle, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        player.humanAnimator.Play("Idle");
+        player.humanAnimator.Play(player.playerStats.manIdleAnimation.name);
     }
 
-    public override void Update() { }
+    public override void Update() {
+        player.CheckTransformIntoDragonAndBack();
+    }
 
     public override void FixedUpdate() {
         player.characterController.Move(0, 0);

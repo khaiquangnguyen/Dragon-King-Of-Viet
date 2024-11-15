@@ -49,6 +49,5 @@ namespace DefaultNamespace {
                     player.stateMachine.ChangeState(PlayerState.DragonIdle);
             }
         }
-
     }
 }

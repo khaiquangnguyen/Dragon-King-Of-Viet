@@ -4,10 +4,19 @@ using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "PlayerMStats", menuName = "PlayerStats", order = 0)]
 public class PlayerStats : ScriptableObject {
+    #region Empower
+    [Header("Empower")]
     public float empoweredNextMoveBufferDuration = 0.05f;
     public float empowerCooldown = 0.2f;
-    public float empowerAllowedHoldDuration = 0.2f;
+    public float empowerHoldDurationBeforeTransform = 0.2f;
     public float healthRegenDelayDuration = 1f;
+    #endregion
+
+    #region Idle
+    [FormerlySerializedAs("idleAnimation")]
+    [Header("Idle")]
+    public AnimationClip manIdleAnimation;
+    #endregion
 
     #region Run
     [Header("Run")]
@@ -103,7 +112,6 @@ public class PlayerStats : ScriptableObject {
     #region Empowered Attack
     [Header("Empowered Attack")]
     public List<AttackStats> manEmpoweredAttackStats = new();
-
     #endregion
 
     #region Man Power Jump
@@ -138,7 +146,7 @@ public class PlayerStats : ScriptableObject {
     public AnimationClip defenseRecoveryAnimation;
     #endregion
 
-     #region Slow Dragon Transform
+    #region Slow Dragon Transform
     [Header("Slow Dragon Transform")]
     public float manToDragonTransformDuration = 2f;
     public float dragonToManTransformDuration = 1f;
@@ -185,8 +193,6 @@ public class PlayerStats : ScriptableObject {
     #region Dragon Dash Stats
     [Header("Dragon Dash Stats")]
     #endregion
-
-
 
     #region dragon energy stats
     [Header("Dragon Energy Stats")]

@@ -32,16 +32,16 @@ public class BaseSpellCast : BasePlayerAction {
 
     public override void FixedUpdate() {
         if (skillState == SkillState.Ready) {
-            EnterStartup(skillStartupAnimation);
+            EnterStartup(skillStartupAnimation, skillStartupTime);
         }
         else if (skillState == SkillState.Startup) {
             if (Time.time - newStateStartAt > skillStartupTime) {
-                EnterActive(skillActiveAnimation);
+                EnterActive(skillActiveAnimation, skillActiveTime);
             }
         }
         else if (skillState == SkillState.Active) {
             if (Time.time - newStateStartAt > skillActiveTime) {
-                EnterRecovery(skillRecoveryAnimation);
+                EnterRecovery(skillRecoveryAnimation, skillRecoveryTime);
             }
         }
         else if (skillState == SkillState.Recovery) {

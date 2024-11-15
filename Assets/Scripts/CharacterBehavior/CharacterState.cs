@@ -13,12 +13,8 @@ namespace CharacterBehavior {
         SpecialAttack2,
         SpecialAttack3,
         SpecialAttack4,
-        Crouching,
-        CrouchWalking,
-        CrouchRunning,
-        Climbing,
+        Flying,
         Swimming,
-        Drowning,
         Dead
     }
 }

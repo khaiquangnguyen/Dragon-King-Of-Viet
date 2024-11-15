@@ -55,7 +55,7 @@ public class Player : GameCharacter {
     #endregion
 
     #region --------------------- Empower Attributes -------------------------------------
-    private float empoweredHoldBufferCountdown;
+    private float empoweredHoldDuration = 0;
     private float empoweredNextMoveBufferCountdown;
     [HideInInspector]
     public bool isEmpowering = false;
@@ -121,9 +121,9 @@ public class Player : GameCharacter {
     [HideInInspector]
     public Animator dragonAnimator;
     [HideInInspector]
-    public Component dragonBody;
+    public GameObject dragonBody;
     [HideInInspector]
-    public Component humanBody;
+    public GameObject humanBody;
     [HideInInspector]
     public PlayerStateMachine stateMachine;
 
@@ -159,8 +159,8 @@ public class Player : GameCharacter {
         energyManager = GetComponent<EnergyManager>();
         body = transform.GetComponent<Rigidbody2D>();
         characterController = GetComponent<CharacterController2D>();
-        dragonBody = transform.Find("DragonBody");
-        humanBody = transform.Find("HumanBody");
+        dragonBody = transform.Find("DragonBody").gameObject;
+        humanBody = transform.Find("HumanBody").gameObject;
         humanRenderer = humanBody.transform.Find("Renderer");
         dragonRenderer = dragonBody.transform.Find("Renderer");
         humanAnimator = humanBody.GetComponentInChildren<Animator>();
@@ -180,7 +180,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(manAttack = new ManAttack(this));
         stateMachine.AddState(manDefense = new ManDefense(this));
         stateMachine.AddState(manCastSkill = new ManCastSkill(this));
-        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this,playerStats.manEmpoweredAttackStats));
+        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this, playerStats.manEmpoweredAttackStats));
         stateMachine.AddState(manEmpoweredDefense = new ManEmpoweredDefense(this));
         stateMachine.AddState(manFall = new ManFall(this));
         stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
@@ -192,7 +192,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(dragonIdle = new DragonIdle(this));
         stateMachine.AddState(dragonFly = new DragonFly(this));
         stateMachine.AddState(dragonFloatMove = new DragonFloatMove(this));
-        stateMachine.ChangeState(PlayerState.DragonIdle);
+        stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
     private void Start() { }
@@ -461,7 +461,6 @@ public class Player : GameCharacter {
         UpdateCountdownTimer(ref jumpBufferCountdown);
         UpdateCountdownTimer(ref coyoteTimeCountdown);
         UpdateCountdownTimer(ref empoweredNextMoveBufferCountdown);
-        UpdateCountdownTimer(ref empoweredHoldBufferCountdown);
         return;
     }
 
@@ -548,5 +547,44 @@ public class Player : GameCharacter {
         OnDealDamage(damage, damagedCharacter);
     }
 
-    public float abilityHaste { get; }
+    public void UpdateCharacterStateBasedOnForm() {
+        if (form == PlayerForm.Dragon) {
+            dragonBody.SetActive(true);
+        }
+        else {
+            dragonBody.SetActive(false);
+        }
+    }
+
+    public void ChangeToMan() {
+        form = PlayerForm.Man;
+        stateMachine.ChangeState(PlayerState.ManIdle);
+        humanBody.SetActive(true);
+        dragonBody.SetActive(false);
+    }
+
+    public void ChangeToDragon() {
+        form = PlayerForm.Dragon;
+        stateMachine.ChangeState(PlayerState.DragonIdle);
+        humanBody.SetActive(false);
+        dragonBody.SetActive(true);
+    }
+
+    public void CheckTransformIntoDragonAndBack() {
+        var isEmpoweringHold = Input.GetButton("Empower");
+        if (isEmpoweringHold) {
+            empoweredHoldDuration += Time.deltaTime;
+            if (empoweredHoldDuration >= playerStats.empowerHoldDurationBeforeTransform) {
+                if (form == PlayerForm.Man) {
+                    ChangeToDragon();
+                }
+                else {
+                    ChangeToMan();
+                }
+            }
+        }
+        else {
+            empoweredHoldDuration = 0;
+        }
+    }
 }

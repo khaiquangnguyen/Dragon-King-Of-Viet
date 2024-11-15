@@ -4,9 +4,9 @@ using UnityEngine;
 public class ManEmpoweredAttack : BasePlayerAction {
     private float attackStartTime;
 
-    public ManEmpoweredAttack(Player player, List<AttackStats> attackStatsList) : base(player, PlayerState.ManEmpoweredAttack, PlayerForm.Man) {
+    public ManEmpoweredAttack(Player player, List<AttackStats> attackStatsList) : base(player,
+        PlayerState.ManEmpoweredAttack, PlayerForm.Man) {
         this.attackStatsList = attackStatsList;
-
     }
 
     public override void FixedUpdate() {
@@ -15,17 +15,17 @@ public class ManEmpoweredAttack : BasePlayerAction {
 
         if (skillState == SkillState.Ready) {
             player.attackInputBufferCountdown = -1;
-            EnterStartup(startupAnimation);
+            EnterStartup(startupAnimation, attackStartupTime);
         }
         else if (skillState == SkillState.Startup) {
             if (Time.time - newStateStartAt > attackStartupTime) {
                 hitCharacters.Clear();
-                EnterActive(activeAnimation);
+                EnterActive(activeAnimation, attackActiveTime);
             }
         }
         else if (skillState == SkillState.Active) {
             if (Time.time - newStateStartAt > attackActiveTime) {
-                EnterRecovery(recoveryAnimation);
+                EnterRecovery(recoveryAnimation, attackRecoveryTime);
             }
 
             CheckAttackHit(player.dragonAttackCollider);

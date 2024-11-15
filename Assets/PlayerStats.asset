@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   empoweredNextMoveBufferDuration: 0.06
   empowerCooldown: 0.02
-  empowerAllowedHoldDuration: 0.2
+  empowerHoldDurationBeforeTransform: 1
   healthRegenDelayDuration: 1
+  manIdleAnimation: {fileID: 7400000, guid: 1b8b8a7328271f24ebde7e623cf0d9c9, type: 2}
   manGroundAccelTime: 0.1
   manGroundDecelTime: 0.06
   manGroundMaxSpeed: 14
@@ -157,64 +158,42 @@ MonoBehaviour:
   empoweredFallMaxSpeed: 10
   empoweredFallStartupDuration: 0.1
   empoweredFallRecoveryDuration: 0.1
-  empoweredDefenseStartupDuration: 0.1
   empoweredDefenseBaseEnergyDrainRate: 1
-  empoweredDefenseRecoveryDuration: 0.1
-  empoweredDefenseDeflectVelocityMult: 0.5
-  empoweredDefenseAnimationCancellable: 1
-  empoweredAttackStartupDuration: 0.1
-  empoweredAttackActiveDuration: 0.1
-  empoweredAttackRecoveryDuration: 0.1
+  empoweredDefenseStartupAnimation: {fileID: 0}
+  empoweredDefenseActiveCounterAnimation: {fileID: 0}
+  empoweredDefenseActiveNoCounterAnimation: {fileID: 0}
+  empoweredDefenseRecoveryAnimation: {fileID: 0}
+  manEmpoweredAttackStats: []
   powerJumpMaxHeight: 6
   powerJumpPeakHangDuration: 0.065
-  manToDragonTransformDuration: 0.3
-  dragonToManTransformDuration: 0.4
-  ManToDragonTransformIframeDuration: 0.5
-  dragonToManTransformIframeDuration: 0.5
-  dragonRotationSpeed: 6
-  dragonToManRotationSpeed: 1
-  dragonMaxSpeed: 15
-  dragonAccelTime: 0.6
-  dragonDecelTime: 0.6
-  dragonTurnSpeed: 5
-  dragonCarrySpeed: 0
-  dragonCarrySpeedBufferDuration: 0.3
-  dragonHoverMaxSpeed: 6
-  dragonHoverBufferDuration: 0.2
-  dragonHoverRandomFactorX: 0.1
-  dragonHoverRandomFactorY: 0.1
-  dragonHoverRandomPeriod: 1
-  dragonHoverPointerMovementRange: 0.25
-  dragonHoverAllowedDistanceToMouse: 0.5
-  dragonEnergyRegenDelayDuration: 1
-  attackStats:
-  - startupDuration: 0.035
+  manAttackStats:
+  - startupDuration: 0.2
     activeDuration: 0.2
     recoveryDuration: 0.1
-    attackCancelableAfter: 0.1
-    damage: 1
+    attackCancelableAfter: 0.4
+    damage: 0
     cancelable: 1
     startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
     activeAnimation: {fileID: 7400000, guid: 288c1dd47f3b14df0b8dbfc0f543f80b, type: 2}
     recoveryAnimation: {fileID: 7400000, guid: b056222186f8246d7b14a4d3e28c5088, type: 2}
-  - startupDuration: 0.035
+  - startupDuration: 0.1
     activeDuration: 0.2
     recoveryDuration: 0.1
-    attackCancelableAfter: 0.1
-    damage: 2
+    attackCancelableAfter: 0.4
+    damage: 0
     cancelable: 1
     startupAnimation: {fileID: 7400000, guid: 8873066722f33453b99899e712c861a5, type: 2}
     activeAnimation: {fileID: 7400000, guid: d03e9e38e61c841d7b3cac7dc2f6cbed, type: 2}
     recoveryAnimation: {fileID: 7400000, guid: 94646b9c16e2e450ba37250700e24c23, type: 2}
-  - startupDuration: 0.035
+  - startupDuration: 0.1
     activeDuration: 0.2
-    recoveryDuration: 0.1
-    attackCancelableAfter: 0.1
-    damage: 3
+    recoveryDuration: 0.2
+    attackCancelableAfter: 0.4
+    damage: 0
     cancelable: 1
-    startupAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
+    startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
     activeAnimation: {fileID: 7400000, guid: a9550dcad71764ba7b553ae93770b3c8, type: 2}
-    recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
   attackInputBufferDuration: 0.5
   attackInputBufferPostAttackDuration: 0.2
   blackFlashFrameDuration: 0.05
@@ -228,3 +207,23 @@ MonoBehaviour:
   defenseActiveCounterAnimation: {fileID: 0}
   defenseActiveNoCounterAnimation: {fileID: 0}
   defenseRecoveryAnimation: {fileID: 0}
+  manToDragonTransformDuration: 0.3
+  dragonToManTransformDuration: 0.4
+  ManToDragonTransformIframeDuration: 0.5
+  dragonToManTransformIframeDuration: 0.5
+  dragonRotationSpeed: 6
+  dragonToManRotationSpeed: 1
+  dragonMaxSpeed: 15
+  dragonAccelTime: 0.6
+  dragonDecelTime: 0.6
+  dragonAttackStats: []
+  dragonDefenseStartupAnimation: {fileID: 0}
+  dragonDefenseActiveCounterAnimation: {fileID: 0}
+  dragonDefenseActiveNoCounterAnimation: {fileID: 0}
+  dragonDefenseRecoveryAnimation: {fileID: 0}
+  dragonEmpoweredDefenseStartupAnimation: {fileID: 0}
+  dragonEmpoweredDefenseActiveCounterAnimation: {fileID: 0}
+  dragonEmpoweredDefenseActiveNoCounterAnimation: {fileID: 0}
+  dragonEmpoweredDefenseRecoveryAnimation: {fileID: 0}
+  dragonEmpoweredAttackStats: []
+  dragonEnergyRegenDelayDuration: 1

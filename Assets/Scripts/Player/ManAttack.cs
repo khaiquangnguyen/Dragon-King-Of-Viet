@@ -4,10 +4,10 @@ using CharacterBehavior;
 using UnityEngine;
 
 public class ManAttack : BasePlayerAction {
-    private int attackMoveCount = 0;
-    private SkillState skillState = SkillState.Ready;
-    private float attackStartTimestamp;
-    public ManAttack(Player player) : base(player, PlayerState.ManAttack, PlayerForm.Man) { }
+    public ManAttack(Player player) : base(player, PlayerState.ManAttack, PlayerForm.Man) {
+        attackStatsList = player.playerStats.manAttackStats;
+        animator = player.humanAnimator;
+    }
 
     public override void OnStateEnter() {
         // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
@@ -28,17 +28,17 @@ public class ManAttack : BasePlayerAction {
 
         if (skillState == SkillState.Ready) {
             player.attackInputBufferCountdown = -1;
-            EnterStartup(startupAnimation);
+            EnterStartup(startupAnimation, attackStartupTime);
         }
         else if (skillState == SkillState.Startup) {
             if (Time.time - newStateStartAt > attackStartupTime) {
                 hitCharacters.Clear();
-                EnterActive(activeAnimation);
+                EnterActive(activeAnimation, attackActiveTime);
             }
         }
         else if (skillState == SkillState.Active) {
             if (Time.time - newStateStartAt > attackActiveTime) {
-                EnterRecovery(recoveryAnimation);
+                EnterRecovery(recoveryAnimation, attackRecoveryTime);
             }
 
             CheckAttackHit(player.manAttackCollider);

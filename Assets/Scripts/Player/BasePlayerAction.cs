@@ -25,30 +25,25 @@ public abstract class BasePlayerAction : PlayerStateBehavior {
             recoveryAnimation);
     }
 
-    public void EnterStartup(AnimationClip startupAnimation) {
-        if (skillState == SkillState.Ready) {
-            hitCharacters.Clear();
-            animator.Play(startupAnimation.name);
-            skillState = SkillState.Startup;
-            newStateStartAt = Time.time;
-            attackStartTimestamp = Time.time;
-        }
+    public void EnterStartup(AnimationClip startupAnimation, float duration) {
+        hitCharacters.Clear();
+        Utils.PlayAnimationMatchingDuration(animator, startupAnimation, duration);
+        skillState = SkillState.Startup;
+        newStateStartAt = Time.time;
+        attackStartTimestamp = Time.time;
     }
 
-    public void EnterActive(AnimationClip activeAnimation) {
-        if (skillState == SkillState.Startup) {
-            animator.Play(activeAnimation.name);
-            skillState = SkillState.Active;
-            newStateStartAt = Time.time;
-        }
+    public void EnterActive(AnimationClip activeAnimation, float duration) {
+        Utils.PlayAnimationMatchingDuration(animator, activeAnimation, duration);
+        skillState = SkillState.Active;
+        newStateStartAt = Time.time;
     }
 
-    public void EnterRecovery(AnimationClip recoveryAnimation) {
-        if (skillState == SkillState.Active) {
-            animator.Play(recoveryAnimation.name);
-            skillState = SkillState.Recovery;
-            newStateStartAt = Time.time;
-        }
+    public void EnterRecovery(AnimationClip recoveryAnimation, float duration) {
+        Utils.PlayAnimationMatchingDuration(animator, recoveryAnimation, duration);
+        animator.Play(recoveryAnimation.name);
+        skillState = SkillState.Recovery;
+        newStateStartAt = Time.time;
     }
 
     public override void OnStateEnter() {

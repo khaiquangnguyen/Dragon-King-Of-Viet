@@ -21,6 +21,7 @@ namespace CharacterBehavior {
         private CharacterDefense characterDefense;
 
         public float inputDirectionX;
+        public float inputDirectionY;
         [ReadOnly]
         public CharacterState characterState;
         public bool triggerJump;

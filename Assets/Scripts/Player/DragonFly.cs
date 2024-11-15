@@ -23,6 +23,7 @@ public class DragonFly : PlayerStateBehavior {
             player.stateMachine.ChangeState(PlayerState.DragonIdle);
             return;
         }
+
         if (Camera.main == null) return;
         var currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dragonMoveDirection = currentMousePosition - player.transform.position;
