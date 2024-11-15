@@ -16,11 +16,11 @@ public abstract class BasePlayerAction : PlayerStateBehavior {
 
     public (float, float, float, AnimationClip, AnimationClip, AnimationClip) GetAttackTimingAndAnimation() {
         var attackStartupTime = attackStatsList[attackMoveCount].startupDuration;
-        var attackActiveTime = player.playerStats.attackStats[attackMoveCount].activeDuration;
-        var attackRecoveryTime = player.playerStats.attackStats[attackMoveCount].recoveryDuration;
-        var startupAnimation = player.playerStats.attackStats[attackMoveCount].startupAnimation;
-        var activeAnimation = player.playerStats.attackStats[attackMoveCount].activeAnimation;
-        var recoveryAnimation = player.playerStats.attackStats[attackMoveCount].recoveryAnimation;
+        var attackActiveTime = player.playerStats.manAttackStats[attackMoveCount].activeDuration;
+        var attackRecoveryTime = player.playerStats.manAttackStats[attackMoveCount].recoveryDuration;
+        var startupAnimation = player.playerStats.manAttackStats[attackMoveCount].startupAnimation;
+        var activeAnimation = player.playerStats.manAttackStats[attackMoveCount].activeAnimation;
+        var recoveryAnimation = player.playerStats.manAttackStats[attackMoveCount].recoveryAnimation;
         return (attackStartupTime, attackActiveTime, attackRecoveryTime, startupAnimation, activeAnimation,
             recoveryAnimation);
     }

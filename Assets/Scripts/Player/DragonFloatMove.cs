@@ -1,7 +1,7 @@
 using UnityEngine;
 
-public class DragonFloat : PlayerStateBehavior {
-    public DragonFloat(Player player) : base(player, PlayerState.DragonFloat, PlayerForm.Dragon) { }
+public class DragonFloatMove : PlayerStateBehavior {
+    public DragonFloatMove(Player player) : base(player, PlayerState.DragonFloatMove, PlayerForm.Dragon) { }
     public float dragonHoverBufferCountdown;
 
     public override void OnStateEnter() {
@@ -19,7 +19,7 @@ public class DragonFloat : PlayerStateBehavior {
         player.characterController.MoveOnNonGroundAnyDirection(acceleration, deceleration,
             player.playerStats.dragonMaxSpeed, 0, 0, direction);
         if (player.characterController.velocity.magnitude < 0.05f) {
-            player.stateMachine.ChangeState(PlayerState.DragonHover);
+            player.stateMachine.ChangeState(PlayerState.DragonIdle);
         }
     }
 }

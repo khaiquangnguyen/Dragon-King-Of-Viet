@@ -7,11 +7,6 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-internal enum Forms {
-    Dragon,
-    Man
-}
-
 public enum Environment {
     Ground,
     Air,
@@ -38,7 +33,7 @@ public class Player : GameCharacter {
     #endregion
 
     #region --------------------- State Attributes -------------------------------------
-    private Forms form = Forms.Man;
+    private PlayerForm form = PlayerForm.Man;
     #endregion
 
     #region --------------------- Movement Attributes -------------------------------------
@@ -150,9 +145,9 @@ public class Player : GameCharacter {
     private ManDodge manDodgeHop;
     private ManToDragonTransform dragonFromManTransform;
     private DragonToManTransform dragonToManTransform;
-    private DragonHover dragonHover;
+    private DragonFloatMove dragonFloatMove;
     private DragonFly dragonFly;
-    private DragonFloat dragonFloat;
+    private DragonIdle dragonIdle;
     public CircleCollider2D manAttackCollider;
     public CircleCollider2D dragonAttackCollider;
     private EnergyManager energyManager;
@@ -185,7 +180,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(manAttack = new ManAttack(this));
         stateMachine.AddState(manDefense = new ManDefense(this));
         stateMachine.AddState(manCastSkill = new ManCastSkill(this));
-        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this));
+        stateMachine.AddState(manEmpoweredAttack = new ManEmpoweredAttack(this,playerStats.manEmpoweredAttackStats));
         stateMachine.AddState(manEmpoweredDefense = new ManEmpoweredDefense(this));
         stateMachine.AddState(manFall = new ManFall(this));
         stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
@@ -194,10 +189,10 @@ public class Player : GameCharacter {
         stateMachine.AddState(manExecution = new ManExecution(this));
         stateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
         stateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
-        stateMachine.AddState(dragonHover = new DragonHover(this));
+        stateMachine.AddState(dragonIdle = new DragonIdle(this));
         stateMachine.AddState(dragonFly = new DragonFly(this));
-        stateMachine.AddState(dragonFloat = new DragonFloat(this));
-        stateMachine.ChangeState(PlayerState.DragonHover);
+        stateMachine.AddState(dragonFloatMove = new DragonFloatMove(this));
+        stateMachine.ChangeState(PlayerState.DragonIdle);
     }
 
     private void Start() { }
@@ -287,7 +282,7 @@ public class Player : GameCharacter {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Dragon;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
         var canFloat = formValidated && inputValidated;
-        if (canFloat) stateMachine.ChangeState(PlayerState.DragonFloat);
+        if (canFloat) stateMachine.ChangeState(PlayerState.DragonFloatMove);
     }
 
     public void CheckChangeToDragonFly() {
@@ -435,7 +430,7 @@ public class Player : GameCharacter {
     }
 
     private void CheckManJumpInputs() {
-        if (form != Forms.Man) return;
+        if (form != PlayerForm.Man) return;
         if (Input.GetButtonDown("Jump")) {
             isJumpCut = false;
             jumpBufferCountdown = playerStats.jumpBufferDuration;
@@ -513,7 +508,7 @@ public class Player : GameCharacter {
             if (!dragonForcedHoverInPlace) {
                 dragonForcedHoverInPlace = true;
                 dragonFlyTowardPosition = body.position;
-                stateMachine.ChangeState(PlayerState.DragonHover);
+                stateMachine.ChangeState(PlayerState.DragonIdle);
             }
         }
         else {

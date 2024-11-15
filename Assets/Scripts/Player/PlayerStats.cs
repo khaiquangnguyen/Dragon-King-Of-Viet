@@ -93,18 +93,17 @@ public class PlayerStats : ScriptableObject {
 
     #region Empowered Defense
     [Header("Empowered Defense")]
-    public float empoweredDefenseStartupDuration = 0.1f;
     public float empoweredDefenseBaseEnergyDrainRate = 1f;
-    public float empoweredDefenseRecoveryDuration = 0.1f;
-    public float empoweredDefenseDeflectVelocityMult = 0.5f;
-    public bool empoweredDefenseAnimationCancellable = true;
+    public AnimationClip empoweredDefenseStartupAnimation;
+    public AnimationClip empoweredDefenseActiveCounterAnimation;
+    public AnimationClip empoweredDefenseActiveNoCounterAnimation;
+    public AnimationClip empoweredDefenseRecoveryAnimation;
     #endregion
 
     #region Empowered Attack
     [Header("Empowered Attack")]
-    public float empoweredAttackStartupDuration = 0.1f;
-    public float empoweredAttackActiveDuration = 0.1f;
-    public float empoweredAttackRecoveryDuration = 0.1f;
+    public List<AttackStats> manEmpoweredAttackStats = new();
+
     #endregion
 
     #region Man Power Jump
@@ -113,49 +112,9 @@ public class PlayerStats : ScriptableObject {
     public float powerJumpPeakHangDuration = 0.15f;
     #endregion
 
-    #region Slow Dragon Transform
-    [Header("Slow Dragon Transform")]
-    public float manToDragonTransformDuration = 2f;
-    public float dragonToManTransformDuration = 1f;
-    public float ManToDragonTransformIframeDuration = 0.5f;
-    public float dragonToManTransformIframeDuration = 0.5f;
-    #endregion
-
-    #region Dragon Move Stats
-    public float dragonRotationSpeed = 3f;
-    public float dragonToManRotationSpeed = 1f;
-    public float dragonMaxSpeed = 6f;
-    public float dragonAccelTime = 0.2f;
-    public float dragonDecelTime = 0.6f;
-    public float dragonAccel => dragonMaxSpeed / dragonAccelTime;
-    public float dragonDecel => dragonMaxSpeed / dragonDecelTime;
-    public float dragonTurnSpeed = 5f;
-    // carry speed is the speed the dragon transformation gains from the previous character movements
-    // for now, we use a fixed number
-    public float dragonCarrySpeed = 2f;
-    // the buffer time is so that we take into account the maximum speed during the buffer time, to prevent speed loss
-    // when suddenly transitioning from one movement to another due to input lag/input delay, etc etc
-    // for example, when go from dash to dragon form, the speed is often loss since players will never double press fast enough to get the full dash speed after dash end
-    public float dragonCarrySpeedBufferDuration = 0.3f;
-    public float dragonHoverMaxSpeed = 6f;
-    // the amount of time the mouse needs to stay relatively still before the dragon starts floating
-    public float dragonHoverBufferDuration = 0.2f;
-    public float dragonHoverRandomFactorX = 0.1f;
-    public float dragonHoverRandomFactorY = 0.1f;
-    public float dragonHoverRandomPeriod = 1f;
-    public float dragonHoverPointerMovementRange = 0.5f;
-    // the distance the dragon can be from the mouse before it starts floating, useful for auto hover detection
-    public float dragonHoverAllowedDistanceToMouse = 2f;
-    #endregion
-
-    #region dragon energy stats
-    [Header("Dragon Energy Stats")]
-    public float dragonEnergyRegenDelayDuration = 1f;
-    #endregion
-
     #region Attack
     [Header("Attack")]
-    public List<AttackStats> attackStats = new();
+    public List<AttackStats> manAttackStats = new();
     public float attackInputBufferDuration = 0.1f;
     public float attackInputBufferPostAttackDuration = 0.2f;
     public float blackFlashFrameDuration = 0.05f;
@@ -177,5 +136,60 @@ public class PlayerStats : ScriptableObject {
     public AnimationClip defenseActiveCounterAnimation;
     public AnimationClip defenseActiveNoCounterAnimation;
     public AnimationClip defenseRecoveryAnimation;
+    #endregion
+
+     #region Slow Dragon Transform
+    [Header("Slow Dragon Transform")]
+    public float manToDragonTransformDuration = 2f;
+    public float dragonToManTransformDuration = 1f;
+    public float ManToDragonTransformIframeDuration = 0.5f;
+    public float dragonToManTransformIframeDuration = 0.5f;
+    #endregion
+
+    #region Dragon Move Stats
+    public float dragonRotationSpeed = 3f;
+    public float dragonToManRotationSpeed = 1f;
+    public float dragonMaxSpeed = 6f;
+    public float dragonAccelTime = 0.2f;
+    public float dragonDecelTime = 0.6f;
+    public float dragonAccel => dragonMaxSpeed / dragonAccelTime;
+    public float dragonDecel => dragonMaxSpeed / dragonDecelTime;
+    #endregion
+
+    #region Dragon Attack Stats
+    [Header("Dragon Attack Stats")]
+    public List<AttackStats> dragonAttackStats = new();
+    #endregion
+
+    #region Dragon Defense Stats
+    [Header("Dragon Defense Stats")]
+    public AnimationClip dragonDefenseStartupAnimation;
+    public AnimationClip dragonDefenseActiveCounterAnimation;
+    public AnimationClip dragonDefenseActiveNoCounterAnimation;
+    public AnimationClip dragonDefenseRecoveryAnimation;
+    #endregion
+
+    #region Dragon Empowered Defense Stats
+    [Header("Dragon Empowered Defense Stats")]
+    public AnimationClip dragonEmpoweredDefenseStartupAnimation;
+    public AnimationClip dragonEmpoweredDefenseActiveCounterAnimation;
+    public AnimationClip dragonEmpoweredDefenseActiveNoCounterAnimation;
+    public AnimationClip dragonEmpoweredDefenseRecoveryAnimation;
+    #endregion
+
+    #region Dragon Empowered Attack Stats
+    [Header("Dragon Empowered Attack Stats")]
+    public List<AttackStats> dragonEmpoweredAttackStats = new();
+    #endregion
+
+    #region Dragon Dash Stats
+    [Header("Dragon Dash Stats")]
+    #endregion
+
+
+
+    #region dragon energy stats
+    [Header("Dragon Energy Stats")]
+    public float dragonEnergyRegenDelayDuration = 1f;
     #endregion
 }

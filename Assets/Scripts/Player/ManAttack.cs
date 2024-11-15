@@ -15,7 +15,7 @@ public class ManAttack : BasePlayerAction {
         if (Time.time - newStateStartAt >= player.playerStats.attackInputBufferPostAttackDuration)
             attackMoveCount = 0;
         else
-            attackMoveCount = (attackMoveCount + 1) % player.playerStats.attackStats.Count;
+            attackMoveCount = (attackMoveCount + 1) % player.playerStats.manAttackStats.Count;
         newStateStartAt = 0;
         skillState = SkillState.Ready;
         player.ResetEmpowermentAfterTrigger();
@@ -48,7 +48,7 @@ public class ManAttack : BasePlayerAction {
             if (Time.time - newStateStartAt < attackRecoveryTime) return;
             // once attack recovery is done and next attack input is ready, go to next attack
             if (player.attackInputBufferCountdown > 0 &&
-                attackMoveCount < player.playerStats.attackStats.Count - 1) {
+                attackMoveCount < player.playerStats.manAttackStats.Count - 1) {
                 attackMoveCount++;
                 skillState = SkillState.Ready;
                 newStateStartAt = Time.time;
@@ -69,8 +69,8 @@ public class ManAttack : BasePlayerAction {
     public void AfterManWaterAttackHit() { }
 
     public bool GetAttackAnimationCancellable() {
-        var cancelable = player.playerStats.attackStats[attackMoveCount].cancelable;
-        var attackCancelableAfter = player.playerStats.attackStats[attackMoveCount].attackCancelableAfter;
+        var cancelable = player.playerStats.manAttackStats[attackMoveCount].cancelable;
+        var attackCancelableAfter = player.playerStats.manAttackStats[attackMoveCount].attackCancelableAfter;
         return cancelable && Time.time - attackStartTimestamp > attackCancelableAfter;
     }
 }

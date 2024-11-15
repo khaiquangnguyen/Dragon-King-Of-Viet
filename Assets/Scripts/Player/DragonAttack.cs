@@ -1,11 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DragonSwipe : BasePlayerAction {
-    public DragonSwipe(Player player) : base(player, PlayerState.DragonAttack, PlayerForm.Dragon) { }
-    public float dragonHoverBufferCountdown;
+    public DragonSwipe(Player player, List<AttackStats> attackStatsList) : base(player, PlayerState.DragonAttack,
+        PlayerForm.Dragon) {
+        this.attackStatsList = attackStatsList;
+    }
 
     public override void OnStateEnter() {
-        player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
     }
 
     public override void FixedUpdate() {
@@ -34,7 +36,7 @@ public class DragonSwipe : BasePlayerAction {
             if (Time.time - newStateStartAt < attackRecoveryTime) return;
             // once attack recovery is done and next attack input is ready, go to next attack
             if (player.attackInputBufferCountdown > 0 &&
-                attackMoveCount < player.playerStats.attackStats.Count - 1) {
+                attackMoveCount < player.playerStats.manAttackStats.Count - 1) {
                 attackMoveCount++;
                 skillState = SkillState.Ready;
                 newStateStartAt = Time.time;

@@ -1,48 +1,44 @@
 using UnityEngine;
 
 public class ManEmpoweredDefense : PlayerStateBehavior {
-    public SkillState state = SkillState.Ready;
-    public float lastStateTimestamp;
+    public DefenseState defenseState = DefenseState.Ready;
+    private float newStateStartAt;
 
     public ManEmpoweredDefense(Player player) : base(player, PlayerState.ManEmpoweredDefense, PlayerForm.Man) { }
 
-    public void Begin() {
-        lastStateTimestamp = Time.time;
+    public override void OnStateEnter() {
+        defenseState = DefenseState.Ready;
+        newStateStartAt = Time.time;
         player.inputDisabled = true;
         player.ResetEmpowermentAfterTrigger();
     }
 
     public override void FixedUpdate() {
-        if (state == SkillState.Ready) {
-            state = SkillState.Startup;
+        if (defenseState == DefenseState.Ready) {
+            defenseState = DefenseState.Startup;
+            newStateStartAt = Time.time;
         }
-        else if (state == SkillState.Startup) {
-            if (Time.time - lastStateTimestamp > player.playerStats.empoweredDefenseStartupDuration) {
-                state = SkillState.Active;
-                lastStateTimestamp = Time.time;
+        else if (defenseState == DefenseState.Startup) {
+            player.humanAnimator.Play(player.playerStats.defenseStartupAnimation.name);
+            if (Time.time - newStateStartAt > player.playerStats.defenseStartupDuration) {
+                defenseState = DefenseState.ActiveCounter;
+                newStateStartAt = Time.time;
             }
         }
-        else if (state == SkillState.Active) {
-            if (player.currentDragonEnergy < 0) {
-                state = SkillState.Recovery;
-                lastStateTimestamp = Time.time;
-            }
-            else {
-                player.currentDragonEnergy -=
-                    player.playerStats.empoweredDefenseBaseEnergyDrainRate * Time.fixedDeltaTime;
+        else if (defenseState == DefenseState.ActiveCounter) {
+            player.humanAnimator.Play(player.playerStats.defenseActiveCounterAnimation.name);
+            if (Time.time - newStateStartAt > player.playerStats.defenseActiveCounterDuration) {
+                defenseState = DefenseState.ActiveNoCounter;
+                newStateStartAt = Time.time;
             }
         }
-        else if (state == SkillState.Recovery) {
-            if (Time.time - lastStateTimestamp > player.playerStats.empoweredDefenseRecoveryDuration ||
-                player.playerStats.empoweredDefenseAnimationCancellable)
-                End();
+        else if (defenseState == DefenseState.ActiveNoCounter) {
+            player.humanAnimator.Play(player.playerStats.defenseActiveNoCounterAnimation.name);
         }
-    }
-
-    public void EarlyDefenseEnd() {
-        if (state is SkillState.Active or SkillState.Startup) {
-            state = SkillState.Recovery;
-            lastStateTimestamp = Time.time;
+        else if (defenseState == DefenseState.Recovery) {
+            player.humanAnimator.Play(player.playerStats.defenseRecoveryAnimation.name);
+            if (Time.time - newStateStartAt > player.playerStats.defenseRecoveryDuration)
+                player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
 

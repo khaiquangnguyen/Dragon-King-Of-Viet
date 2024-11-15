@@ -1,5 +1,5 @@
-public class DragonHover : PlayerStateBehavior {
-    public DragonHover(Player player) : base(player, PlayerState.DragonHover, PlayerForm.Dragon) { }
+public class DragonIdle : PlayerStateBehavior {
+    public DragonIdle(Player player) : base(player, PlayerState.DragonIdle, PlayerForm.Dragon) { }
     private float amplitude = 1f;
 
     public override void OnStateEnter() {

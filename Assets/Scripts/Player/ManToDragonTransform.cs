@@ -25,7 +25,7 @@ public class ManToDragonTransform : PlayerStateBehavior {
             player.ChangeAlphaOfDragonAnimator(transformRate);
         }
 
-        if (transformRate >= 1) player.stateMachine.ChangeState(PlayerState.DragonHover);
+        if (transformRate >= 1) player.stateMachine.ChangeState(PlayerState.DragonIdle);
     }
 
     public override void OnStateExit() {

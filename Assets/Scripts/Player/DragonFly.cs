@@ -20,7 +20,7 @@ public class DragonFly : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         if (!isFlying) {
-            player.stateMachine.ChangeState(PlayerState.DragonHover);
+            player.stateMachine.ChangeState(PlayerState.DragonIdle);
             return;
         }
         if (Camera.main == null) return;

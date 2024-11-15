@@ -16,9 +16,9 @@ public enum PlayerState {
     ManCounter,
     ManCastSpell,
     // hover is in place
-    DragonHover,
+    DragonIdle,
     // float is movement, left and right
-    DragonFloat,
+    DragonFloatMove,
     DragonFly,
     DragonAttack,
     DragonFire,
