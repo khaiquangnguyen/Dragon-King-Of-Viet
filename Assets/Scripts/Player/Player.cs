@@ -435,6 +435,7 @@ public class Player : GameCharacter {
     }
 
     private void CheckManJumpInputs() {
+        if (form != Forms.Man) return;
         if (Input.GetButtonDown("Jump")) {
             isJumpCut = false;
             jumpBufferCountdown = playerStats.jumpBufferDuration;
@@ -453,10 +454,10 @@ public class Player : GameCharacter {
         var isJumpBufferPeriod = jumpBufferCountdown > 0;
         var isGrounded = environment == Environment.Ground;
         var canJump = isJumpCountValid && isJumpBufferPeriod && (isGrounded || isJumpGracePeriod);
-        if (canJump) {
-            jumpBufferCountdown = -1;
-            stateMachine.ChangeState(PlayerState.ManJump);
-        }
+        // if (canJump) {
+        //     jumpBufferCountdown = -1;
+        //     stateMachine.ChangeState(PlayerState.ManJump);
+        // }
     }
 
     private void UpdateTimer() {

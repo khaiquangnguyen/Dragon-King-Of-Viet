@@ -5,18 +5,21 @@ public class DragonFly : PlayerStateBehavior {
     public float dragonHoverBufferCountdown;
     private Vector2 dragonMoveDirection;
     public float dragonMaxSpeed;
+    public bool isFlying = true;
 
     public override void OnStateEnter() {
-        player.dragonAnimator.Play("spin");
         player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
         dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
+        isFlying = true;
     }
 
-    public override void Update() { }
+    public override void Update() {
+        var input = Input.GetButton("Jump");
+        isFlying = input;
+    }
 
     public override void FixedUpdate() {
-        var input = Input.GetButton("Jump");
-        if (!input) {
+        if (!isFlying) {
             player.stateMachine.ChangeState(PlayerState.DragonHover);
             return;
         }
@@ -26,11 +29,8 @@ public class DragonFly : PlayerStateBehavior {
         var angle = Mathf.Atan2(dragonMoveDirection.y, dragonMoveDirection.x) * Mathf.Rad2Deg;
         // rotate along the axis by angle
         player.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        var movementAcceleration = Mathf.Abs(player.characterController.velocity.magnitude) < dragonMaxSpeed
-            ? player.playerStats.dragonAccel
-            : player.playerStats.dragonDecel;
-        var dragonSpeed = Mathf.MoveTowards(player.characterController.velocity.magnitude, player.playerStats.dragonMaxSpeed, movementAcceleration * Time.fixedDeltaTime);
-        player.characterController.velocity = dragonMoveDirection.normalized * dragonSpeed;
+        player.characterController.MoveOnNonGroundAnyDirection(player.playerStats.dragonAccel,
+            player.playerStats.dragonDecel, player.playerStats.dragonMaxSpeed, 0, 0, dragonMoveDirection.normalized);
     }
 
     public override void OnStateExit() {

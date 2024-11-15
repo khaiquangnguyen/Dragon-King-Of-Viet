@@ -57,7 +57,7 @@ namespace CharacterBehavior {
                 : decel;
             var speed = Mathf.MoveTowards(velocity.magnitude, maxSpeed,
                 accelerationFactor * Time.fixedDeltaTime);
-            var vX =  direction.normalized.x * speed;
+            var vX = direction.normalized.x * speed;
             var vY = direction.normalized.y * speed;
             Move(vX, vY);
         }

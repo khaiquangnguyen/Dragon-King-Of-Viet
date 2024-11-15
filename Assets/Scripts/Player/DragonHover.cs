@@ -6,8 +6,12 @@ public class DragonHover : PlayerStateBehavior {
         player.UpdateVelocity(0, 0);
     }
 
-    public override void FixedUpdate() {
+    public override void Update() {
+        player.CheckChangeToDragonFly();
         player.CheckChangeToDragonFloat();
+    }
+
+    public override void FixedUpdate() {
         // make the dragon float up and down in sine way
     }
 
