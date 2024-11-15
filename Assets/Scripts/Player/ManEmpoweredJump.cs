@@ -27,13 +27,26 @@ public class ManEmpoweredJump : ManJump {
     }
 
     public override void FixedUpdate() {
+        var acceleration = player.playerStats.manAirAccel;
+        var deceleration = player.playerStats.manAirDecel;
+        var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
+        var accelerationFactor = Mathf.Abs(player.characterController.velocity.x) > maxSpeedX
+            ? acceleration
+            : deceleration;
+        var jumpMoveX = Mathf.MoveTowards(Mathf.Abs(player.characterController.velocity.x), maxSpeedX,
+            accelerationFactor * Time.fixedDeltaTime) * player.facingDirection; // jump cut
         if (player.isJumpCut) {
             UpdateYDuringJumpCut(player.playerStats.empoweredJumpCutDuration, player.playerStats.empoweredJumpCutHeight,player.playerStats.empoweredJumpCutHeightCurve);
         }
         else {
             UpdateYDuringJump(player.playerStats.empoweredJumpDuration, jumpMaxHeight, player.playerStats.empoweredJumpHeightCurve);
         }
-        player.characterController.Move(0, jumpMoveY);
+        if (Time.time - jumpStartTimestamp >= player.playerStats.empoweredJumpInputLockDuration) {
+            player.characterController.Move(jumpMoveX, jumpMoveY);
+        }
+        else {
+            player.characterController.Move(0, jumpMoveY);
+        }
     }
 
     public override void OnStateExit() { }

@@ -163,10 +163,19 @@ MonoBehaviour:
   empoweredDefenseActiveCounterAnimation: {fileID: 0}
   empoweredDefenseActiveNoCounterAnimation: {fileID: 0}
   empoweredDefenseRecoveryAnimation: {fileID: 0}
-  manEmpoweredAttackStats: []
-  empoweredJumpMaxHeight: 8
-  empoweredJumpDuration: 0.35
-  empoweredJumpInputLockDuration: 0.1
+  manEmpoweredAttackStats:
+  - startupDuration: 0.1
+    activeDuration: 0.2
+    recoveryDuration: 0.2
+    attackCancelableAfter: 0.4
+    damage: 1
+    cancelable: 1
+    startupAnimation: {fileID: 7400000, guid: e6d7fad4b079d4858bb627afcc777653, type: 2}
+    activeAnimation: {fileID: 7400000, guid: 0b91b3ced166c43a4b967fac23df440f, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: 8211bb90029584560bcd602a70530213, type: 2}
+  empoweredJumpMaxHeight: 10
+  empoweredJumpDuration: 0.4
+  empoweredJumpInputLockDuration: 0.2
   empoweredJumpCutHeight: 0.5
   empoweredJumpCutDuration: 0.1
   empoweredJumpHeightCurve:
@@ -175,16 +184,25 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 1
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.2430616
+      value: 0.6514437
+      inSlope: 1.4525774
+      outSlope: 1.4525774
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
+      inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
@@ -222,7 +240,7 @@ MonoBehaviour:
     activeDuration: 0.2
     recoveryDuration: 0.1
     attackCancelableAfter: 0.4
-    damage: 0
+    damage: 1
     cancelable: 1
     startupAnimation: {fileID: 7400000, guid: 06fc2017e587345cbb68af180fa0cceb, type: 2}
     activeAnimation: {fileID: 7400000, guid: 288c1dd47f3b14df0b8dbfc0f543f80b, type: 2}
@@ -238,8 +256,8 @@ MonoBehaviour:
     recoveryAnimation: {fileID: 7400000, guid: 94646b9c16e2e450ba37250700e24c23, type: 2}
   - startupDuration: 0.1
     activeDuration: 0.2
-    recoveryDuration: 0.3
-    attackCancelableAfter: 0.4
+    recoveryDuration: 0.2
+    attackCancelableAfter: 0.5
     damage: 0
     cancelable: 1
     startupAnimation: {fileID: 7400000, guid: ca15c5cb71e244446813970ff34b0f0d, type: 2}
