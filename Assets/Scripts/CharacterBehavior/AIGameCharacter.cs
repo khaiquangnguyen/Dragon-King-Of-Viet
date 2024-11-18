@@ -28,11 +28,13 @@ namespace CharacterBehavior {
         [ReadOnly]
         public int jumpCount = 0;
         public AICharacterCombatStats combatStats;
+        [HideInInspector]
         public Animator animator;
         public Environment environment;
         public CircleCollider2D attackCollider;
 
         public void OnEnable() {
+            animator = GetComponent<Animator>();
             controller = GetComponent<CharacterController2D>();
             controller.body = GetComponent<Rigidbody2D>();
             controller.bodyCollider = GetComponent<Collider2D>();

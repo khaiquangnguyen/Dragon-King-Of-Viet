@@ -159,10 +159,10 @@ MonoBehaviour:
   empoweredFallStartupDuration: 0.1
   empoweredFallRecoveryDuration: 0.1
   empoweredDefenseBaseEnergyDrainRate: 1
-  empoweredDefenseStartupAnimation: {fileID: 0}
-  empoweredDefenseActiveCounterAnimation: {fileID: 0}
-  empoweredDefenseActiveNoCounterAnimation: {fileID: 0}
-  empoweredDefenseRecoveryAnimation: {fileID: 0}
+  empoweredDefenseStartupAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
+  empoweredDefenseActiveCounterAnimation: {fileID: 7400000, guid: c81e99615881547ae84252469e25d1d7, type: 2}
+  empoweredDefenseActiveNoCounterAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
+  empoweredDefenseRecoveryAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
   manEmpoweredAttackStats:
   - startupDuration: 0.1
     activeDuration: 0.2
@@ -285,14 +285,18 @@ MonoBehaviour:
   dragonMaxSpeed: 15
   dragonAccelTime: 0.6
   dragonDecelTime: 0.6
-  dragonAttackStats: []
-  dragonDefenseStartupAnimation: {fileID: 0}
-  dragonDefenseActiveCounterAnimation: {fileID: 0}
-  dragonDefenseActiveNoCounterAnimation: {fileID: 0}
-  dragonDefenseRecoveryAnimation: {fileID: 0}
-  dragonEmpoweredDefenseStartupAnimation: {fileID: 0}
-  dragonEmpoweredDefenseActiveCounterAnimation: {fileID: 0}
-  dragonEmpoweredDefenseActiveNoCounterAnimation: {fileID: 0}
-  dragonEmpoweredDefenseRecoveryAnimation: {fileID: 0}
-  dragonEmpoweredAttackStats: []
+  dragonAttackStats:
+  - startupDuration: 0.1
+    activeDuration: 0.4
+    recoveryDuration: 0.2
+    attackCancelableAfter: 0
+    damage: 0
+    cancelable: 1
+    startupAnimation: {fileID: 7400000, guid: 8873066722f33453b99899e712c861a5, type: 2}
+    activeAnimation: {fileID: 7400000, guid: a9550dcad71764ba7b553ae93770b3c8, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
+  dragonDefenseStartupAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
+  dragonDefenseActiveCounterAnimation: {fileID: 7400000, guid: 948b582872ee6c9458c2055e7e640296, type: 2}
+  dragonDefenseActiveNoCounterAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
+  dragonDefenseRecoveryAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
   dragonEnergyRegenDelayDuration: 1

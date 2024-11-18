@@ -6,13 +6,22 @@ public class ManAttack : BasePlayerAction {
         animator = player.humanAnimator;
     }
 
+    public override void Update() {
+        if (player.CheckChangeToManRunState()) return;
+        if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
+        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManDefenseState()) return;
+        if (player.CheckChangeToManAttackState()) return;
+        if (player.CheckTransformIntoDragonAndBack()) return;
+    }
+
     public override void OnStateEnter() {
         // the attack count is only reset after a certain time has passed, to create a bit of a buffer even
         // when player enter attack after previous attack has ended
         if (Time.time - newStateStartAt >= player.playerStats.attackInputBufferPostAttackDuration)
             attackMoveCount = 0;
         else
-            attackMoveCount = (attackMoveCount + 1) % player.playerStats.manAttackStats.Count;
+            attackMoveCount = (attackMoveCount + 1) % attackStatsList.Count;
         newStateStartAt = 0;
         skillState = SkillState.Ready;
         player.ResetEmpowermentAfterTrigger();
@@ -45,7 +54,7 @@ public class ManAttack : BasePlayerAction {
             if (Time.time - newStateStartAt < attackRecoveryTime) return;
             // once attack recovery is done and next attack input is ready, go to next attack
             if (player.attackInputBufferCountdown > 0 &&
-                attackMoveCount < player.playerStats.manAttackStats.Count - 1) {
+                attackMoveCount < attackStatsList.Count - 1) {
                 attackMoveCount++;
                 skillState = SkillState.Ready;
                 newStateStartAt = Time.time;
@@ -66,8 +75,8 @@ public class ManAttack : BasePlayerAction {
     public void AfterManWaterAttackHit() { }
 
     public bool GetAttackAnimationCancellable() {
-        var cancelable = player.playerStats.manAttackStats[attackMoveCount].cancelable;
-        var attackCancelableAfter = player.playerStats.manAttackStats[attackMoveCount].attackCancelableAfter;
+        var cancelable = attackStatsList[attackMoveCount].cancelable;
+        var attackCancelableAfter = attackStatsList[attackMoveCount].attackCancelableAfter;
         return cancelable && Time.time - attackStartTimestamp > attackCancelableAfter;
     }
 }

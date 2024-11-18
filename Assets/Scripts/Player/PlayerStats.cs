@@ -151,9 +151,9 @@ public class PlayerStats : ScriptableObject {
     public AnimationClip defenseRecoveryAnimation;
     #endregion
 
-    #region Slow Dragon Transform
-    [Header("Slow Dragon Transform")]
-    public float manToDragonTransformDuration = 2f;
+    #region Dragon Transform
+    [Header("Dragon Transform")]
+    public float manToDragonTransformDuration = 2;
     public float dragonToManTransformDuration = 1f;
     public float ManToDragonTransformIframeDuration = 0.5f;
     public float dragonToManTransformIframeDuration = 0.5f;
@@ -180,19 +180,6 @@ public class PlayerStats : ScriptableObject {
     public AnimationClip dragonDefenseActiveCounterAnimation;
     public AnimationClip dragonDefenseActiveNoCounterAnimation;
     public AnimationClip dragonDefenseRecoveryAnimation;
-    #endregion
-
-    #region Dragon Empowered Defense Stats
-    [Header("Dragon Empowered Defense Stats")]
-    public AnimationClip dragonEmpoweredDefenseStartupAnimation;
-    public AnimationClip dragonEmpoweredDefenseActiveCounterAnimation;
-    public AnimationClip dragonEmpoweredDefenseActiveNoCounterAnimation;
-    public AnimationClip dragonEmpoweredDefenseRecoveryAnimation;
-    #endregion
-
-    #region Dragon Empowered Attack Stats
-    [Header("Dragon Empowered Attack Stats")]
-    public List<AttackStats> dragonEmpoweredAttackStats = new();
     #endregion
 
     #region Dragon Dash Stats

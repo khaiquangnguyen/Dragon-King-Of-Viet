@@ -11,6 +11,7 @@ public class ManIdle : PlayerStateBehavior {
         if (player.CheckChangeToManDodgeHopDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
+        if (player.CheckChangeToDragonOrManCastSpell()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;
     }
 

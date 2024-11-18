@@ -13,6 +13,12 @@ public class ManDefense : PlayerStateBehavior {
     }
 
     public override void Update() {
+        if (player.CheckChangeToDragonOrManCastSpell()) {
+            newStateStartAt = Time.time;
+            defenseState = DefenseState.Recovery;
+            return;
+        }
+
         if (Input.GetButtonUp("Defense")) {
             newStateStartAt = Time.time;
             defenseState = DefenseState.Recovery;

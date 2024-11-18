@@ -53,7 +53,7 @@ public class Player : GameCharacter {
     #endregion
 
     #region --------------------- Empower Attributes -------------------------------------
-    private float empoweredHoldDuration = 0;
+    private float collectEnergyToTransformDuration = 0;
     private float empoweredNextMoveBufferCountdown;
     [ReadOnly]
     public bool isEmpowering = false;
@@ -96,7 +96,8 @@ public class Player : GameCharacter {
     #region --------------------- Other Attributes --------------------------------------
     public LayerMask groundLayer;
     public PlayerStats playerStats;
-    public SkillList skillList;
+    public SkillList manSkills;
+    public SkillList dragonSkills;
     private readonly bool bumpHead = false;
     [HideInInspector]
     public bool inputDisabled;
@@ -147,6 +148,9 @@ public class Player : GameCharacter {
     private DragonFloatMove dragonFloatMove;
     private DragonFly dragonFly;
     private DragonIdle dragonIdle;
+    private DragonDefense dragonDefense;
+    private DragonAttack dragonAttack;
+    private DragonCastSpell dragonCastSpell;
     public CircleCollider2D manAttackCollider;
     public CircleCollider2D dragonAttackCollider;
     private EnergyManager energyManager;
@@ -190,8 +194,11 @@ public class Player : GameCharacter {
         stateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
         stateMachine.AddState(dragonToManTransform = new DragonToManTransform(this));
         stateMachine.AddState(dragonIdle = new DragonIdle(this));
+        stateMachine.AddState(dragonAttack = new DragonAttack(this));
         stateMachine.AddState(dragonFly = new DragonFly(this));
         stateMachine.AddState(dragonFloatMove = new DragonFloatMove(this));
+        stateMachine.AddState(dragonDefense = new DragonDefense(this));
+        stateMachine.AddState(dragonCastSpell = new DragonCastSpell(this));
         stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
@@ -215,52 +222,10 @@ public class Player : GameCharacter {
         UpdateTimer();
         UpdateEnvironment();
         UpdateInputAndDirection();
-        if (inputDisabled) return;
-        if (stateMachine.currentPlayerState == PlayerState.ManIdle) {
-            CheckChangeToManRunState();
-            CheckChangeToManDodgeHopDashState();
-            CheckChangeToManAttackState();
-            CheckChangeToManDefenseState();
-        }
-
-        if (stateMachine.currentPlayerState == PlayerState.ManRun) {
-            CheckChangeToManRunState();
-            CheckChangeToManDodgeHopDashState();
-            CheckChangeToManAttackState();
-            CheckChangeToManDefenseState();
-        }
-
-        if (stateMachine.currentPlayerState == PlayerState.ManAttack) {
-            CheckChangeToManAttackState();
-            if (manAttack.GetAttackAnimationCancellable()) {
-                CheckChangeToManDodgeHopDashState();
-                CheckChangeToManDefenseState();
-            }
-        }
-
-        // if (stateMachine.currentPlayerState == PlayerState.ManFall) {
-        //     CheckChangeToManDashState();
-        //     CheckChangeToManRunState();
-        //     CheckChangeToIdleState();
-        // }
-
-        if (stateMachine.currentPlayerState == PlayerState.ManJump) CheckChangeToManDodgeHopDashState();
-        // if (inputDirectionX != 0) {
-        //     if (stateMachine.currentCharacterState == CharacterState.ManIdle)
-        //         stateMachine.ChangeState(CharacterState.ManRun);
-        //     if (isEmpowering)
-        //         if (dashCooldownCountdown <= 0) {
-        //             stateMachine.ChangeState(CharacterState.ManDash);
-        //         }
-        //
-        //     if (stateMachine.currentCharacterState == CharacterState.DragonHover)
-        //         stateMachine.ChangeState(CharacterState.DragonFloat);
-        // }
         stateMachine.Update();
+        if (inputDisabled) return;
         transform.localScale = new Vector3(facingDirection, transform.localScale.y, transform.localScale.z);
         CheckEmpowerAndTransformInputs();
-        CheckSkillTrigger();
-        // CheckChangeToManAttackState();
     }
 
     public bool CheckChangeToManFallFromNonAirState() {
@@ -305,24 +270,26 @@ public class Player : GameCharacter {
         return canRun;
     }
 
-    public void CheckChangeToDragonFloat() {
+    public bool CheckChangeToDragonFloat() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Dragon;
         var inputValidated = inputDirectionX != 0 && !isEmpowering;
         var canFloat = formValidated && inputValidated;
-        if (canFloat) stateMachine.ChangeState(PlayerState.DragonFloatMove);
+        if (canFloat) {
+            stateMachine.ChangeState(PlayerState.DragonFloatMove);
+            return true;
+        }
+
+        return false;
     }
 
-    public void CheckChangeToDragonFly() {
+    public bool CheckChangeToDragonFly() {
         var input = Input.GetButtonDown("Jump");
-        if (input) stateMachine.ChangeState(PlayerState.DragonFly);
-    }
+        if (input) {
+            stateMachine.ChangeState(PlayerState.DragonFly);
+            return true;
+        }
 
-    public void CheckChangeToIdleState() {
-        var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
-        var environmentValidated = environment == Environment.Ground;
-        var speedValidated = Mathf.Approximately(body.linearVelocity.x, 0);
-        if (environmentValidated && formValidated && speedValidated)
-            stateMachine.ChangeState(PlayerState.ManIdle);
+        return false;
     }
 
     public bool CheckChangeToManDodgeHopDashState() {
@@ -359,19 +326,41 @@ public class Player : GameCharacter {
     public bool CheckChangeToManAttackState() {
         var inputValidated = Input.GetButtonDown("Attack");
         if (!inputValidated) return false;
+        if (form != PlayerForm.Man) return false;
         attackInputBufferCountdown = playerStats.attackInputBufferDuration;
         stateMachine.ChangeState(isEmpowering ? PlayerState.ManEmpoweredAttack : PlayerState.ManAttack);
         return true;
     }
 
+    public bool CheckChangeToDragonAttackState() {
+        var inputValidated = Input.GetButtonDown("Attack");
+        if (!inputValidated) return false;
+        if (form != PlayerForm.Dragon) return false;
+        attackInputBufferCountdown = playerStats.attackInputBufferDuration;
+        stateMachine.ChangeState(PlayerState.DragonAttack);
+        return true;
+    }
+
     public bool CheckChangeToManDefenseState() {
         var inputValidated = Input.GetButtonDown("Defense");
+        if (form != PlayerForm.Man) return false;
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
-            stateMachine.ChangeState(PlayerState.ManDefense);
+            stateMachine.ChangeState(isEmpowering ? PlayerState.ManEmpoweredDefense : PlayerState.ManDefense);
             return true;
         }
+        return false;
+    }
 
+
+    public bool CheckChangeToDragonDefenseState() {
+        var inputValidated = Input.GetButtonDown("Defense");
+        if (form != PlayerForm.Dragon) return false;
+        if (inputValidated) {
+            attackInputBufferCountdown = playerStats.attackInputBufferDuration;
+            stateMachine.ChangeState(PlayerState.DragonDefense);
+            return true;
+        }
         return false;
     }
 
@@ -541,10 +530,13 @@ public class Player : GameCharacter {
     #endregion
 
     #region ------------------- Skills Usage ----------------------------------
-    private void CheckSkillTrigger() {
+    public bool CheckChangeToDragonOrManCastSpell() {
+        BaseSpellCast spellCastForm = form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
+        var skillList = form == PlayerForm.Dragon ? dragonSkills : manSkills;
+        var spellCastState = form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
         if (Input.GetButtonDown("Skill1")) {
             var firstSkill = skillList.GetEnabledSkills().First();
-            manCastSpell.SetSkillData(
+            spellCastForm.SetSkillData(
                 firstSkill,
                 firstSkill.skillStartupDuration,
                 firstSkill.skillActiveDuration,
@@ -552,9 +544,11 @@ public class Player : GameCharacter {
                 firstSkill.skillStartupAnimation,
                 firstSkill.skillActiveAnimation,
                 firstSkill.skillRecoveryAnimation);
-            stateMachine.ChangeState(PlayerState.ManCastSpell);
+            stateMachine.ChangeState(spellCastState);
             firstSkill.Init(this);
+            return true;
         }
+        return false;
     }
     #endregion
 
@@ -596,23 +590,26 @@ public class Player : GameCharacter {
     }
 
     public bool CheckTransformIntoDragonAndBack() {
-        // var isEmpoweringHold = Input.GetButton("Empower");
-        // if (isEmpoweringHold) {
-        //     empoweredHoldDuration += Time.deltaTime;
-        //     if (empoweredHoldDuration >= playerStats.empowerHoldDurationBeforeTransform) {
-        //         if (form == PlayerForm.Man) {
-        //             ChangeToDragon();
-        //             return true;
-        //         }
-        //         else {
-        //             ChangeToMan();
-        //             return true;
-        //         }
-        //     }
-        // }
-        // else {
-        //     empoweredHoldDuration = 0;
-        // }
+        var isEmpoweringHold = Input.GetButton("Empower");
+        var isFireSkillHold = Input.GetButton("FireSkill");
+        if (isEmpoweringHold && isFireSkillHold) {
+            collectEnergyToTransformDuration += Time.deltaTime;
+            if (collectEnergyToTransformDuration >= playerStats.empowerHoldDurationBeforeTransform) {
+                if (form == PlayerForm.Man) {
+                    ChangeToDragon();
+                    collectEnergyToTransformDuration = 0;
+                    return true;
+                }
+                else {
+                    ChangeToMan();
+                    collectEnergyToTransformDuration = 0;
+                    return true;
+                }
+            }
+        }
+        else {
+            collectEnergyToTransformDuration = 0;
+        }
 
         return false;
     }

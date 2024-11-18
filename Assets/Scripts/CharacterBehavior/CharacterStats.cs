@@ -18,5 +18,6 @@ namespace CharacterBehavior {
         public float maxFallSpeed;
         public float jumpHeight;
         public int maxJumpsCount;
+        public AnimationClip idleAnimation;
     }
 }

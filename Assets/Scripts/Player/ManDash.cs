@@ -16,7 +16,6 @@ public class ManDash : PlayerStateBehavior {
     public ManDash(Player player) : base(player, PlayerState.ManDash, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        MonoBehaviour.print("Dashing");
         dashStartingPosition = player.body.position;
         player.inputDisabled = true;
         player.ResetEmpowermentAfterTrigger();

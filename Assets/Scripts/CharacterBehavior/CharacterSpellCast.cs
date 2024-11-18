@@ -2,21 +2,25 @@ using UnityEngine;
 
 namespace CharacterBehavior {
     public class CharacterSpellCast : BaseCharacterAction {
-        private SkillState skillState = SkillState.Ready;
-        private float skillStartTimestamp;
-        private float newStateStartAt;
+        public SkillState skillState = SkillState.Ready;
+        public float skillStartTimestamp;
+        public float newStateStartAt;
         public float skillStartupTime;
         public float skillActiveTime;
         public float skillRecoveryTime;
+        public Animator animator;
         public AnimationClip skillStartupAnimation;
         public AnimationClip skillActiveAnimation;
         public AnimationClip skillRecoveryAnimation;
+        public bool skillUsed;
+        public Skill currentSkill;
 
         public CharacterSpellCast(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
             controller, CharacterState.CastSpell) { }
 
-        public void SetSkillData(float startupTime, float activeTime, float recoveryTime,
+        public void SetSkillData(Skill skill, float startupTime, float activeTime, float recoveryTime,
             AnimationClip startupAnimation, AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
+            currentSkill = skill;
             skillStartupTime = startupTime;
             skillActiveTime = activeTime;
             skillRecoveryTime = recoveryTime;
@@ -51,11 +55,6 @@ namespace CharacterBehavior {
                     gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
                 }
             }
-
-            if (gameCharacter.environment == Environment.Ground)
-                characterController.Move(0, 0);
-            else
-                characterController.Move(0, characterController.velocity.y);
         }
     }
 }

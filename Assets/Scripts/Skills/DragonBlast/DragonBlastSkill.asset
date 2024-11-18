@@ -21,7 +21,7 @@ MonoBehaviour:
   skillRecoveryDuration: 0.1
   skillStartupAnimation: {fileID: 7400000, guid: 9cd89d08c803f1645b8b61d03d9bf326, type: 2}
   skillActiveAnimation: {fileID: 7400000, guid: 10573f78446dc8d48bdd19cad83f3ef0, type: 2}
-  skillRecoveryAnimation: {fileID: 7400000, guid: 5725eee5f0e64fe438d0e45c7609e0db, type: 2}
+  skillRecoveryAnimation: {fileID: 7400000, guid: 6b8729b7a0a214d4faec9c96a8eb113f, type: 2}
   projectilePrefab: {fileID: 6319345273986289958, guid: 90b2dbbd9ec554650b0baa7ad118ebe4, type: 3}
   projectileImpactPrefab: {fileID: 5143368176362401076, guid: d734a1fef82cf4ed084715af4dd75461, type: 3}
   projectileSelfDestructPrefab: {fileID: 2525048466207748641, guid: 8c835183bb8f6494dafd4569d3213266, type: 3}

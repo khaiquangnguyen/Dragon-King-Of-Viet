@@ -4,7 +4,9 @@ namespace CharacterBehavior {
             controller2D,
             CharacterState.Idle) { }
 
-        public override void OnStateEnter() { }
+        public override void OnStateEnter() {
+            gameCharacter.animator.Play(gameCharacter.stats.idleAnimation.name);
+        }
 
         public override void Update() {
             if (gameCharacter.inputDirectionX != 0) gameCharacter.stateMachine.ChangeState(CharacterState.Running);
