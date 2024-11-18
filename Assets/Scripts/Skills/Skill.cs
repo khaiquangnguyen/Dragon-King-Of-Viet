@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Skill : ScriptableObject {
     [ReadOnly]
     public string skillName;
-    public GameObject icon;
+    public Sprite icon;
     public float baseCooldown;
     public float damage;
     protected GameCharacter Caster;

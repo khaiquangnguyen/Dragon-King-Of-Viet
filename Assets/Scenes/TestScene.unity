@@ -2776,6 +2776,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   environment: 0
   attackCollider: {fileID: 0}
+  shouldAttack: 0
 --- !u!50 &1766946049
 Rigidbody2D:
   serializedVersion: 5

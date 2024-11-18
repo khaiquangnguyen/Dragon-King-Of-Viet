@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26b2174c2cdc44208d40ebcf105e369f, type: 3}
-  m_Name: DragonBlastSkill
+  m_Name: DragonBlastSkill 5
   m_EditorClassIdentifier: 
-  skillName: Dragon Blast
-  icon: {fileID: -6732451527612580723, guid: 2846042fad0f040efaea56a9e1e616a8, type: 3}
+  skillName: Dragon Blast 5
+  icon: {fileID: 624711589335616600, guid: 2f8f905aca28d4e91b6d08a319f18c36, type: 3}
   baseCooldown: 10
   damage: 2
   skillStartupDuration: 0.1
