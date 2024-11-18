@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace CharacterBehavior {
     public abstract class BaseCharacterAction : CharacterStateBehavior {
-        public SkillState skillState = SkillState.Ready;
+        protected SkillState skillState = SkillState.Ready;
         private float attackStartTimestamp;
-        private float newStateStartAt;
-        public List<GameCharacter> hitCharacters = new List<GameCharacter>();
+        protected float newStateStartAt;
+        protected List<GameCharacter> hitCharacters = new List<GameCharacter>();
 
         public BaseCharacterAction(AIGameCharacter gameCharacter, CharacterController2D controller,
             CharacterState characterState) : base(gameCharacter, controller, characterState) { }

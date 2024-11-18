@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterBehavior {
-    public class CharacterCombatAttacks : BaseCharacterAction {
+    public class CharacterComboAttacks : BaseCharacterAction {
         private int attackMoveCount = 0;
         private float attackStartTimestamp;
-        private float newStateStartAt;
-        private List<AttackStats> comboAttackStats;
+        private readonly List<AttackStats> comboAttackStats;
 
-        public CharacterCombatAttacks(AIGameCharacter gameCharacter, CharacterController2D controller,
+        public CharacterComboAttacks(AIGameCharacter gameCharacter, CharacterController2D controller,
             List<AttackStats> comboAttackStats) : base(
             gameCharacter, controller, CharacterState.ComboAttacks) {
             this.comboAttackStats = comboAttackStats;
@@ -44,7 +43,7 @@ namespace CharacterBehavior {
                 hitCharacters.Clear();
                 if (Time.time - newStateStartAt < attackRecoveryTime) return;
                 // more attack to fire
-                if (attackMoveCount < gameCharacter.combatStats.attackStats.Count - 1) {
+                if (attackMoveCount < comboAttackStats.Count - 1) {
                     attackMoveCount++;
                     skillState = SkillState.Ready;
                     newStateStartAt = Time.time;

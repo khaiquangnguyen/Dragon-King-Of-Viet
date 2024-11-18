@@ -31,9 +31,11 @@ namespace CharacterBehavior {
         public Animator animator;
         public Environment environment;
         public CircleCollider2D attackCollider;
+        public bool shouldAttack;
 
 
         public void OnEnable() {
+            shouldAttack = false;
             animator = GetComponent<Animator>();
             controller = GetComponent<CharacterController2D>();
             controller.body = GetComponent<Rigidbody2D>();
