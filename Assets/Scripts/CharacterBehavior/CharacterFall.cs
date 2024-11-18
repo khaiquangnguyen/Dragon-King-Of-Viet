@@ -8,6 +8,10 @@ namespace CharacterBehavior {
 
         public override void OnStateEnter() { }
 
+        public override void Update() {
+        }
+
+
         public override void FixedUpdate() {
             var acceleration = gameCharacter.stats.airAccel;
             var deceleration = gameCharacter.stats.airDecel;

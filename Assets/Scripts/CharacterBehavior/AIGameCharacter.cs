@@ -16,7 +16,6 @@ namespace CharacterBehavior {
         private CharacterIdle characterIdle;
         private CharacterFall characterFall;
         private CharacterJump characterJump;
-        private BaseCharacterAction baseCharacterAction;
         private CharacterSpellCast characterSpellCast;
         private CharacterDefense characterDefense;
 
@@ -33,6 +32,7 @@ namespace CharacterBehavior {
         public Environment environment;
         public CircleCollider2D attackCollider;
 
+
         public void OnEnable() {
             animator = GetComponent<Animator>();
             controller = GetComponent<CharacterController2D>();
@@ -43,7 +43,6 @@ namespace CharacterBehavior {
             stateMachine.AddState(characterFall = new CharacterFall(this, controller));
             stateMachine.AddState(characterIdle = new CharacterIdle(this, controller));
             stateMachine.AddState(characterJump = new CharacterJump(this, controller));
-            stateMachine.AddState(baseCharacterAction = new CharacterBasicAction(this, controller));
             stateMachine.AddState(characterSpellCast = new CharacterSpellCast(this, controller));
             stateMachine.AddState(characterDefense = new CharacterDefense(this, controller));
             stateMachine.ChangeState(CharacterState.Idle);
@@ -97,6 +96,32 @@ namespace CharacterBehavior {
         public void OnSkillOrAttackHit(int baseDamage, GameCharacter damagedCharacter) {
             var damage = (int)(baseDamage * damageMult);
             OnDealDamage(damage, damagedCharacter);
+        }
+
+        public bool CheckChangeToFallFromNonAirState() {
+            if (environment == Environment.Air) {
+                stateMachine.ChangeState(CharacterState.Falling);
+                return true;
+            }
+            return false;
+        }
+
+        // Change to idle should be add to fixed update movement
+        // since if you put it in update like other CheckChange functions,
+        // it will trigger almost immediately
+        public bool CheckChangeToIdle() {
+            var notMoving = Mathf.Approximately(controller.velocity.magnitude, 0);
+            if (notMoving && environment == Environment.Ground) {
+                stateMachine.ChangeState(CharacterState.Idle);
+                return true;
+            }
+            return false;
+        }
+
+        public bool CheckChangeToRunState() {
+            var canRun = inputDirectionX != 0 && environment == Environment.Ground;
+            if (canRun) stateMachine.ChangeState(CharacterState.Running);
+            return canRun;
         }
     }
 }

@@ -2,23 +2,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterBehavior {
-    public class CharacterBasicAction : BaseCharacterAction {
+    public class CharacterCombatAttacks : BaseCharacterAction {
         private int attackMoveCount = 0;
-        private SkillState skillState = SkillState.Ready;
         private float attackStartTimestamp;
         private float newStateStartAt;
-        public List<GameCharacter> hitCharacters = new();
+        private List<AttackStats> comboAttackStats;
 
-        public CharacterBasicAction(AIGameCharacter gameCharacter, CharacterController2D controller) : base(
-            gameCharacter, controller, CharacterState.BasicAttack) { }
+        public CharacterCombatAttacks(AIGameCharacter gameCharacter, CharacterController2D controller,
+            List<AttackStats> comboAttackStats) : base(
+            gameCharacter, controller, CharacterState.ComboAttacks) {
+            this.comboAttackStats = comboAttackStats;
+        }
+
+        public override void OnStateEnter() {
+            base.OnStateEnter();
+            attackMoveCount = 0;
+        }
 
         public override void FixedUpdate() {
-            var attackStartupTime = gameCharacter.combatStats.attackStats[attackMoveCount].startupDuration;
-            var attackActiveTime = gameCharacter.combatStats.attackStats[attackMoveCount].activeDuration;
-            var attackRecoveryTime = gameCharacter.combatStats.attackStats[attackMoveCount].recoveryDuration;
-            var startupAnimation = gameCharacter.combatStats.attackStats[attackMoveCount].startupAnimation;
-            var activeAnimation = gameCharacter.combatStats.attackStats[attackMoveCount].activeAnimation;
-            var recoveryAnimation = gameCharacter.combatStats.attackStats[attackMoveCount].recoveryAnimation;
+            var attackStartupTime = comboAttackStats[attackMoveCount].startupDuration;
+            var attackActiveTime = comboAttackStats[attackMoveCount].activeDuration;
+            var attackRecoveryTime = comboAttackStats[attackMoveCount].recoveryDuration;
+            var startupAnimation = comboAttackStats[attackMoveCount].startupAnimation;
+            var activeAnimation = comboAttackStats[attackMoveCount].activeAnimation;
+            var recoveryAnimation = comboAttackStats[attackMoveCount].recoveryAnimation;
             if (skillState == SkillState.Ready) {
                 EnterStartup(startupAnimation);
             }
@@ -28,7 +35,7 @@ namespace CharacterBehavior {
                 }
             }
             else if (skillState == SkillState.Active) {
-                CheckAttackHit();
+                CheckAttackHit(comboAttackStats[attackMoveCount].damage);
                 if (Time.time - newStateStartAt > attackActiveTime) {
                     EnterRecovery(recoveryAnimation);
                 }
@@ -46,11 +53,6 @@ namespace CharacterBehavior {
                     gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
                 }
             }
-
-            if (gameCharacter.environment == Environment.Ground)
-                characterController.Move(0, 0);
-            else
-                characterController.Move(0, characterController.velocity.y);
         }
     }
 }

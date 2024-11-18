@@ -10,19 +10,20 @@ namespace CharacterBehavior {
 
         public override void OnStateEnter() { }
 
+        public override void Update() {
+            if (gameCharacter.CheckChangeToFallFromNonAirState()) return;
+        }
+
         public override void FixedUpdate() {
             if (Mathf.Approximately(characterController.velocity.magnitude, 0))
                 gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
             var acceleration = gameCharacter.stats.groundAccel;
             var deceleration = gameCharacter.stats.groundDecel;
             var maxSpeed = Mathf.Abs(gameCharacter.stats.groundMaxSpeed * gameCharacter.inputDirectionX);
-            if (!characterController.isOnGround())
-                gameCharacter.stateMachine.ChangeState(CharacterState.Falling);
-            else
-                characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+            characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+            if (!(gameCharacter.CheckChangeToIdle())) return;
         }
 
-        public override void Update() { }
         public override void OnStateExit() { }
     }
 }

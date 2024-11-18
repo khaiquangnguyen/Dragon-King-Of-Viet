@@ -14,6 +14,7 @@ public class ManFall : PlayerStateBehavior {
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;
     }
+
     public override void FixedUpdate() {
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;

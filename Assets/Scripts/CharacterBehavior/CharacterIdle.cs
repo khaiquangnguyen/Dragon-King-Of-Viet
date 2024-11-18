@@ -9,7 +9,8 @@ namespace CharacterBehavior {
         }
 
         public override void Update() {
-            if (gameCharacter.inputDirectionX != 0) gameCharacter.stateMachine.ChangeState(CharacterState.Running);
+            if (gameCharacter.CheckChangeToIdle()) return;
+            if (gameCharacter.CheckChangeToFallFromNonAirState()) return;
         }
 
         public override void FixedUpdate() {

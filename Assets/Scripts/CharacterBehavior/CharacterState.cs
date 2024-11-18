@@ -7,7 +7,7 @@ namespace CharacterBehavior {
         Falling,
         Landing,
         CastSpell,
-        BasicAttack,
+        ComboAttacks,
         Defense,
         SpecialAttack1,
         SpecialAttack2,

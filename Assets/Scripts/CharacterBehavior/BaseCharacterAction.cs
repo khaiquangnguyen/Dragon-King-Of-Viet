@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace CharacterBehavior {
     public abstract class BaseCharacterAction : CharacterStateBehavior {
-        private int attackMoveCount = 0;
-        private SkillState skillState = SkillState.Ready;
+        public SkillState skillState = SkillState.Ready;
         private float attackStartTimestamp;
         private float newStateStartAt;
         public List<GameCharacter> hitCharacters = new List<GameCharacter>();
@@ -15,8 +14,6 @@ namespace CharacterBehavior {
         public override void OnStateEnter() {
             skillState = SkillState.Ready;
             newStateStartAt = 0;
-            skillState = SkillState.Ready;
-            attackMoveCount = 0;
             characterController.Move(0, 0);
         }
 
@@ -46,7 +43,7 @@ namespace CharacterBehavior {
             }
         }
 
-        public void CheckAttackHit() {
+        public void CheckAttackHit(int damage) {
             var hitboxCollider = gameCharacter.attackCollider;
             if (!hitboxCollider) return;
             //get all colliders that are in the hitbox
@@ -57,7 +54,7 @@ namespace CharacterBehavior {
                     var otherCharacter = character.GetComponent<GameCharacter>();
                     if (otherCharacter == this.gameCharacter) continue;
                     if (hitCharacters.Contains(otherCharacter)) continue;
-                    gameCharacter.OnSkillOrAttackHit(gameCharacter.combatStats.attackStats[attackMoveCount].damage,
+                    gameCharacter.OnSkillOrAttackHit(damage,
                         otherCharacter);
                     hitCharacters.Add(otherCharacter);
                 }
