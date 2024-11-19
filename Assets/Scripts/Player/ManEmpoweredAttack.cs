@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ManEmpoweredAttack : BasePlayerAction {
-
     public ManEmpoweredAttack(Player player) : base(player,
         PlayerState.ManEmpoweredAttack, PlayerForm.Man) {
         animator = player.humanAnimator;

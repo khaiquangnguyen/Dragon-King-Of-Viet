@@ -33,7 +33,6 @@ namespace CharacterBehavior {
         public CircleCollider2D attackCollider;
         public bool shouldAttack;
 
-
         public void OnEnable() {
             shouldAttack = false;
             animator = GetComponent<Animator>();
@@ -57,19 +56,7 @@ namespace CharacterBehavior {
                 > 0 => 1,
                 _ => facingDirection
             };
-            if (triggerJump) {
-                var canJump = jumpCount < stats.maxJumpsCount;
-                if (canJump) {
-                    if (stateMachine.characterState != CharacterState.Jumping) {
-                        stateMachine.ChangeState(CharacterState.Jumping);
-                    }
-                    else {
-                        characterJump.InitiateJump();
-                    }
-                }
 
-                triggerJump = false;
-            }
 
             stateMachine.Update();
         }
@@ -105,6 +92,7 @@ namespace CharacterBehavior {
                 stateMachine.ChangeState(CharacterState.Falling);
                 return true;
             }
+
             return false;
         }
 
@@ -117,6 +105,7 @@ namespace CharacterBehavior {
                 stateMachine.ChangeState(CharacterState.Idle);
                 return true;
             }
+
             return false;
         }
 
@@ -124,6 +113,26 @@ namespace CharacterBehavior {
             var canRun = inputDirectionX != 0 && environment == Environment.Ground;
             if (canRun) stateMachine.ChangeState(CharacterState.Running);
             return canRun;
+        }
+
+        public bool CheckChangeToJumpState() {
+            if (triggerJump) {
+                var canJump = jumpCount < stats.maxJumpsCount;
+                if (canJump) {
+                    if (stateMachine.characterState != CharacterState.Jumping) {
+                        stateMachine.ChangeState(CharacterState.Jumping);
+                        return true;
+                    }
+                    else {
+                        characterJump.InitiateJump();
+                        return true;
+                    }
+                }
+
+                triggerJump = false;
+            }
+
+            return false;
         }
     }
 }

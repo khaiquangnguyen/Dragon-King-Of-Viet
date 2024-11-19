@@ -13,9 +13,13 @@ public class PlayerStats : ScriptableObject {
     #endregion
 
     #region Idle
-    [FormerlySerializedAs("idleAnimation")]
     [Header("Idle")]
     public AnimationClip manIdleAnimation;
+    #endregion
+
+    #region Wall Hang
+    [Header("Wall Hang")]
+    public float manWallHangFallSpeed = -2f;
     #endregion
 
     #region Run

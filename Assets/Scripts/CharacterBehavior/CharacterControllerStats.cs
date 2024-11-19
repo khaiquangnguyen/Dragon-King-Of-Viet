@@ -8,6 +8,10 @@ namespace CharacterBehavior {
         public float slopeCheckDistance = 0.1f;
         public float maxVyStickToGroundCorrectionVelocity = 20f;
         public float maxSlopeAngle = 70;
+        public float wallCheckDistance = 0.1f;
+        public float wallClimbOverCheckDistance = 0.1f;
         public LayerMask groundLayer;
+        public LayerMask wallLayer;
+        public LayerMask waterLayer;
     }
 }

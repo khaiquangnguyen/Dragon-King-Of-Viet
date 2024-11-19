@@ -1,6 +1,5 @@
 using UnityEngine;
 
-namespace EditorAttributes
-{
+namespace EditorAttributes {
     public class PropertyDropdownAttribute : PropertyAttribute { }
 }

@@ -1,24 +1,21 @@
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace EditorAttributes.Editor
-{
+namespace EditorAttributes.Editor {
     [CustomPropertyDrawer(typeof(HelpBoxAttribute))]
-    public class HelpBoxDrawer : DecoratorDrawer
-    {
-		public override VisualElement CreatePropertyGUI()
-		{
-			var helpbox = attribute as HelpBoxAttribute;
-			
-			var root = new VisualElement();
-			var helpBox = new HelpBox(helpbox.Message, (HelpBoxMessageType)helpbox.MessageType);
+    public class HelpBoxDrawer : DecoratorDrawer {
+        public override VisualElement CreatePropertyGUI() {
+            var helpbox = attribute as HelpBoxAttribute;
 
-			if (EditorExtension.GLOBAL_COLOR != EditorExtension.DEFAULT_GLOBAL_COLOR)
-				helpBox.style.backgroundColor = EditorExtension.GLOBAL_COLOR / 2f;
+            var root = new VisualElement();
+            var helpBox = new HelpBox(helpbox.Message, (HelpBoxMessageType)helpbox.MessageType);
 
-			root.Add(helpBox);
+            if (EditorExtension.GLOBAL_COLOR != EditorExtension.DEFAULT_GLOBAL_COLOR)
+                helpBox.style.backgroundColor = EditorExtension.GLOBAL_COLOR / 2f;
 
-			return root;
-		}
-	}
+            root.Add(helpBox);
+
+            return root;
+        }
+    }
 }

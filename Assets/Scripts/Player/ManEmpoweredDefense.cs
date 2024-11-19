@@ -47,5 +47,4 @@ public class ManEmpoweredDefense : PlayerStateBehavior {
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
         }
     }
-
 }

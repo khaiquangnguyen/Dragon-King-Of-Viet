@@ -1,6 +1,11 @@
 using Unity.Collections;
 using UnityEngine;
 
+public struct WallCollideStatuses {
+    public bool BodyOnWall;
+    public bool BodyOnHang;
+}
+
 namespace CharacterBehavior {
     public class CharacterController2D : MonoBehaviour {
         public CharacterControllerStats stats;
@@ -15,8 +20,6 @@ namespace CharacterBehavior {
         public bool shouldStickToGround = true;
         public bool isOnSlope;
         public Vector2 velocity;
-
-        public void OnEnable() { }
 
         public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
             var accelerationFactor = velocity.magnitude > maxSpeed
@@ -46,9 +49,38 @@ namespace CharacterBehavior {
                 accelerationFactor * Time.fixedDeltaTime) * facingDirection;
             var vY = velocity.y;
             vY += gravity * gravityMult * Time.fixedDeltaTime;
-            vY = Mathf.Clamp(vY, -maxFallSpeed, 0);
-            MonoBehaviour.print(vY);
+            vY = Mathf.Clamp(vY, -maxFallSpeed, 10000);
             Move(vX, vY);
+        }
+
+        public WallCollideStatuses CheckCollideWall(int facingDirection) {
+            var footCastOrigin = new Vector2(bodyCollider.bounds.center.x, bodyCollider.bounds.min.y);
+            var middleCastOrigin = new Vector2(bodyCollider.bounds.center.x, bodyCollider.bounds.center.y);
+            var headCastOrigin = new Vector2(bodyCollider.bounds.center.x, bodyCollider.bounds.max.y);
+            var bodyHalfWidth = bodyCollider.bounds.extents.x;
+            var castDistance = bodyHalfWidth + stats.wallCheckDistance;
+            var hitFoot = Physics2D.Raycast(footCastOrigin, Vector2.right * facingDirection, castDistance,
+                stats.wallLayer);
+            var hitMiddle = Physics2D.Raycast(middleCastOrigin, Vector2.right * facingDirection, castDistance,
+                stats.wallLayer);
+            var hitHead = Physics2D.Raycast(headCastOrigin, Vector2.right * facingDirection, castDistance,
+                stats.wallLayer);
+            // check if the wall has no angle, meaning the ray cast has direction perpendicular to the wall
+            // check if hit foot normal is of angle 0, meaning the wall is straight
+            var hitFootPerpendicular = hitFoot.collider &&  hitFoot.normal == Vector2.right || hitFoot.normal == Vector2.left;
+            var hitMiddlePerpendicular = hitMiddle.collider &&  hitMiddle.normal == Vector2.right || hitMiddle.normal == Vector2.left;
+            var hitHeadPerpendicular = hitHead.collider &&  hitHead.normal == Vector2.right || hitHead.normal == Vector2.left;
+            var bodyOnWall = hitFoot && hitMiddle && hitHead && hitFootPerpendicular && hitMiddlePerpendicular &&
+                              hitHeadPerpendicular;
+            var bodyOnHang = hitFoot && hitMiddle && hitFootPerpendicular && hitMiddlePerpendicular &&
+                             !hitHeadPerpendicular;
+            Debug.DrawRay(footCastOrigin, Vector2.right * facingDirection * castDistance, Color.red);
+            Debug.DrawRay(middleCastOrigin, Vector2.right * facingDirection * castDistance, Color.red);
+            Debug.DrawRay(headCastOrigin, Vector2.right * facingDirection * castDistance, Color.red);
+            return new WallCollideStatuses {
+                BodyOnWall = bodyOnWall,
+                BodyOnHang = bodyOnHang
+            };
         }
 
         public void MoveOnNonGroundAnyDirection(float accel, float decel, float maxSpeed, float gravity,
@@ -77,14 +109,27 @@ namespace CharacterBehavior {
         /*
          * Check if the character is on ground, including stick to ground ray cast hit
          */
-        public bool isOnGround() {
+        public bool CheckIsOnGround() {
             var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance,
                 stats.groundLayer);
-            var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || stickToGroundHit;
+            var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || (shouldStickToGround && stickToGroundHit);
             return isGrounded;
         }
 
-        public bool isOnWater() {
+        public bool CheckIsOnWater() {
+            var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.waterLayer);
+            return hit;
+        }
+
+        public bool CheckCanWallHang(int facingDirection) {
+            var collideWallStatues = CheckCollideWall(facingDirection);
+            var isOnGround = CheckIsOnGround();
+            var isInWater = CheckIsOnWater();
+            var bodyWall = collideWallStatues.BodyOnWall;
+            var bodyHang = collideWallStatues.BodyOnHang;
+            if (bodyWall || bodyHang && !isOnGround && !isInWater) {
+                return true;
+            }
             return false;
         }
 

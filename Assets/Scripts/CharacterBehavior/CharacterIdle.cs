@@ -11,6 +11,7 @@ namespace CharacterBehavior {
         public override void Update() {
             if (gameCharacter.CheckChangeToFallFromNonAirState()) return;
             if (gameCharacter.CheckChangeToRunState()) return;
+            if (gameCharacter.CheckChangeToJumpState()) return;
         }
 
         public override void FixedUpdate() {

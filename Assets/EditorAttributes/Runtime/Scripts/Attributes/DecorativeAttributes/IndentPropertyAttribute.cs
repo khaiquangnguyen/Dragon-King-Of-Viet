@@ -1,10 +1,8 @@
 using UnityEngine;
 
-namespace EditorAttributes
-{
-    public class IndentPropertyAttribute : PropertyAttribute
-    {
-	    public float IndentLevel { get; private set; }
+namespace EditorAttributes {
+    public class IndentPropertyAttribute : PropertyAttribute {
+        public float IndentLevel { get; private set; }
 
         /// <summary>
         /// Attrtibute to indent a property in the inspector

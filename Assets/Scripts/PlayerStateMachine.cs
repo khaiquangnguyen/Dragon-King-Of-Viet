@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 
 public class PlayerStateMachine {
-    public PlayerState currentPlayerState;
+    public PlayerState playerState;
 
     public readonly Dictionary<PlayerState, PlayerStateBehavior> states = new();
-    public PlayerStateBehavior currentStateBehavior => states[currentPlayerState];
+    public PlayerStateBehavior currentStateBehavior => states[playerState];
 
     public void ChangeState(PlayerState newPlayerState) {
-        if (newPlayerState == currentPlayerState) return;
+        if (newPlayerState == playerState) return;
         currentStateBehavior.OnStateExit();
-        currentPlayerState = newPlayerState;
+        playerState = newPlayerState;
         var newState = states[newPlayerState];
         newState.OnStateEnter();
     }

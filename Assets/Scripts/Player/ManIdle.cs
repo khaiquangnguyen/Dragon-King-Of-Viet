@@ -2,6 +2,7 @@ public class ManIdle : PlayerStateBehavior {
     public ManIdle(Player player) : base(player, PlayerState.ManIdle, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
+        player.characterController.shouldStickToGround = true;
         player.humanAnimator.Play(player.playerStats.manIdleAnimation.name);
     }
 

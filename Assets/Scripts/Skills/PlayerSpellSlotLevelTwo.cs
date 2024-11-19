@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSpellSlotLevelTwo : PlayerSpellSlot {
-   protected PlayerSpellSlotLevelTwo() {
-      baseEnergyCost = stats.firstSpellEnergyCost;
-   }
+    protected PlayerSpellSlotLevelTwo() {
+        baseEnergyCost = stats.firstSpellEnergyCost;
+    }
 }

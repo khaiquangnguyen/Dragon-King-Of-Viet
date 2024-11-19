@@ -7,223 +7,196 @@ using UnityEditor.UIElements;
 using System.Collections.Generic;
 using EditorAttributes.Editor.Utility;
 
-namespace EditorAttributes.Editor
-{
+namespace EditorAttributes.Editor {
 #if UNITY_6000_0_OR_NEWER
-	[Obsolete]
+    [Obsolete]
 #endif
-	[CustomPropertyDrawer(typeof(SelectionButtonsAttribute))]
-	public class SelectionButtonsDrawer : PropertyDrawerBase
-	{
-		public override VisualElement CreatePropertyGUI(SerializedProperty property)
-		{
-			var selectionButtonsAttribute = attribute as SelectionButtonsAttribute;
+    [CustomPropertyDrawer(typeof(SelectionButtonsAttribute))]
+    public class SelectionButtonsDrawer : PropertyDrawerBase {
+        public override VisualElement CreatePropertyGUI(SerializedProperty property) {
+            var selectionButtonsAttribute = attribute as SelectionButtonsAttribute;
 
-			var root = new VisualElement()
-			{
-				style = {
-					paddingTop = 3f,
-					paddingBottom = 3f
-				}
-			};
-			var errorBox = new HelpBox();
-			
-			if (property.propertyType == SerializedPropertyType.Enum)
-			{
-				var enumType = fieldInfo.FieldType;
-				bool isFlagsEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
+            var root = new VisualElement() {
+                style = {
+                    paddingTop = 3f,
+                    paddingBottom = 3f
+                }
+            };
+            var errorBox = new HelpBox();
 
-				if (isFlagsEnum)
-				{
-					var flagValue = property.enumValueFlag;
+            if (property.propertyType == SerializedPropertyType.Enum) {
+                var enumType = fieldInfo.FieldType;
+                bool isFlagsEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
-					root.Add(DrawEnumFlagButtons(flagValue, property.enumDisplayNames, selectionButtonsAttribute, (value) =>
-					{
-						property.enumValueFlag = value;
-						property.serializedObject.ApplyModifiedProperties();
-					}));
-				}
-				else
-				{
-					var buttonsValue = property.enumValueIndex;
+                if (isFlagsEnum) {
+                    var flagValue = property.enumValueFlag;
 
-					root.Add(DrawButtons(buttonsValue, property.enumDisplayNames, selectionButtonsAttribute, (value) =>
-					{
-						property.enumValueIndex = value;
-						property.serializedObject.ApplyModifiedProperties();
-					}));
-				}
-			}
-			else if (property.propertyType != SerializedPropertyType.Enum && !string.IsNullOrEmpty(selectionButtonsAttribute.CollectionName))
-			{
-				var memberInfo = ReflectionUtility.GetValidMemberInfo(selectionButtonsAttribute.CollectionName, property);
-				var displayNames = ConvertCollectionValuesToStrings(selectionButtonsAttribute.CollectionName, property, memberInfo, errorBox).ToArray();
+                    root.Add(DrawEnumFlagButtons(flagValue, property.enumDisplayNames, selectionButtonsAttribute,
+                        (value) => {
+                            property.enumValueFlag = value;
+                            property.serializedObject.ApplyModifiedProperties();
+                        }));
+                }
+                else {
+                    var buttonsValue = property.enumValueIndex;
 
-				var buttonsValue = Array.IndexOf(displayNames, GetPropertyValueAsString(property));
+                    root.Add(DrawButtons(buttonsValue, property.enumDisplayNames, selectionButtonsAttribute,
+                        (value) => {
+                            property.enumValueIndex = value;
+                            property.serializedObject.ApplyModifiedProperties();
+                        }));
+                }
+            }
+            else if (property.propertyType != SerializedPropertyType.Enum &&
+                     !string.IsNullOrEmpty(selectionButtonsAttribute.CollectionName)) {
+                var memberInfo =
+                    ReflectionUtility.GetValidMemberInfo(selectionButtonsAttribute.CollectionName, property);
+                var displayNames = ConvertCollectionValuesToStrings(selectionButtonsAttribute.CollectionName, property,
+                    memberInfo, errorBox).ToArray();
 
-				root.Add(DrawButtons(buttonsValue, displayNames, selectionButtonsAttribute, (value) =>
-				{
-					if (value >= 0 && value < displayNames.Length)
-						SetProperyValueFromString(displayNames[value], ref property, errorBox);
+                var buttonsValue = Array.IndexOf(displayNames, GetPropertyValueAsString(property));
 
-					property.serializedObject.ApplyModifiedProperties();
-				}));
-			}
-			else
-			{
-				errorBox.text = "If the attached field is not an enum, a collection name must be provided";
-			}
+                root.Add(DrawButtons(buttonsValue, displayNames, selectionButtonsAttribute, (value) => {
+                    if (value >= 0 && value < displayNames.Length)
+                        SetProperyValueFromString(displayNames[value], ref property, errorBox);
 
-			DisplayErrorBox(root, errorBox);
+                    property.serializedObject.ApplyModifiedProperties();
+                }));
+            }
+            else {
+                errorBox.text = "If the attached field is not an enum, a collection name must be provided";
+            }
 
-			return root;
-		}
+            DisplayErrorBox(root, errorBox);
 
-		private VisualElement DrawButtons(int buttonsValue, string[] valueLabels, SelectionButtonsAttribute selectionButtonsAttribute, Action<int> onValueChanged)
-		{
-			if (valueLabels == null || valueLabels.Length == 0)
-				return new HelpBox("The provided collection is empty", HelpBoxMessageType.Error);
+            return root;
+        }
 
-			var toolbarToggles = new Dictionary<ToolbarToggle, int>();
-			var toolbar = new OverlayToolbar();
+        private VisualElement DrawButtons(int buttonsValue, string[] valueLabels,
+            SelectionButtonsAttribute selectionButtonsAttribute, Action<int> onValueChanged) {
+            if (valueLabels == null || valueLabels.Length == 0)
+                return new HelpBox("The provided collection is empty", HelpBoxMessageType.Error);
 
-			toolbar.style.flexDirection = FlexDirection.Row;
+            var toolbarToggles = new Dictionary<ToolbarToggle, int>();
+            var toolbar = new OverlayToolbar();
 
-			if (selectionButtonsAttribute.ShowLabel)
-			{
-				var label = new Label(preferredLabel);
+            toolbar.style.flexDirection = FlexDirection.Row;
 
-				label.AddToClassList("unity-base-field__label");
+            if (selectionButtonsAttribute.ShowLabel) {
+                var label = new Label(preferredLabel);
 
-				label.style.flexGrow = 1f;
-				label.style.paddingLeft = 4f;
-				label.style.minWidth = 100f;
+                label.AddToClassList("unity-base-field__label");
 
-				toolbar.Add(label);
-			}
-			
-			for (int i = 0; i < valueLabels.Length; i++)
-			{
-				string label = valueLabels[i];
-				var toggle = new ToolbarToggle
-				{
-					text = label,
-					value = buttonsValue == i,
-					style = {
-						flexGrow = 1f,
-						height = selectionButtonsAttribute.ButtonsHeight,
-					}
-				};
+                label.style.flexGrow = 1f;
+                label.style.paddingLeft = 4f;
+                label.style.minWidth = 100f;
 
-				if (i == 0)
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--left");
-				}
-				else if (i == valueLabels.Length - 1)
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--right");
-				}
-				else
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--middle");
-				}
+                toolbar.Add(label);
+            }
 
-				// Set default value
-				if (i == 0 && buttonsValue == -1)
-				{
-					toggle.value = true;
-					buttonsValue = i;
-					onValueChanged.Invoke(buttonsValue);
-				}
+            for (int i = 0; i < valueLabels.Length; i++) {
+                string label = valueLabels[i];
+                var toggle = new ToolbarToggle {
+                    text = label,
+                    value = buttonsValue == i,
+                    style = {
+                        flexGrow = 1f,
+                        height = selectionButtonsAttribute.ButtonsHeight,
+                    }
+                };
 
-				toolbar.Add(toggle);
-				toolbarToggles.Add(toggle, i);
-			}
+                if (i == 0) {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--left");
+                }
+                else if (i == valueLabels.Length - 1) {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--right");
+                }
+                else {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--middle");
+                }
 
-			foreach (var toggle in toolbarToggles)
-			{
-				toggle.Key.RegisterValueChangedCallback((callback) =>
-				{
-					buttonsValue = toggle.Value;
+                // Set default value
+                if (i == 0 && buttonsValue == -1) {
+                    toggle.value = true;
+                    buttonsValue = i;
+                    onValueChanged.Invoke(buttonsValue);
+                }
 
-					foreach (var toolbarToggle in toolbarToggles.Where((source) => toggle.Key != source.Key))
-					{
-						toolbarToggle.Key.SetValueWithoutNotify(false);
-					}
+                toolbar.Add(toggle);
+                toolbarToggles.Add(toggle, i);
+            }
 
-					if (buttonsValue == toggle.Value && !toggle.Key.value)
-					{
-						toggle.Key.SetValueWithoutNotify(true);
-					}
+            foreach (var toggle in toolbarToggles) {
+                toggle.Key.RegisterValueChangedCallback((callback) => {
+                    buttonsValue = toggle.Value;
 
-					onValueChanged.Invoke(buttonsValue);
-				});
-			}
+                    foreach (var toolbarToggle in toolbarToggles.Where((source) => toggle.Key != source.Key)) {
+                        toolbarToggle.Key.SetValueWithoutNotify(false);
+                    }
 
-			return toolbar;
-		}
+                    if (buttonsValue == toggle.Value && !toggle.Key.value) {
+                        toggle.Key.SetValueWithoutNotify(true);
+                    }
 
-		private VisualElement DrawEnumFlagButtons(int flagValue, string[] valueLabels, SelectionButtonsAttribute selectionButtonsAttribute, Action<int> onValueChanged)
-		{
-			var toolbar = new OverlayToolbar();
-			toolbar.style.flexDirection = FlexDirection.Row;
+                    onValueChanged.Invoke(buttonsValue);
+                });
+            }
 
-			if (selectionButtonsAttribute.ShowLabel)
-			{
-				var label = new Label(preferredLabel);
+            return toolbar;
+        }
 
-				label.style.flexGrow = 1f;
-				label.style.minWidth = 100f;
+        private VisualElement DrawEnumFlagButtons(int flagValue, string[] valueLabels,
+            SelectionButtonsAttribute selectionButtonsAttribute, Action<int> onValueChanged) {
+            var toolbar = new OverlayToolbar();
+            toolbar.style.flexDirection = FlexDirection.Row;
 
-				toolbar.Add(label);
-			}
+            if (selectionButtonsAttribute.ShowLabel) {
+                var label = new Label(preferredLabel);
 
-			for (int i = 1; i < valueLabels.Length; i++)
-			{
-				int enumValue = 1 << i - 1;
-				bool isSelected = (flagValue & enumValue) != 0;
+                label.style.flexGrow = 1f;
+                label.style.minWidth = 100f;
 
-				var toggle = new ToolbarToggle() 
-				{
-					text = valueLabels[i],
-					value = isSelected,
-					style = {
-						flexGrow = 1f,
-						height = selectionButtonsAttribute.ButtonsHeight
-					}
-				};
+                toolbar.Add(label);
+            }
 
-				if (i == 1)
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--left");
-				}
-				else if (i == valueLabels.Length - 1)
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--right");
-				}
-				else
-				{
-					toggle.AddToClassList("unity-editor-toolbar__button-strip-element--middle");
-				}
+            for (int i = 1; i < valueLabels.Length; i++) {
+                int enumValue = 1 << i - 1;
+                bool isSelected = (flagValue & enumValue) != 0;
 
-				toggle.RegisterValueChangedCallback((callback) =>
-				{
-					if (callback.newValue)
-					{
-						flagValue |= enumValue;
-					}
-					else
-					{
-						flagValue &= ~enumValue;
-					}
+                var toggle = new ToolbarToggle() {
+                    text = valueLabels[i],
+                    value = isSelected,
+                    style = {
+                        flexGrow = 1f,
+                        height = selectionButtonsAttribute.ButtonsHeight
+                    }
+                };
 
-					onValueChanged.Invoke(flagValue);
-				});
+                if (i == 1) {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--left");
+                }
+                else if (i == valueLabels.Length - 1) {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--right");
+                }
+                else {
+                    toggle.AddToClassList("unity-editor-toolbar__button-strip-element--middle");
+                }
 
-				toolbar.Add(toggle);
-			}
+                toggle.RegisterValueChangedCallback((callback) => {
+                    if (callback.newValue) {
+                        flagValue |= enumValue;
+                    }
+                    else {
+                        flagValue &= ~enumValue;
+                    }
 
-			return toolbar;
-		}
-	}
+                    onValueChanged.Invoke(flagValue);
+                });
+
+                toolbar.Add(toggle);
+            }
+
+            return toolbar;
+        }
+    }
 }

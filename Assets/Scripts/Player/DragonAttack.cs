@@ -6,14 +6,12 @@ public class DragonAttack : BasePlayerAction {
         PlayerForm.Dragon) {
         this.attackStatsList = player.playerStats.dragonAttackStats;
         animator = player.dragonAnimator;
-
     }
 
     public override void Update() {
         if (player.CheckChangeToDragonFloat()) return;
         if (player.CheckChangeToDragonFly()) return;
         if (player.CheckChangeToDragonDefenseState()) return;
-
     }
 
     public override void OnStateEnter() {

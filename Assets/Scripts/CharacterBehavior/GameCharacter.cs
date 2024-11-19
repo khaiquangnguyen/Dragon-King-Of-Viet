@@ -14,6 +14,5 @@ namespace CharacterBehavior {
         public HealthManager healthManager;
         public abstract void OnDealDamage(int damageDealt, IDamageTaker gameCharacter);
         public abstract DamageResult OnTakeDamage(int damage, IDamageDealer damageDealer);
-
     }
 }

@@ -12,7 +12,6 @@ namespace CharacterBehavior {
             gameCharacter.CheckChangeToRunState();
         }
 
-
         public override void FixedUpdate() {
             var acceleration = gameCharacter.stats.airAccel;
             var deceleration = gameCharacter.stats.airDecel;

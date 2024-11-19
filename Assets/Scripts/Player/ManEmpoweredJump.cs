@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class ManEmpoweredJump : ManJump {
     public ManEmpoweredJump(Player player) : base(player, PlayerState.ManEmpoweredJump) { }
 
@@ -36,11 +35,14 @@ public class ManEmpoweredJump : ManJump {
         var jumpMoveX = Mathf.MoveTowards(Mathf.Abs(player.characterController.velocity.x), maxSpeedX,
             accelerationFactor * Time.fixedDeltaTime) * player.facingDirection; // jump cut
         if (player.isJumpCut) {
-            UpdateYDuringJumpCut(player.playerStats.empoweredJumpCutDuration, player.playerStats.empoweredJumpCutHeight,player.playerStats.empoweredJumpCutHeightCurve);
+            UpdateYDuringJumpCut(player.playerStats.empoweredJumpCutDuration, player.playerStats.empoweredJumpCutHeight,
+                player.playerStats.empoweredJumpCutHeightCurve);
         }
         else {
-            UpdateYDuringJump(player.playerStats.empoweredJumpDuration, jumpMaxHeight, player.playerStats.empoweredJumpHeightCurve);
+            UpdateYDuringJump(player.playerStats.empoweredJumpDuration, jumpMaxHeight,
+                player.playerStats.empoweredJumpHeightCurve);
         }
+
         if (Time.time - jumpStartTimestamp >= player.playerStats.empoweredJumpInputLockDuration) {
             player.characterController.Move(jumpMoveX, jumpMoveY);
         }
@@ -53,7 +55,8 @@ public class ManEmpoweredJump : ManJump {
 
     public bool CanEmpoweredJumpCut() {
         var jumpHeightCurrentPercentage =
-            player.playerStats.empoweredJumpHeightCurve.Evaluate((Time.time - jumpStartTimestamp) / player.playerStats.empoweredJumpDuration);
+            player.playerStats.empoweredJumpHeightCurve.Evaluate((Time.time - jumpStartTimestamp) /
+                                                                 player.playerStats.empoweredJumpDuration);
         return jumpHeightCurrentPercentage < player.playerStats.jumpPeakHangThreshold;
     }
 }

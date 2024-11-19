@@ -1,15 +1,12 @@
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace EditorAttributes.Editor
-{
+namespace EditorAttributes.Editor {
     [CustomPropertyDrawer(typeof(IndentPropertyAttribute))]
-    public class IndentPropertyDrawer : PropertyDrawerBase
-    {
-		public override VisualElement CreatePropertyGUI(SerializedProperty property)
-		{
-			var indentPropertyAttribute = attribute as IndentPropertyAttribute;
-            
+    public class IndentPropertyDrawer : PropertyDrawerBase {
+        public override VisualElement CreatePropertyGUI(SerializedProperty property) {
+            var indentPropertyAttribute = attribute as IndentPropertyAttribute;
+
             var root = new VisualElement();
             var propertyField = DrawProperty(property);
 
@@ -17,7 +14,7 @@ namespace EditorAttributes.Editor
 
             root.Add(propertyField);
 
-			return root;
-		}
+            return root;
+        }
     }
 }

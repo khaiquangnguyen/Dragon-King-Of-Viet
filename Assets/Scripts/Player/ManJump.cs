@@ -25,6 +25,7 @@ public class ManJump : PlayerStateBehavior {
     public ManJump(Player player, PlayerState state = PlayerState.ManJump) : base(player, state, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
+        player.characterController.shouldStickToGround = false;
         player.humanAnimator.Play("JumpRise");
         jumpCutStarted = false;
         jumpMaxHeight = player.playerStats.jumpMaxHeight;
@@ -49,6 +50,7 @@ public class ManJump : PlayerStateBehavior {
             jumpCutTimestamp = Time.time;
             player.humanAnimator.Play("JumpMid");
         }
+
         var jumpHeightCurrentPercentage =
             heightCurve.Evaluate((Time.time - jumpCutTimestamp) / jumpCutDuration);
         var jumpHeightNextPercentage =
@@ -71,7 +73,6 @@ public class ManJump : PlayerStateBehavior {
             player.stateMachine.ChangeState(PlayerState.ManFall);
     }
 
-
     public override void FixedUpdate() {
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
@@ -82,11 +83,13 @@ public class ManJump : PlayerStateBehavior {
         var jumpMoveX = Mathf.MoveTowards(Mathf.Abs(player.characterController.velocity.x), maxSpeedX,
             accelerationFactor * Time.fixedDeltaTime) * player.facingDirection; // jump cut
         if (player.isJumpCut) {
-            UpdateYDuringJumpCut(player.playerStats.jumpCutDuration, player.playerStats.jumpCutHeight, player.playerStats.jumpCutHeightCurve);
+            UpdateYDuringJumpCut(player.playerStats.jumpCutDuration, player.playerStats.jumpCutHeight,
+                player.playerStats.jumpCutHeightCurve);
         }
         else {
             UpdateYDuringJump(player.playerStats.jumpDuration, jumpMaxHeight, player.playerStats.jumpHeightCurve);
         }
+
         player.characterController.Move(jumpMoveX, jumpMoveY);
     }
 
@@ -94,7 +97,8 @@ public class ManJump : PlayerStateBehavior {
 
     public bool CanJumpCut() {
         var jumpHeightCurrentPercentage =
-            player.playerStats.jumpHeightCurve.Evaluate((Time.time - jumpStartTimestamp) / player.playerStats.jumpDuration);
+            player.playerStats.jumpHeightCurve.Evaluate((Time.time - jumpStartTimestamp) /
+                                                        player.playerStats.jumpDuration);
         return jumpHeightCurrentPercentage < player.playerStats.jumpPeakHangThreshold;
     }
 }

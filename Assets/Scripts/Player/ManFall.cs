@@ -8,6 +8,7 @@ public class ManFall : PlayerStateBehavior {
     }
 
     public override void Update() {
+        if (player.CheckChangeToWallHang()) return;
         if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
         if (player.CheckChangeToManDodgeHopDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
@@ -28,7 +29,7 @@ public class ManFall : PlayerStateBehavior {
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
             else {
-                player.characterController.Move(maxSpeedX, 0);
+                player.characterController.shouldStickToGround = true;
                 player.stateMachine.ChangeState(PlayerState.ManRun);
             }
         }

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "Spell Slot Stats", menuName = "Spell Slot Stats", order = 0)]
-public class SpellSlotStats:ScriptableObject {
+public class SpellSlotStats : ScriptableObject {
     public float firstSpellEnergyCost;
     public float secondSpellEnergyCost;
     public float thirdSpellEnergyCost;
@@ -11,5 +11,4 @@ public class SpellSlotStats:ScriptableObject {
     public float refundEnergyWhenInterrupted;
     public float refundEnergyWhenSkillNotUsed;
     public float coolDownWhenInterrupted;
-
 }
