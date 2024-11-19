@@ -2738,7 +2738,6 @@ GameObject:
   - component: {fileID: 1766946049}
   - component: {fileID: 1766946048}
   - component: {fileID: 1766946054}
-  - component: {fileID: 1766946056}
   - component: {fileID: 1766946055}
   m_Layer: 6
   m_Name: AICharacter
@@ -2872,7 +2871,7 @@ Transform:
   m_GameObject: {fileID: 1766946047}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.4366045, y: -4.077937, z: 0}
+  m_LocalPosition: {x: 2.58, y: -1.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2947,39 +2946,17 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -9095717837082945937, guid: 48fe6e291d7c94d27bf5f8e6be5416f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3, y: 2.625}
+  m_Size: {x: 1, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &1766946056
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766946047}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c794c61eb96248f4fbcd054821a369cd, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1983922114
 GameObject:
   m_ObjectHideFlags: 0
@@ -2994,8 +2971,6 @@ GameObject:
   - component: {fileID: 1983922123}
   - component: {fileID: 1983922124}
   - component: {fileID: 1983922125}
-  - component: {fileID: 1983922126}
-  - component: {fileID: 1983922127}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -3176,50 +3151,6 @@ MonoBehaviour:
   damageLastTakenAt: 0
   totalRegenAmountSinceLastDamagedBrokenEnergyHeal: 0
   regenAmountRequiredToHealBrokenEnergy: 0
---- !u!114 &1983922126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1983922114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 849d78d79adb497fb6cb9795942551f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats: {fileID: 0}
-  currentEnergy: 0
-  baseEnergyCost: 0
-  currentSpellCardIndex: 0
-  isHoldingCard: 0
-  holdingCardCountdown: 0
-  isSelectingSpellCard: 0
-  spellRotationCountdown: 0
-  timeLastInterrupted: 0
-  equippedSpellCards: []
---- !u!114 &1983922127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1983922114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 849d78d79adb497fb6cb9795942551f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats: {fileID: 0}
-  currentEnergy: 0
-  baseEnergyCost: 0
-  currentSpellCardIndex: 0
-  isHoldingCard: 0
-  holdingCardCountdown: 0
-  isSelectingSpellCard: 0
-  spellRotationCountdown: 0
-  timeLastInterrupted: 0
-  equippedSpellCards: []
 --- !u!1 &2112427321
 GameObject:
   m_ObjectHideFlags: 0
