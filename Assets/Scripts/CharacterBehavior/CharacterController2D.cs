@@ -19,6 +19,8 @@ namespace CharacterBehavior {
         public bool isWalkableGroundCheckPassed;
         public bool shouldStickToGround = true;
         public bool isOnSlope;
+        [ReadOnly]
+        public bool isOnGround;
         public Vector2 velocity;
 
         public void MoveAlongGround(float acceleration, float deceleration, float maxSpeed, int facingDirection) {
@@ -33,9 +35,11 @@ namespace CharacterBehavior {
         public void MoveAlongGround(float movementVelocity) {
             var groundTangent = Vector2.one;
             var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.groundLayer);
-            if (hit) groundTangent = Vector2.Perpendicular(hit.normal).normalized;
-            velocity = new Vector2(movementVelocity * -groundTangent.x,
+            if (hit) {
+                groundTangent = Vector2.Perpendicular(hit.normal).normalized;
+                velocity = new Vector2(movementVelocity * -groundTangent.x,
                 movementVelocity * -groundTangent.y);
+            }
             StickToGround();
             Move(velocity.x, velocity.y);
         }
@@ -112,8 +116,8 @@ namespace CharacterBehavior {
         public bool CheckIsOnGround() {
             var stickToGroundHit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance,
                 stats.groundLayer);
-            var isGrounded = isWalkableGroundCheckPassed || isOnWalkableSlope || (shouldStickToGround && stickToGroundHit);
-            return isGrounded;
+            isOnGround = isWalkableGroundCheckPassed || isOnWalkableSlope || (shouldStickToGround && stickToGroundHit);
+            return isOnGround;
         }
 
         public bool CheckIsOnWater() {

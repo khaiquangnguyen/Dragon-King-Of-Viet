@@ -17,6 +17,14 @@ MonoBehaviour:
   slopeCheckDistance: 0.2
   maxVyStickToGroundCorrectionVelocity: 20
   maxSlopeAngle: 70
+  wallCheckDistance: 0.1
+  wallClimbOverCheckDistance: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16

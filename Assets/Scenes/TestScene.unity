@@ -2516,7 +2516,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.050039947, y: -0.016038775}
-  m_Size: {x: 0.56039155, y: 1.8710725}
+  m_Size: {x: 1, y: 2}
   m_Direction: 0
 --- !u!1 &1628240368
 GameObject:
@@ -3018,6 +3018,7 @@ MonoBehaviour:
   characterController: {fileID: 0}
   inputDirectionX: 0
   inputDirectionY: 0
+  coyoteTimeCountdown: 0
   isJumpCut: 0
   isFastFalling: 0
   isEmpowering: 0
@@ -3050,6 +3051,7 @@ MonoBehaviour:
   currentPlayerState: 0
   manAttackCollider: {fileID: 292952719}
   dragonAttackCollider: {fileID: 0}
+  canWallHang: 0
   playerSpellSlotLevelOne: {fileID: 0}
   playerSpellSlotLevelTwo: {fileID: 0}
   playerSpellSlotLevelThree: {fileID: 0}

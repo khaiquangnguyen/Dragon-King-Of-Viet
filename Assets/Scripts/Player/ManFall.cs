@@ -25,11 +25,10 @@ public class ManFall : PlayerStateBehavior {
             player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxFallSpeed);
         if (player.characterController.isOnWalkableGround()) {
             if (player.inputDirectionX == 0) {
-                player.characterController.Move(0, 0);
+                player.characterController.shouldStickToGround = true;
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
             }
             else {
-                player.characterController.shouldStickToGround = true;
                 player.stateMachine.ChangeState(PlayerState.ManRun);
             }
         }

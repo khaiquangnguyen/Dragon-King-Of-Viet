@@ -17,6 +17,7 @@ MonoBehaviour:
   empowerHoldDurationBeforeTransform: 1
   healthRegenDelayDuration: 1
   manIdleAnimation: {fileID: 7400000, guid: 1b8b8a7328271f24ebde7e623cf0d9c9, type: 2}
+  manWallHangFallSpeed: -2
   manGroundAccelTime: 0.1
   manGroundDecelTime: 0.06
   manGroundMaxSpeed: 14
