@@ -46,7 +46,8 @@ namespace CharacterBehavior {
                 accelerationFactor * Time.fixedDeltaTime) * facingDirection;
             var vY = velocity.y;
             vY += gravity * gravityMult * Time.fixedDeltaTime;
-            vY = Mathf.Clamp(vY, -maxFallSpeed, maxFallSpeed);
+            vY = Mathf.Clamp(vY, -maxFallSpeed, 0);
+            MonoBehaviour.print(vY);
             Move(vX, vY);
         }
 

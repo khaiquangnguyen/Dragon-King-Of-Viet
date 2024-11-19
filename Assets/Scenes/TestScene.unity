@@ -2994,6 +2994,8 @@ GameObject:
   - component: {fileID: 1983922123}
   - component: {fileID: 1983922124}
   - component: {fileID: 1983922125}
+  - component: {fileID: 1983922126}
+  - component: {fileID: 1983922127}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -3073,6 +3075,9 @@ MonoBehaviour:
   currentPlayerState: 0
   manAttackCollider: {fileID: 292952719}
   dragonAttackCollider: {fileID: 0}
+  playerSpellSlotLevelOne: {fileID: 0}
+  playerSpellSlotLevelTwo: {fileID: 0}
+  playerSpellSlotLevelThree: {fileID: 0}
 --- !u!50 &1983922122
 Rigidbody2D:
   serializedVersion: 5
@@ -3171,6 +3176,50 @@ MonoBehaviour:
   damageLastTakenAt: 0
   totalRegenAmountSinceLastDamagedBrokenEnergyHeal: 0
   regenAmountRequiredToHealBrokenEnergy: 0
+--- !u!114 &1983922126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849d78d79adb497fb6cb9795942551f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 0}
+  currentEnergy: 0
+  baseEnergyCost: 0
+  currentSpellCardIndex: 0
+  isHoldingCard: 0
+  holdingCardCountdown: 0
+  isSelectingSpellCard: 0
+  spellRotationCountdown: 0
+  timeLastInterrupted: 0
+  equippedSpellCards: []
+--- !u!114 &1983922127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983922114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849d78d79adb497fb6cb9795942551f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: {fileID: 0}
+  currentEnergy: 0
+  baseEnergyCost: 0
+  currentSpellCardIndex: 0
+  isHoldingCard: 0
+  holdingCardCountdown: 0
+  isSelectingSpellCard: 0
+  spellRotationCountdown: 0
+  timeLastInterrupted: 0
+  equippedSpellCards: []
 --- !u!1 &2112427321
 GameObject:
   m_ObjectHideFlags: 0

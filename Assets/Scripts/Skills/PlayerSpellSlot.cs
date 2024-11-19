@@ -1,21 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class PlayerSpellSlot : MonoBehaviour {
    public SpellSlotStats stats;
    public float currentEnergy;
-   public float energyCost;
+   public float baseEnergyCost;
    public int currentSpellCardIndex;
    public bool isHoldingCard;
+   public float holdingCardCountdown;
    public bool isSelectingSpellCard;
    public float spellRotationCountdown;
    public float timeLastInterrupted;
    public List<Skill> equippedSpellCards = new();
 
-   protected PlayerSpellSlot(float energyCost) {
-      this.energyCost = energyCost;
-   }
    public void OnEnable() {
       timeLastInterrupted = -1;
       currentEnergy = 0;
@@ -25,8 +25,13 @@ public abstract class PlayerSpellSlot : MonoBehaviour {
    }
 
    public void Update() {
+      holdingCardCountdown = Mathf.Clamp(holdingCardCountdown - Time.deltaTime, 0, stats.spellCardHoldDuration);
+      if (holdingCardCountdown <= 0 && isHoldingCard) {
+         isHoldingCard = false;
+         currentEnergy = stats.refundEnergyWhenSkillNotUsed;
+      }
       if (isSelectingSpellCard) {
-         if (currentEnergy < energyCost) {
+         if (currentEnergy < baseEnergyCost) {
          }
          spellRotationCountdown -= Time.deltaTime;
          if (spellRotationCountdown <= 0) {
@@ -40,6 +45,7 @@ public abstract class PlayerSpellSlot : MonoBehaviour {
    public void InterruptSpellCardSelection() {
       timeLastInterrupted = Time.time;
       isSelectingSpellCard = false;
+      currentEnergy = stats.refundEnergyWhenInterrupted;
       isHoldingCard = false;
    }
 
@@ -59,6 +65,7 @@ public abstract class PlayerSpellSlot : MonoBehaviour {
 
    public void HoldCurrentSpell() {
       isHoldingCard = true;
+      holdingCardCountdown = stats.spellCardHoldDuration;
    }
 
    public void ChargeEnergy(float energy) {
@@ -66,7 +73,7 @@ public abstract class PlayerSpellSlot : MonoBehaviour {
    }
 
    public Skill UseSpell() {
-      if (currentEnergy < energyCost) {
+      if (currentEnergy < baseEnergyCost) {
          InterruptSpellCardSelection();
          return null;
       }
@@ -75,7 +82,16 @@ public abstract class PlayerSpellSlot : MonoBehaviour {
       isHoldingCard = false;
       currentEnergy = 0;
       return currentSkill;
+   }
 
+
+   public void DisplayEnergy() {
+
+   }
+
+   void OnGUI()
+   {
+      GUI.Label(new Rect(10, 10, 200, 40), currentEnergy.ToString(CultureInfo.CurrentCulture));
    }
 
 

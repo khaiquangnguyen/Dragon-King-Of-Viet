@@ -9,8 +9,8 @@ namespace CharacterBehavior {
         }
 
         public override void Update() {
-            if (gameCharacter.CheckChangeToIdle()) return;
             if (gameCharacter.CheckChangeToFallFromNonAirState()) return;
+            if (gameCharacter.CheckChangeToRunState()) return;
         }
 
         public override void FixedUpdate() {

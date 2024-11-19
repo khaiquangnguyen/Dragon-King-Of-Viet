@@ -15,8 +15,6 @@ namespace CharacterBehavior {
         }
 
         public override void FixedUpdate() {
-            if (Mathf.Approximately(characterController.velocity.magnitude, 0))
-                gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
             var acceleration = gameCharacter.stats.groundAccel;
             var deceleration = gameCharacter.stats.groundDecel;
             var maxSpeed = Mathf.Abs(gameCharacter.stats.groundMaxSpeed * gameCharacter.inputDirectionX);

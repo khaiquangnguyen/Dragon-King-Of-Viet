@@ -9,6 +9,7 @@ namespace CharacterBehavior {
         public override void OnStateEnter() { }
 
         public override void Update() {
+            gameCharacter.CheckChangeToRunState();
         }
 
 
