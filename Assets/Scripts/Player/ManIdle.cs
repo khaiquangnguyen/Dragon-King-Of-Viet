@@ -2,7 +2,7 @@ public class ManIdle : PlayerStateBehavior {
     public ManIdle(Player player) : base(player, PlayerState.ManIdle, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        player.characterController.shouldStickToGround = true;
+        player.characterController.Move(0, 0);
         player.humanAnimator.Play(player.playerStats.manIdleAnimation.name);
     }
 
@@ -18,7 +18,7 @@ public class ManIdle : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         player.characterController.Move(0, 0);
-        var isOnGround = player.characterController.isOnWalkableGround();
+        var isOnGround = player.characterController.CheckOnWalkableGround();
         if (!isOnGround) player.stateMachine.ChangeState(PlayerState.ManFall);
     }
 

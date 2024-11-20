@@ -7,15 +7,10 @@ namespace CharacterBehavior {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public class AIGameCharacter : GameCharacter {
-        public CharacterStateMachine stateMachine = new();
+        public readonly CharacterStateMachine stateMachine = new();
         [HideInInspector]
-        public CharacterController2D controller;
+        public CharacterController2D characterController;
         public CharacterStats stats;
-        // private CharacterStateBehavior characterRun;
-        private CharacterRun characterRun;
-        private CharacterIdle characterIdle;
-        private CharacterFall characterFall;
-        private CharacterJump characterJump;
         private CharacterSpellCast characterSpellCast;
         private CharacterDefense characterDefense;
 
@@ -36,16 +31,12 @@ namespace CharacterBehavior {
         public void OnEnable() {
             shouldAttack = false;
             animator = GetComponent<Animator>();
-            controller = GetComponent<CharacterController2D>();
-            controller.body = GetComponent<Rigidbody2D>();
-            controller.bodyCollider = GetComponent<Collider2D>();
+            characterController = GetComponent<CharacterController2D>();
+            characterController.body = GetComponent<Rigidbody2D>();
+            characterController.bodyCollider = GetComponent<Collider2D>();
             healthManager = GetComponent<HealthManager>();
-            stateMachine.AddState(characterRun = new CharacterRun(this, controller));
-            stateMachine.AddState(characterFall = new CharacterFall(this, controller));
-            stateMachine.AddState(characterIdle = new CharacterIdle(this, controller));
-            stateMachine.AddState(characterJump = new CharacterJump(this, controller));
-            stateMachine.AddState(characterSpellCast = new CharacterSpellCast(this, controller));
-            stateMachine.AddState(characterDefense = new CharacterDefense(this, controller));
+            stateMachine.AddState(characterSpellCast = new CharacterSpellCast(this, characterController));
+            stateMachine.AddState(characterDefense = new CharacterDefense(this, characterController));
             stateMachine.ChangeState(CharacterState.Idle);
         }
 
@@ -96,11 +87,52 @@ namespace CharacterBehavior {
             return false;
         }
 
-        // Change to idle should be add to fixed update movement
+        public void MoveOnGroundFixedUpdate() {
+            characterController.shouldStickToGround = true;
+            var acceleration = stats.groundAccel;
+            var deceleration = stats.groundDecel;
+            var maxSpeed = Mathf.Abs(stats.groundMaxSpeed * inputDirectionX);
+            characterController.MoveAlongGround(acceleration, deceleration, maxSpeed, facingDirection);
+        }
+
+        /*
+         * Character has full control over their movement in the air.
+         */
+        public void FlyFixedUpdate() {
+            characterController.shouldStickToGround = false;
+            var acceleration = stats.airAccel;
+            var deceleration = stats.airDecel;
+            var maxSpeed = stats.airMaxSpeed;
+            var inputDirection = new Vector2(inputDirectionX, inputDirectionY);
+            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed, inputDirection);
+        }
+
+        /*
+         * Character can't control their y direction in the air, can only control their horizontal movement
+         * Useful for jumping and falling
+         */
+        public void NoFlyAerialFixedUpdate() {
+            characterController.shouldStickToGround = false;
+            var acceleration = stats.airAccel;
+            var deceleration = stats.airDecel;
+            var gravity = stats.gravity;
+            var maxSpeed = stats.airMaxSpeed;characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeed, gravity, 1, facingDirection, stats.maxFallSpeed);
+        }
+
+        public void SwimFixedUpdate() {
+            characterController.shouldStickToGround = false;
+            var acceleration = stats.waterAccel;
+            var deceleration = stats.waterDecel;
+            var maxSpeed = stats.waterMaxSpeed;
+            var inputDirection = new Vector2(inputDirectionX, inputDirectionY);
+            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed, inputDirection);
+        }
+
+        // Change to idle should be added to fixed update movement
         // since if you put it in update like other CheckChange functions,
         // it will trigger almost immediately
         public bool CheckChangeToIdle() {
-            var notMoving = Mathf.Approximately(controller.velocity.magnitude, 0);
+            var notMoving = Mathf.Approximately(characterController.velocity.magnitude, 0);
             if (notMoving && environment == Environment.Ground) {
                 stateMachine.ChangeState(CharacterState.Idle);
                 return true;
@@ -109,30 +141,32 @@ namespace CharacterBehavior {
             return false;
         }
 
-        public bool CheckChangeToRunState() {
-            var canRun = inputDirectionX != 0 && environment == Environment.Ground;
-            if (canRun) stateMachine.ChangeState(CharacterState.Running);
-            return canRun;
+        public bool TriggerJump(float jumpHeight, float distance, float jumpDuration) {
+            // given max height and jump duration, calculate initial jump velocity and gravity
+            var gravity = 2 * jumpHeight / Mathf.Pow(jumpDuration, 2);
+            var jumpSpeed = gravity * jumpDuration;
+            var isOnGround = characterController.CheckIsOnGround();
+            var canJump = isOnGround && triggerJump;
+            if (canJump) {
+                characterController.Move(characterController.velocity.x, jumpSpeed);
+                characterController.shouldStickToGround = false;
+                triggerJump = false;
+                return true;
+            }
+            return false;
         }
 
-        public bool CheckChangeToJumpState() {
-            if (triggerJump) {
-                var canJump = jumpCount < stats.maxJumpsCount;
-                if (canJump) {
-                    if (stateMachine.characterState != CharacterState.Jumping) {
-                        stateMachine.ChangeState(CharacterState.Jumping);
-                        return true;
-                    }
-                    else {
-                        characterJump.InitiateJump();
-                        return true;
-                    }
-                }
-
-                triggerJump = false;
+        public void CheckEnvironmentState() {
+            if (characterController.CheckIsOnGround()) {
+                environment = Environment.Ground;
+            }
+            else if (characterController.CheckIsOnWater()) {
+                environment = Environment.Water;
+            }
+            else {
+                environment = Environment.Air;
             }
 
-            return false;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace CharacterBehavior {
             var acceleration = gameCharacter.stats.airAccel;
             var deceleration = gameCharacter.stats.airDecel;
             var maxSpeedX = gameCharacter.stats.airMaxSpeed * Mathf.Abs(gameCharacter.inputDirectionX);
-            characterController.MoveOnNonGroundHorizontal(acceleration, deceleration, maxSpeedX,
+            characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeedX,
                 gameCharacter.stats.gravity, 1, gameCharacter.facingDirection, gameCharacter.stats.maxFallSpeed);
             if (characterController.velocity.y <= 0) {
                 gameCharacter.stateMachine.ChangeState(CharacterState.Falling);

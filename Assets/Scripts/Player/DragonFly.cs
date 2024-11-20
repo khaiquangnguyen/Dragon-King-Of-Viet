@@ -30,7 +30,7 @@ public class DragonFly : PlayerStateBehavior {
         var angle = Mathf.Atan2(dragonMoveDirection.y, dragonMoveDirection.x) * Mathf.Rad2Deg;
         // rotate along the axis by angle
         player.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        player.characterController.MoveOnNonGroundAnyDirection(player.playerStats.dragonAccel,
+        player.characterController.MoveOnNonGroundAnyDirectionNoGravity(player.playerStats.dragonAccel,
             player.playerStats.dragonDecel, player.playerStats.dragonMaxSpeed, 0, 0, dragonMoveDirection.normalized);
     }
 

@@ -14,6 +14,9 @@ namespace CharacterBehavior {
         public float airAccel;
         public float airDecel;
         public float airMaxSpeed;
+        public float waterAccel;
+        public float waterDecel;
+        public float waterMaxSpeed;
         public float gravity;
         public float maxFallSpeed;
         public float jumpHeight;

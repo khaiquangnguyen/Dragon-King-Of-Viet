@@ -6,7 +6,6 @@ public class ManRun : PlayerStateBehavior {
     public ManRun(Player player) : base(player, PlayerState.ManRun, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        player.characterController.shouldStickToGround = true;
         player.humanAnimator.Play("Run");
     }
 
