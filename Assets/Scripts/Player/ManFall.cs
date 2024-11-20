@@ -23,7 +23,7 @@ public class ManFall : PlayerStateBehavior {
         var gravityMult = player.GetGravityMult();
         player.characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeedX,
             player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxFallSpeed);
-        if (player.characterController.CheckOnWalkableGround()) {
+        if (player.characterController.CheckIsOnWalkableGround()) {
             if (player.inputDirectionX == 0) {
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
             }

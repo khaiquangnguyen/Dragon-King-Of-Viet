@@ -31,7 +31,7 @@ public class DragonFly : PlayerStateBehavior {
         // rotate along the axis by angle
         player.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         player.characterController.MoveOnNonGroundAnyDirectionNoGravity(player.playerStats.dragonAccel,
-            player.playerStats.dragonDecel, player.playerStats.dragonMaxSpeed, 0, 0, dragonMoveDirection.normalized);
+            player.playerStats.dragonDecel, player.playerStats.dragonMaxSpeed, dragonMoveDirection.normalized);
     }
 
     public override void OnStateExit() {

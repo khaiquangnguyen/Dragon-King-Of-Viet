@@ -17,7 +17,7 @@ public class DragonFloatMove : PlayerStateBehavior {
         var direction = normalizedInputDirection;
         // rotate current direction toward input direction at a certain rate
         player.characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration,
-            player.playerStats.dragonMaxSpeed, 0, 0, direction);
+            player.playerStats.dragonMaxSpeed, direction);
         if (player.characterController.velocity.magnitude < 0.05f) {
             player.stateMachine.ChangeState(PlayerState.DragonIdle);
         }

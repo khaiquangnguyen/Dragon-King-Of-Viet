@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014019fb36084d28a3f853d40cbd46a9, type: 3}
   m_Name: PlayerControllerStats
   m_EditorClassIdentifier: 
-  groundCheckDistance: 0.05
+  groundCheckDistance: 0.1
   stickToGroundDistance: 1
-  slopeCheckDistance: 0.2
+  verticalSlopeCheckDistance: 1
+  horizontalSlopeCheckDistance: 0.5
   maxVyStickToGroundCorrectionVelocity: 20
   maxSlopeAngle: 70
   wallCheckDistance: 0.1
