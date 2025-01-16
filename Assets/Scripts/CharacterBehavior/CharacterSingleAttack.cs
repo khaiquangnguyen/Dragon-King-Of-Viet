@@ -8,7 +8,7 @@ namespace CharacterBehavior {
 
         public CharacterSingleAttack(AIGameCharacter gameCharacter, CharacterController2D controller,
             AttackStats attackStats) : base(
-            gameCharacter, controller, CharacterState.ComboAttacks) {
+            gameCharacter, controller, CharacterMovementState.ComboAttacks) {
             this.attackStats = attackStats;
         }
 
@@ -40,7 +40,6 @@ namespace CharacterBehavior {
             else if (skillState == SkillState.Recovery) {
                 hitCharacters.Clear();
                 if (Time.time - newStateStartAt < attackRecoveryTime) return;
-                gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
             }
         }
     }

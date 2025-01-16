@@ -44,8 +44,9 @@ namespace CharacterBehavior {
             if (hit) {
                 groundTangent = Vector2.Perpendicular(hit.normal).normalized;
                 velocity = new Vector2(movementVelocity * -groundTangent.x,
-                movementVelocity * -groundTangent.y);
+                    movementVelocity * -groundTangent.y);
             }
+
             shouldStickToGround = true;
         }
 
@@ -76,11 +77,14 @@ namespace CharacterBehavior {
                 stats.wallLayer);
             // check if the wall has no angle, meaning the ray cast has direction perpendicular to the wall
             // check if hit foot normal is of angle 0, meaning the wall is straight
-            var hitFootPerpendicular = hitFoot.collider &&  hitFoot.normal == Vector2.right || hitFoot.normal == Vector2.left;
-            var hitMiddlePerpendicular = hitMiddle.collider &&  hitMiddle.normal == Vector2.right || hitMiddle.normal == Vector2.left;
-            var hitHeadPerpendicular = hitHead.collider &&  hitHead.normal == Vector2.right || hitHead.normal == Vector2.left;
+            var hitFootPerpendicular =
+                hitFoot.collider && hitFoot.normal == Vector2.right || hitFoot.normal == Vector2.left;
+            var hitMiddlePerpendicular = hitMiddle.collider && hitMiddle.normal == Vector2.right ||
+                                         hitMiddle.normal == Vector2.left;
+            var hitHeadPerpendicular =
+                hitHead.collider && hitHead.normal == Vector2.right || hitHead.normal == Vector2.left;
             var bodyOnWall = hitFoot && hitMiddle && hitHead && hitFootPerpendicular && hitMiddlePerpendicular &&
-                              hitHeadPerpendicular;
+                             hitHeadPerpendicular;
             var bodyOnHang = hitFoot && hitMiddle && hitFootPerpendicular && hitMiddlePerpendicular &&
                              !hitHeadPerpendicular;
             Debug.DrawRay(footCastOrigin, Vector2.right * facingDirection * castDistance, Color.red);
@@ -131,9 +135,13 @@ namespace CharacterBehavior {
             return isOnGround;
         }
 
-        public bool CheckIsOnWater() {
+        public bool CheckIsInWater() {
             var hit = Physics2D.Raycast(GetCastOrigin(), Vector2.down, stats.stickToGroundDistance, stats.waterLayer);
             return hit;
+        }
+
+        public bool CheckIsInAir() {
+            return !CheckIsOnGround() && !CheckIsInWater();
         }
 
         public bool LeaveGround() {
@@ -149,12 +157,13 @@ namespace CharacterBehavior {
         public bool CheckCanWallHang(int facingDirection) {
             var collideWallStatues = CheckCollideWall(facingDirection);
             var isOnGround = CheckIsOnGround();
-            var isInWater = CheckIsOnWater();
+            var isInWater = CheckIsInWater();
             var bodyWall = collideWallStatues.BodyOnWall;
             var bodyHang = collideWallStatues.BodyOnHang;
             if (bodyWall || bodyHang && !isOnGround && !isInWater) {
                 return true;
             }
+
             return false;
         }
 
@@ -175,9 +184,10 @@ namespace CharacterBehavior {
         }
 
         public void FixedUpdate() {
-            if (shouldStickToGround && !CheckRaycastGround() && !CheckRaycastSlope() ) {
+            if (shouldStickToGround && !CheckRaycastGround() && !CheckRaycastSlope()) {
                 StickToGround();
             }
+
             body.linearVelocity = velocity;
         }
 

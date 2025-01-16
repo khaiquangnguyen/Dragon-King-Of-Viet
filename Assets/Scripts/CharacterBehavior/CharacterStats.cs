@@ -22,5 +22,9 @@ namespace CharacterBehavior {
         public float jumpHeight;
         public int maxJumpsCount;
         public AnimationClip idleAnimation;
+        public bool canFly = false;
+        public bool canSwim = false;
+        public bool canJump = false;
+        public bool canWalk = false;
     }
 }

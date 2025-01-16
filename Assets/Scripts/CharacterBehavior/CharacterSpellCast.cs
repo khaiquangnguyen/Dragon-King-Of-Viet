@@ -16,7 +16,7 @@ namespace CharacterBehavior {
         public Skill currentSkill;
 
         public CharacterSpellCast(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
-            controller, CharacterState.CastSpell) { }
+            controller, CharacterMovementState.CastSpell) { }
 
         public void SetSkillData(Skill skill, float startupTime, float activeTime, float recoveryTime,
             AnimationClip startupAnimation, AnimationClip activeAnimation, AnimationClip recoveryAnimation) {
@@ -51,9 +51,7 @@ namespace CharacterBehavior {
                 }
             }
             else if (skillState == SkillState.Recovery) {
-                if (Time.time - newStateStartAt >= skillRecoveryTime) {
-                    gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
-                }
+                if (Time.time - newStateStartAt >= skillRecoveryTime) { }
             }
         }
     }

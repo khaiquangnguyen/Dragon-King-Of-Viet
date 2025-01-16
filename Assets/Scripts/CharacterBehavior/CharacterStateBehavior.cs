@@ -1,12 +1,12 @@
 namespace CharacterBehavior {
     public abstract class CharacterStateBehavior {
-        public readonly CharacterState characterState;
+        public readonly CharacterMovementState characterMovementState;
         protected readonly AIGameCharacter gameCharacter;
         protected readonly CharacterController2D characterController;
 
         protected CharacterStateBehavior(AIGameCharacter gameCharacter, CharacterController2D controller,
-            CharacterState characterState) {
-            this.characterState = characterState;
+            CharacterMovementState characterMovementState) {
+            this.characterMovementState = characterMovementState;
             this.gameCharacter = gameCharacter;
             characterController = controller;
         }

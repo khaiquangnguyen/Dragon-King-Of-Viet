@@ -37,7 +37,6 @@ public class ManDash : PlayerStateBehavior {
             var currentDashDistance =
                 dashDistanceCurve.Evaluate((Time.time - dashTimestamp) / dashDuration) * dashDistance;
             player.characterController.MoveToX(currentDashDistance * direction + dashStartingPosition.x);
-
         }
         else {
             player.SetStateAfterMovement();

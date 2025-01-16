@@ -85,10 +85,10 @@ public class PlayerStats : ScriptableObject {
     public float jumpCutDuration = 0.1f;
     public AnimationCurve jumpCutHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-
     #region Fall
     [Header("Fall")]
     #endregion
+
     // higher number means player will change from going up to going down faster
     // lower number thus, will mean the player will hang at the top of the jump cut for longer
     public float fastFallingGravityMult = 2f;

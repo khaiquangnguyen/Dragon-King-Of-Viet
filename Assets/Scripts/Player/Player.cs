@@ -252,6 +252,7 @@ public class Player : GameCharacter {
             stateMachine.ChangeState(PlayerState.ManIdle);
             return true;
         }
+
         return false;
     }
 
@@ -263,7 +264,6 @@ public class Player : GameCharacter {
         }
 
         return false;
-
     }
 
     public bool CheckChangeToManRunState() {
@@ -584,9 +584,8 @@ public class Player : GameCharacter {
             stateMachine.ChangeState(PlayerState.ManWallHang);
             return true;
         }
+
         return false;
-
-
     }
 
     public void ChangeToMan() {

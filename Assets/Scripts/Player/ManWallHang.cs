@@ -1,5 +1,4 @@
 public class ManWallHang : PlayerStateBehavior {
-
     public ManWallHang(Player player) : base(player, PlayerState.ManWallHang, PlayerForm.Man) { }
 
     public override void Update() {

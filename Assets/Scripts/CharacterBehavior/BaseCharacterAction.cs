@@ -9,7 +9,7 @@ namespace CharacterBehavior {
         protected List<GameCharacter> hitCharacters = new List<GameCharacter>();
 
         public BaseCharacterAction(AIGameCharacter gameCharacter, CharacterController2D controller,
-            CharacterState characterState) : base(gameCharacter, controller, characterState) { }
+            CharacterMovementState characterMovementState) : base(gameCharacter, controller, characterMovementState) { }
 
         public override void OnStateEnter() {
             skillState = SkillState.Ready;

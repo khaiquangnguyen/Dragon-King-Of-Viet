@@ -28,7 +28,7 @@ MonoBehaviour:
   manWaterDecelTime: 0.06
   manWaterMaxSpeed: 100
   dashDuration: 0.2
-  dashDistance: 10
+  dashDistance: 5
   baseDashCooldown: 0.5
   dashDistanceCurve:
     serializedVersion: 2
@@ -57,17 +57,17 @@ MonoBehaviour:
   dashStartupAnimation: {fileID: 0}
   dashActiveAnimation: {fileID: 0}
   dashRecoveryAnimation: {fileID: 0}
-  dodgeHopDuration: 0.1
-  dodgeHopDistance: 2
-  dodgeHopDistanceCurve:
+  shortDashDuration: 0.2
+  shortDashDistance: 2
+  shortDashDistanceCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
+      inSlope: 0
       outSlope: 1
-      tangentMode: 34
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -75,18 +75,18 @@ MonoBehaviour:
       time: 1
       value: 1
       inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  dodgeHopCooldown: 0.2
-  dodgeHopStartupAnimation: {fileID: 0}
-  dodgeHopActiveAnimation: {fileID: 0}
-  dodgeHopRecoveryAnimation: {fileID: 0}
+  shortDashCooldown: 0.2
+  shortDashStartupAnimation: {fileID: 0}
+  shortDashActiveAnimation: {fileID: 0}
+  shortDashRecoveryAnimation: {fileID: 0}
   jumpCoyoteDuration: 0.085
   jumpBufferDuration: 0.065
   jumpMaxHeight: 7
@@ -154,7 +154,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   fastFallingGravityMult: 1.4
   coyoteTimeGravityMult: 0.5
-  gravity: -60
+  gravity: -200
   crouchMaxSpeed: 10
   empoweredFallMaxSpeed: 10
   empoweredFallStartupDuration: 0.1

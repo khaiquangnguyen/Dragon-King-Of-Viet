@@ -1,13 +1,13 @@
 using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = System.Object;
 
 namespace CharacterBehavior {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public class AIGameCharacter : GameCharacter {
-        public readonly CharacterStateMachine stateMachine = new();
         public CharacterStats stats;
         private CharacterSpellCast characterSpellCast;
         private CharacterDefense characterDefense;
@@ -15,7 +15,7 @@ namespace CharacterBehavior {
         public float inputDirectionX;
         public float inputDirectionY;
         [ReadOnly]
-        public CharacterState characterState;
+        public CharacterMovementState characterMovementState;
         public bool triggerJump;
         [ReadOnly]
         public int jumpCount = 0;
@@ -23,36 +23,76 @@ namespace CharacterBehavior {
         [HideInInspector]
         public Animator animator;
         public CircleCollider2D attackCollider;
+        public CharacterMovementState movementState = CharacterMovementState.MovingOnGround;
         public GameObject player;
-        public bool shouldAttack;
+        public bool isPerformingNonMovementAction;
+        public Environment lastCharacterEnvironmentState;
+        public bool canChangeToWalking = true;
+        public bool canChangeToFlying = true;
+        public bool canChangeToSwimming = true;
 
         public void OnEnable() {
-            shouldAttack = false;
             animator = GetComponent<Animator>();
             characterController = GetComponent<CharacterController2D>();
             characterController.body = GetComponent<Rigidbody2D>();
             characterController.bodyCollider = GetComponent<Collider2D>();
             healthManager = GetComponent<HealthManager>();
-            stateMachine.AddState(characterSpellCast = new CharacterSpellCast(this, characterController));
-            stateMachine.AddState(characterDefense = new CharacterDefense(this, characterController));
-            stateMachine.ChangeState(CharacterState.Idle);
         }
 
         public void Update() {
-            characterState = stateMachine.characterState;
             facingDirection = inputDirectionX switch {
                 < 0 => -1,
                 > 0 => 1,
                 _ => facingDirection
             };
-
-
-            stateMachine.Update();
             UpdateEnvironment();
         }
 
+        public bool CheckChangeToMovingOnGround() {
+            var canChange = characterController.CheckIsOnGround() && stats.canWalk && canChangeToWalking;
+            if (canChange) {
+                characterMovementState = CharacterMovementState.MovingOnGround;
+                lastCharacterEnvironmentState = Environment.Ground;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CheckChangeToMovingInAir() {
+            var canChange = characterController.CheckIsInAir() && stats.canFly && canChangeToFlying;
+            if (canChange) {
+                characterMovementState = CharacterMovementState.MovingInAir;
+                lastCharacterEnvironmentState = Environment.Air;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CheckChangeToMovingInWater() {
+            var canChange = characterController.CheckIsInWater() && stats.canSwim && canChangeToSwimming;
+            if (canChange) {
+                characterMovementState = CharacterMovementState.MovingInWater;
+                lastCharacterEnvironmentState = Environment.Water;
+                return true;
+            }
+
+            return false;
+        }
+
         public void FixedUpdate() {
-            stateMachine.FixedUpdate();
+            // check state update
+            if (characterController.CheckIsInAir() && characterMovementState != CharacterMovementState.Jumping && !stats.canFly) {
+                characterMovementState = CharacterMovementState.Falling;
+            }
+            CheckChangeToMovingOnGround();
+            CheckChangeToMovingInAir();
+            CheckChangeToMovingInWater();
+
+            if (characterMovementState == CharacterMovementState.Falling) {
+                NoFlyAerialFixedUpdate();
+            }
         }
 
         public override void OnDealDamage(int damageDealt, IDamageTaker gameCharacter) {
@@ -77,14 +117,6 @@ namespace CharacterBehavior {
             OnDealDamage(damage, damagedCharacter);
         }
 
-        public bool CheckChangeToFallFromNonAirState() {
-            if (environment == Environment.Air) {
-                stateMachine.ChangeState(CharacterState.Falling);
-                return true;
-            }
-            return false;
-        }
-
         public void MoveOnGroundFixedUpdate() {
             var acceleration = stats.groundAccel;
             var deceleration = stats.groundDecel;
@@ -99,8 +131,9 @@ namespace CharacterBehavior {
             var acceleration = stats.airAccel;
             var deceleration = stats.airDecel;
             var inputDirection = new Vector2(inputDirectionX, inputDirectionY);
-            var maxSpeed =  Mathf.Abs(stats.airMaxSpeed * inputDirection.normalized.magnitude);
-            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed, inputDirection);
+            var maxSpeed = Mathf.Abs(stats.airMaxSpeed * inputDirection.normalized.magnitude);
+            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed,
+                inputDirection);
         }
 
         /*
@@ -112,7 +145,8 @@ namespace CharacterBehavior {
             var deceleration = stats.airDecel;
             var gravity = stats.gravity;
             var maxSpeed = stats.airMaxSpeed;
-            characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeed, gravity, 1, facingDirection, stats.maxFallSpeed);
+            characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeed, gravity, 1,
+                facingDirection, stats.maxFallSpeed);
         }
 
         public void SwimFixedUpdate() {
@@ -120,19 +154,8 @@ namespace CharacterBehavior {
             var deceleration = stats.waterDecel;
             var maxSpeed = stats.waterMaxSpeed;
             var inputDirection = new Vector2(inputDirectionX, inputDirectionY);
-            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed, inputDirection);
-        }
-
-        // Change to idle should be added to fixed update movement
-        // since if you put it in update like other CheckChange functions,
-        // it will trigger almost immediately
-        public bool CheckChangeToIdle() {
-            var notMoving = Mathf.Approximately(characterController.velocity.magnitude, 0);
-            if (notMoving && environment == Environment.Ground) {
-                stateMachine.ChangeState(CharacterState.Idle);
-                return true;
-            }
-            return false;
+            characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed,
+                inputDirection);
         }
 
         public bool TriggerJump(float jumpHeight, float distance, float jumpDuration) {
@@ -147,6 +170,8 @@ namespace CharacterBehavior {
                 triggerJump = false;
                 return true;
             }
+
+            characterMovementState = CharacterMovementState.Jumping;
             return false;
         }
 
@@ -157,38 +182,32 @@ namespace CharacterBehavior {
         /**
          * Patrol the ground. Move between all the points in the path
          */
-        public void SimpleGroundPatrol(Vector2[] paths) {
-        }
+        public void SimpleGroundPatrol(Vector2[] paths) { }
 
         /**
          * patrol an environment that is not affect by gravity. Move between all the points in the path
          */
-        public void SimpleFlySwimPatrol() {
+        public void SimpleSwimPatrol() { }
 
-        }
+        /**
+         * patrol an environment that is not affect by gravity. Move between all the points in the path
+         */
+        public void SimpleFlyPatrol() { }
 
-        public void GetPathToward() {
-        }
+        public void GetPathToward() { }
 
-        public void GetFlyPathToward() {
+        public void GetFlyPathToward() { }
 
-        }
+        public void GetRunPathToward() { }
 
-        public void GetRunPathToward() {
+        public void GetSwimPathToward() { }
 
-        }
+        public void WalkToward() { }
 
-        public void GetSwimPathToward() {
+        public void FlyToward() { }
 
-        }
+        public void SwimToward() { }
 
-        public void WalkToward() {
-        }
-
-        public void FlyToward() {
-        }
-
-        public void SwimToward() {
-        }
+        public void DetectPlayer() { }
     }
 }

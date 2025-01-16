@@ -24,7 +24,7 @@ namespace CharacterBehavior {
             if (characterController.CheckIsOnGround()) {
                 environment = Environment.Ground;
             }
-            else if (characterController.CheckIsOnWater()) {
+            else if (characterController.CheckIsInWater()) {
                 environment = Environment.Water;
             }
             else {

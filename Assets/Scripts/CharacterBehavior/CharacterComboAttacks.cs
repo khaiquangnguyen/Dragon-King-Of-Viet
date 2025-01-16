@@ -9,7 +9,7 @@ namespace CharacterBehavior {
 
         public CharacterComboAttacks(AIGameCharacter gameCharacter, CharacterController2D controller,
             List<AttackStats> comboAttackStats) : base(
-            gameCharacter, controller, CharacterState.ComboAttacks) {
+            gameCharacter, controller, CharacterMovementState.ComboAttacks) {
             this.comboAttackStats = comboAttackStats;
         }
 
@@ -48,9 +48,7 @@ namespace CharacterBehavior {
                     skillState = SkillState.Ready;
                     newStateStartAt = Time.time;
                 }
-                else {
-                    gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
-                }
+                else { }
             }
         }
     }

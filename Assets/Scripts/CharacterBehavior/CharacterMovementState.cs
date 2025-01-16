@@ -1,20 +1,17 @@
 namespace CharacterBehavior {
-    public enum CharacterState {
+    public enum CharacterMovementState {
         Idle,
-        Walking,
-        Running,
+        MovingOnGround,
         Jumping,
         Falling,
-        Landing,
         CastSpell,
         ComboAttacks,
         Defense,
-        SpecialAttack1,
         SpecialAttack2,
         SpecialAttack3,
         SpecialAttack4,
-        Flying,
-        Swimming,
+        MovingInAir,
+        MovingInWater,
         Dead
     }
 }

@@ -7,7 +7,7 @@ namespace CharacterBehavior {
         private DefenseState defenseState = DefenseState.Ready;
 
         public CharacterDefense(AIGameCharacter gameCharacter, CharacterController2D controller) : base(gameCharacter,
-            controller, CharacterState.Defense) { }
+            controller, CharacterMovementState.Defense) { }
 
         public override void OnStateEnter() {
             characterController.Move(0, 0);
@@ -38,8 +38,6 @@ namespace CharacterBehavior {
             }
             else if (defenseState == DefenseState.Recovery) {
                 gameCharacter.animator.Play(gameCharacter.combatStats.defenseRecoveryAnimation.name);
-                if (Time.time - newStateStartAt > gameCharacter.combatStats.defenseRecoveryDuration)
-                    gameCharacter.stateMachine.ChangeState(CharacterState.Idle);
             }
         }
     }
