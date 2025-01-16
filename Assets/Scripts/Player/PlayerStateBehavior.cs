@@ -13,5 +13,6 @@ public abstract class PlayerStateBehavior {
     public virtual void Update() { }
 
     public virtual void FixedUpdate() { }
+
     public virtual void OnStateExit() { }
 }

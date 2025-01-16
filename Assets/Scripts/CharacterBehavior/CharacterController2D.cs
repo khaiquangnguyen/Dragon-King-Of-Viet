@@ -136,6 +136,16 @@ namespace CharacterBehavior {
             return hit;
         }
 
+        public bool LeaveGround() {
+            shouldStickToGround = false;
+            return shouldStickToGround;
+        }
+
+        public bool LandOnGround() {
+            shouldStickToGround = true;
+            return shouldStickToGround;
+        }
+
         public bool CheckCanWallHang(int facingDirection) {
             var collideWallStatues = CheckCollideWall(facingDirection);
             var isOnGround = CheckIsOnGround();
@@ -161,16 +171,14 @@ namespace CharacterBehavior {
         }
 
         public void MoveToX(float newX) {
-            var newVelocityX = newX - body.position.x;
-            velocity.Set(newVelocityX, velocity.y);
+            body.MovePosition(new Vector2(newX, body.position.y));
         }
 
         public void FixedUpdate() {
             if (shouldStickToGround && !CheckRaycastGround() && !CheckRaycastSlope() ) {
                 StickToGround();
             }
-            body.MovePosition(body.position + velocity * Time.fixedDeltaTime);
-
+            body.linearVelocity = velocity;
         }
 
         private Vector2 GetCastOrigin() {
@@ -229,11 +237,6 @@ namespace CharacterBehavior {
         private IEnumerator<WaitForFixedUpdate> AfterPhysicsSteps() {
             while (true) {
                 yield return new WaitForFixedUpdate();
-                if (CheckRaycastGround() || CheckRaycastSlope()) {
-                    // shouldStickToGround = true;
-                }
-                else {
-                }
             }
         }
     }

@@ -2764,7 +2764,8 @@ MonoBehaviour:
   projectileLayer: 0
   characterLayer: 0
   healthManager: {fileID: 0}
-  controller: {fileID: 0}
+  characterController: {fileID: 0}
+  environment: 0
   stats: {fileID: 11400000, guid: e0535496b86064c45a2593bdbe1cbe82, type: 2}
   inputDirectionX: 0
   inputDirectionY: 0
@@ -2773,8 +2774,8 @@ MonoBehaviour:
   jumpCount: 0
   combatStats: {fileID: 0}
   animator: {fileID: 0}
-  environment: 0
   attackCollider: {fileID: 0}
+  player: {fileID: 0}
   shouldAttack: 0
 --- !u!50 &1766946049
 Rigidbody2D:
@@ -2818,12 +2819,11 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: 6e4d5de4b37ea4bd5909989fe66207ce, type: 2}
   body: {fileID: 0}
   bodyCollider: {fileID: 0}
-  isOnWalkableSlope: 0
   slopeSideAngle: 0
   slopeDownAngle: 0
-  isWalkableGroundCheckPassed: 0
   shouldStickToGround: 1
   isOnSlope: 0
+  isOnGround: 0
   velocity: {x: 0, y: 0}
 --- !u!70 &1766946051
 CapsuleCollider2D:
@@ -2973,7 +2973,7 @@ GameObject:
   - component: {fileID: 1983922125}
   m_Layer: 7
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3016,6 +3016,7 @@ MonoBehaviour:
   characterLayer: 0
   healthManager: {fileID: 1983922124}
   characterController: {fileID: 0}
+  environment: 0
   inputDirectionX: 0
   inputDirectionY: 0
   coyoteTimeCountdown: 0
@@ -3097,12 +3098,11 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: ee135b0bf7a9b44b0ac2285307ceec83, type: 2}
   body: {fileID: 1983922122}
   bodyCollider: {fileID: 1564824399}
-  isOnWalkableSlope: 0
   slopeSideAngle: 0
   slopeDownAngle: 0
-  isWalkableGroundCheckPassed: 0
   shouldStickToGround: 1
   isOnSlope: 0
+  isOnGround: 0
   velocity: {x: 0, y: 0}
 --- !u!114 &1983922124
 MonoBehaviour:

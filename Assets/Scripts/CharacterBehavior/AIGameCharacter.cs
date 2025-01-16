@@ -1,15 +1,13 @@
 using System;
 using Unity.Collections;
 using UnityEngine;
+using Object = System.Object;
 
 namespace CharacterBehavior {
-    [RequireComponent(typeof(CharacterController2D))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public class AIGameCharacter : GameCharacter {
         public readonly CharacterStateMachine stateMachine = new();
-        [HideInInspector]
-        public CharacterController2D characterController;
         public CharacterStats stats;
         private CharacterSpellCast characterSpellCast;
         private CharacterDefense characterDefense;
@@ -24,8 +22,8 @@ namespace CharacterBehavior {
         public AICharacterCombatStats combatStats;
         [HideInInspector]
         public Animator animator;
-        public Environment environment;
         public CircleCollider2D attackCollider;
+        public GameObject player;
         public bool shouldAttack;
 
         public void OnEnable() {
@@ -50,6 +48,7 @@ namespace CharacterBehavior {
 
 
             stateMachine.Update();
+            UpdateEnvironment();
         }
 
         public void FixedUpdate() {
@@ -83,12 +82,10 @@ namespace CharacterBehavior {
                 stateMachine.ChangeState(CharacterState.Falling);
                 return true;
             }
-
             return false;
         }
 
         public void MoveOnGroundFixedUpdate() {
-            characterController.shouldStickToGround = true;
             var acceleration = stats.groundAccel;
             var deceleration = stats.groundDecel;
             var maxSpeed = Mathf.Abs(stats.groundMaxSpeed * inputDirectionX);
@@ -99,11 +96,10 @@ namespace CharacterBehavior {
          * Character has full control over their movement in the air.
          */
         public void FlyFixedUpdate() {
-            characterController.shouldStickToGround = false;
             var acceleration = stats.airAccel;
             var deceleration = stats.airDecel;
-            var maxSpeed = stats.airMaxSpeed;
             var inputDirection = new Vector2(inputDirectionX, inputDirectionY);
+            var maxSpeed =  Mathf.Abs(stats.airMaxSpeed * inputDirection.normalized.magnitude);
             characterController.MoveOnNonGroundAnyDirectionNoGravity(acceleration, deceleration, maxSpeed, inputDirection);
         }
 
@@ -112,15 +108,14 @@ namespace CharacterBehavior {
          * Useful for jumping and falling
          */
         public void NoFlyAerialFixedUpdate() {
-            characterController.shouldStickToGround = false;
             var acceleration = stats.airAccel;
             var deceleration = stats.airDecel;
             var gravity = stats.gravity;
-            var maxSpeed = stats.airMaxSpeed;characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeed, gravity, 1, facingDirection, stats.maxFallSpeed);
+            var maxSpeed = stats.airMaxSpeed;
+            characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeed, gravity, 1, facingDirection, stats.maxFallSpeed);
         }
 
         public void SwimFixedUpdate() {
-            characterController.shouldStickToGround = false;
             var acceleration = stats.waterAccel;
             var deceleration = stats.waterDecel;
             var maxSpeed = stats.waterMaxSpeed;
@@ -137,7 +132,6 @@ namespace CharacterBehavior {
                 stateMachine.ChangeState(CharacterState.Idle);
                 return true;
             }
-
             return false;
         }
 
@@ -149,24 +143,52 @@ namespace CharacterBehavior {
             var canJump = isOnGround && triggerJump;
             if (canJump) {
                 characterController.Move(characterController.velocity.x, jumpSpeed);
-                characterController.shouldStickToGround = false;
+                characterController.LeaveGround();
                 triggerJump = false;
                 return true;
             }
             return false;
         }
 
-        public void CheckEnvironmentState() {
-            if (characterController.CheckIsOnGround()) {
-                environment = Environment.Ground;
-            }
-            else if (characterController.CheckIsOnWater()) {
-                environment = Environment.Water;
-            }
-            else {
-                environment = Environment.Air;
-            }
+        public Vector2 GetPlayerPosition() {
+            return player.transform.position;
+        }
 
+        /**
+         * Patrol the ground. Move between all the points in the path
+         */
+        public void SimpleGroundPatrol(Vector2[] paths) {
+        }
+
+        /**
+         * patrol an environment that is not affect by gravity. Move between all the points in the path
+         */
+        public void SimpleFlySwimPatrol() {
+
+        }
+
+        public void GetPathToward() {
+        }
+
+        public void GetFlyPathToward() {
+
+        }
+
+        public void GetRunPathToward() {
+
+        }
+
+        public void GetSwimPathToward() {
+
+        }
+
+        public void WalkToward() {
+        }
+
+        public void FlyToward() {
+        }
+
+        public void SwimToward() {
         }
     }
 }

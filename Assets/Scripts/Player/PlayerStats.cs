@@ -53,15 +53,15 @@ public class PlayerStats : ScriptableObject {
     public AnimationClip dashRecoveryAnimation;
     #endregion
 
-    #region Dodge Hop
-    [Header("Man Dodge Hope")]
-    public float dodgeHopDuration = 0.2f;
-    public float dodgeHopDistance = 5f;
-    public AnimationCurve dodgeHopDistanceCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    public float dodgeHopCooldown = 0.2f;
-    public AnimationClip dodgeHopStartupAnimation;
-    public AnimationClip dodgeHopActiveAnimation;
-    public AnimationClip dodgeHopRecoveryAnimation;
+    #region Short Dash
+    [Header("Man Short Dash")]
+    public float shortDashDuration = 0.2f;
+    public float shortDashDistance = 5f;
+    public AnimationCurve shortDashDistanceCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public float shortDashCooldown = 0.2f;
+    public AnimationClip shortDashStartupAnimation;
+    public AnimationClip shortDashActiveAnimation;
+    public AnimationClip shortDashRecoveryAnimation;
     #endregion
 
     #region Jump
@@ -85,6 +85,10 @@ public class PlayerStats : ScriptableObject {
     public float jumpCutDuration = 0.1f;
     public AnimationCurve jumpCutHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
+
+    #region Fall
+    [Header("Fall")]
+    #endregion
     // higher number means player will change from going up to going down faster
     // lower number thus, will mean the player will hang at the top of the jump cut for longer
     public float fastFallingGravityMult = 2f;

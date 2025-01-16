@@ -13,12 +13,8 @@ public enum Environment {
     Water
 }
 
-[RequireComponent(typeof(CharacterController2D))]
 [RequireComponent(typeof(EnergyManager))]
 public class Player : GameCharacter {
-    [HideInInspector]
-    public CharacterController2D characterController;
-
     private readonly IReadOnlyList<PlayerState> airStates = new List<PlayerState> {
         PlayerState.ManJump,
         PlayerState.ManFall
@@ -145,7 +141,7 @@ public class Player : GameCharacter {
     private ManEmpoweredJump manEmpoweredJump;
     private ManWallHang manWallHang;
     private ManExecution manExecution;
-    private ManDodge manDodgeHop;
+    private ManDodge manShortDash;
     private ManToDragonTransform dragonFromManTransform;
     private DragonToManTransform dragonToManTransform;
     private DragonFloatMove dragonFloatMove;
@@ -203,7 +199,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(manFall = new ManFall(this));
         stateMachine.AddState(manEmpoweredFall = new ManEmpoweredFall(this));
         stateMachine.AddState(manCrouch = new ManCrouch(this));
-        stateMachine.AddState(manDodgeHop = new ManDodge(this));
+        stateMachine.AddState(manShortDash = new ManDodge(this));
         stateMachine.AddState(manExecution = new ManExecution(this));
         stateMachine.AddState(manWallHang = new ManWallHang(this));
         stateMachine.AddState(dragonFromManTransform = new ManToDragonTransform(this));
@@ -246,27 +242,6 @@ public class Player : GameCharacter {
         }
     }
 
-    public bool CheckChangeToManFallFromNonAirState() {
-        if (environment == Environment.Air) {
-            stateMachine.ChangeState(PlayerState.ManFall);
-            return true;
-        }
-
-        return false;
-    }
-
-    public void UpdateEnvironment() {
-        if (characterController.CheckIsOnGround()) {
-            environment = Environment.Ground;
-        }
-        else if (characterController.CheckIsOnWater()) {
-            environment = Environment.Water;
-        }
-        else {
-            environment = Environment.Air;
-        }
-    }
-
     // Change to idle should be add to fixed update movement
     // since if you put it in update like other CheckChange functions,
     // it will trigger almost immediately
@@ -277,8 +252,18 @@ public class Player : GameCharacter {
             stateMachine.ChangeState(PlayerState.ManIdle);
             return true;
         }
+        return false;
+    }
+
+    public bool CheckChangeToManFall() {
+        var isOnGround = characterController.CheckIsOnGround();
+        if (!isOnGround) {
+            stateMachine.ChangeState(PlayerState.ManFall);
+            return true;
+        }
 
         return false;
+
     }
 
     public bool CheckChangeToManRunState() {
@@ -315,7 +300,7 @@ public class Player : GameCharacter {
         return false;
     }
 
-    public bool CheckChangeToManDodgeHopDashState() {
+    public bool CheckChangeToManShortDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
         var dodgeBack = Input.GetButtonDown("DodgeBack");
         var dodgeForward = Input.GetButtonDown("DodgeForward");
@@ -327,8 +312,8 @@ public class Player : GameCharacter {
             var canHop = formValidated && inputValidated && cooldownValidated && environmentValidated;
             if (canHop) {
                 var direction = dodgeBack ? -1 : 1;
-                manDodgeHop.SetDirection(direction);
-                stateMachine.ChangeState(PlayerState.ManDodgeHop);
+                manShortDash.SetDirection(direction);
+                stateMachine.ChangeState(PlayerState.ManShortDash);
                 return true;
             }
         }

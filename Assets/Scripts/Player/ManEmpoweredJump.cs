@@ -18,7 +18,7 @@ public class ManEmpoweredJump : ManJump {
         // don't allow input change things during input lock
         if (Time.time - jumpStartTimestamp >= player.playerStats.empoweredJumpInputLockDuration) {
             if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
-            if (player.CheckChangeToManDodgeHopDashState()) return;
+            if (player.CheckChangeToManShortDashState()) return;
             if (player.CheckChangeToManDefenseState()) return;
             if (player.CheckChangeToManAttackState()) return;
             if (player.CheckTransformIntoDragonAndBack()) return;

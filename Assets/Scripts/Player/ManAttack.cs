@@ -9,7 +9,7 @@ public class ManAttack : BasePlayerAction {
     public override void Update() {
         if (player.CheckChangeToManRunState()) return;
         if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
-        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManShortDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;

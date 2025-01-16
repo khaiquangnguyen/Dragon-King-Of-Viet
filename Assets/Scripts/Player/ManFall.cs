@@ -10,20 +10,23 @@ public class ManFall : PlayerStateBehavior {
     public override void Update() {
         if (player.CheckChangeToWallHang()) return;
         if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
-        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManShortDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;
     }
 
     public override void FixedUpdate() {
+        // when falling, can't stick to ground
+        player.characterController.shouldStickToGround = false;
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
         var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
         var gravityMult = player.GetGravityMult();
         player.characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeedX,
             player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxFallSpeed);
-        if (player.characterController.CheckIsOnWalkableGround()) {
+        if (player.characterController.CheckIsOnGround()) {
+            player.characterController.shouldStickToGround = true;
             if (player.inputDirectionX == 0) {
                 player.stateMachine.ChangeState(PlayerState.ManIdle);
             }

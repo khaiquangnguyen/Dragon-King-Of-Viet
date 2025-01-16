@@ -9,7 +9,7 @@ public class ManIdle : PlayerStateBehavior {
     public override void Update() {
         if (player.CheckChangeToManRunState()) return;
         if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
-        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManShortDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckChangeToDragonOrManCastSpell()) return;
@@ -18,8 +18,7 @@ public class ManIdle : PlayerStateBehavior {
 
     public override void FixedUpdate() {
         player.characterController.Move(0, 0);
-        var isOnGround = player.characterController.CheckIsOnWalkableGround();
-        if (!isOnGround) player.stateMachine.ChangeState(PlayerState.ManFall);
+        player.CheckChangeToManFall();
     }
 
     public override void OnStateExit() { }

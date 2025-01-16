@@ -4,7 +4,7 @@ public enum PlayerState {
     ManDash,
     ManAttack,
     ManJump,
-    ManDodgeHop,
+    ManShortDash,
     ManWallHang,
     ManCrouch,
     ManEmpoweredAttack,

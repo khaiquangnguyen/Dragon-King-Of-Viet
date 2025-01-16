@@ -25,7 +25,7 @@ public class ManJump : PlayerStateBehavior {
     public ManJump(Player player, PlayerState state = PlayerState.ManJump) : base(player, state, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
-        player.characterController.shouldStickToGround = false;
+        player.characterController.LeaveGround();
         player.humanAnimator.Play("JumpRise");
         jumpCutStarted = false;
         jumpMaxHeight = player.playerStats.jumpMaxHeight;
@@ -37,7 +37,7 @@ public class ManJump : PlayerStateBehavior {
 
     public override void Update() {
         if (player.CheckChangeToManJumpOrEmpoweredJumpState()) return;
-        if (player.CheckChangeToManDodgeHopDashState()) return;
+        if (player.CheckChangeToManShortDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckChangeToDragonOrManCastSpell()) return;

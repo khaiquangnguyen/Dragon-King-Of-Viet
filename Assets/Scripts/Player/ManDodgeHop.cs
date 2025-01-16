@@ -1,27 +1,27 @@
 using UnityEngine;
 
 public class ManDodge : PlayerStateBehavior {
-    private float speedBeforeDodgeHop;
+    private float speedBeforeShortDash;
     private float hopTimestamp;
     private float hopeDuration;
     private float hopDistance;
     private float hopSpeed;
-    private AnimationCurve dodgeHopDistanceCurve => player.playerStats.dodgeHopDistanceCurve;
+    private AnimationCurve shortDashDistanceCurve => player.playerStats.shortDashDistanceCurve;
     private Vector2 hopStartingPosition;
     private int direction;
     private Environment environment => player.environment;
     private PlayerStats playerStats => player.playerStats;
 
-    public ManDodge(Player player) : base(player, PlayerState.ManDodgeHop, PlayerForm.Man) { }
+    public ManDodge(Player player) : base(player, PlayerState.ManShortDash, PlayerForm.Man) { }
 
     public override void OnStateEnter() {
         hopStartingPosition = player.characterController.body.position;
         player.inputDisabled = true;
-        speedBeforeDodgeHop = player.characterController.velocity.x;
+        speedBeforeShortDash = player.characterController.velocity.x;
         // get parameters
         hopTimestamp = Time.time;
-        hopeDuration = player.playerStats.dodgeHopDuration;
-        hopDistance = player.playerStats.dodgeHopDistance;
+        hopeDuration = player.playerStats.shortDashDuration;
+        hopDistance = player.playerStats.shortDashDistance;
     }
 
     public void SetDirection(int dodgeDirection) {
@@ -33,7 +33,8 @@ public class ManDodge : PlayerStateBehavior {
     public override void FixedUpdate() {
         if (Time.time - hopTimestamp <= hopeDuration) {
             var currentHopDistance =
-                dodgeHopDistanceCurve.Evaluate((Time.time - hopTimestamp) / hopeDuration) * hopDistance;
+                shortDashDistanceCurve.Evaluate((Time.time - hopTimestamp) / hopeDuration) * hopDistance;
+            MonoBehaviour.print(currentHopDistance);
             player.characterController.MoveToX(currentHopDistance * direction + hopStartingPosition.x);
         }
         else {
@@ -50,7 +51,7 @@ public class ManDodge : PlayerStateBehavior {
             Environment.Air => playerStats.manAirMaxSpeed,
             Environment.Water => playerStats.manWaterMaxSpeed,
         };
-        var hopEndSpeed = Mathf.Max(environmentMaxSpeed, Mathf.Abs(speedBeforeDodgeHop)) * player.inputDirectionX;
+        var hopEndSpeed = Mathf.Max(environmentMaxSpeed, Mathf.Abs(speedBeforeShortDash)) * player.inputDirectionX;
         player.characterController.MoveX(hopEndSpeed);
     }
 }

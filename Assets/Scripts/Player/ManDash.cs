@@ -33,11 +33,11 @@ public class ManDash : PlayerStateBehavior {
     public override void Update() { }
 
     public override void FixedUpdate() {
-        MonoBehaviour.print("Dashing");
         if (Time.time - dashTimestamp <= dashDuration) {
             var currentDashDistance =
                 dashDistanceCurve.Evaluate((Time.time - dashTimestamp) / dashDuration) * dashDistance;
             player.characterController.MoveToX(currentDashDistance * direction + dashStartingPosition.x);
+
         }
         else {
             player.SetStateAfterMovement();
