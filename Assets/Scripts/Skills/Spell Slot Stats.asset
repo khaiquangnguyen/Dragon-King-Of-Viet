@@ -16,7 +16,8 @@ MonoBehaviour:
   secondSpellEnergyCost: 2
   thirdSpellEnergyCost: 3
   fourthSpellEnergyCost: 4
-  spellCardRotationPeriod: 0.2
+  spellCardRotationPeriod: 1
+  spellCardRotationTotalDuration: 10000
   spellCardHoldDuration: 5
   refundEnergyWhenInterrupted: 2
   refundEnergyWhenSkillNotUsed: 2

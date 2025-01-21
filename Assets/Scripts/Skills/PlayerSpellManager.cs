@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerSpellSlotManagement : MonoBehaviour {
+public class PlayerSpellManager : MonoBehaviour {
     public SpellSlotStats stats;
     public float[] currentEnergies = new float[4];
     public float[] baseEnergyCosts = new float[4];
@@ -47,6 +47,10 @@ public class PlayerSpellSlotManagement : MonoBehaviour {
         baseEnergyCosts[3] = stats.fourthSpellEnergyCost;
     }
 
+    public int GetCurrentSpellCardIndex() {
+        return currentSpellCardIndices[selectedSpellSlot];
+    }
+
     public List<Skill> GetAllSpellsOfSlot(int? slot = null) {
         var slotToCheck = slot ?? selectedSpellSlot;
         var form = player.form;
@@ -77,6 +81,8 @@ public class PlayerSpellSlotManagement : MonoBehaviour {
             holdingCardCountdown = Mathf.Clamp(holdingCardCountdown - Time.deltaTime, 0, stats.spellCardHoldDuration);
             if (holdingCardCountdown <= 0) {
                 isHoldingCard = false;
+                isPreparingSpell = false;
+                isRotatingSpellCard = false;
                 currentEnergies[selectedSpellSlot] = stats.refundEnergyWhenSkillNotUsed;
             }
         }

@@ -14,7 +14,7 @@ public enum Environment {
 }
 
 [RequireComponent(typeof(EnergyManager))]
-[RequireComponent(typeof(PlayerSpellSlotManagement))]
+[RequireComponent(typeof(PlayerSpellManager))]
 public class Player : GameCharacter {
     private readonly IReadOnlyList<PlayerState> airStates = new List<PlayerState> {
         PlayerState.ManJump,
@@ -154,7 +154,7 @@ public class Player : GameCharacter {
     public CircleCollider2D dragonAttackCollider;
     public bool canWallHang = true;
     private EnergyManager energyManager;
-    private PlayerSpellSlotManagement spellSlotManagement;
+    private PlayerSpellManager spellManager;
     // when quick cast is enabled, if only one spell is equipped in the slot, it will be cast immediately
     public bool allowQuickCastSpell = true;
     #endregion
@@ -164,7 +164,7 @@ public class Player : GameCharacter {
         canWallHang = true;
         manAttackCollider.enabled = false;
         energyManager = GetComponent<EnergyManager>();
-        spellSlotManagement = GetComponent<PlayerSpellSlotManagement>();
+        spellManager = GetComponent<PlayerSpellManager>();
         body = transform.GetComponent<Rigidbody2D>();
         characterController = GetComponent<CharacterController2D>();
         dragonBody = transform.Find("DragonBody").gameObject;
@@ -243,20 +243,20 @@ public class Player : GameCharacter {
         int skillIndex = -1;
         if (Input.GetButtonDown("Skill1")) {
             skillIndex = 0;
-            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+            spellManager.TriggerSpellsRotationOrHold(skillIndex);
         }
         else if (Input.GetButtonDown("Skill2")) {
             skillIndex = 1;
-            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+            spellManager.TriggerSpellsRotationOrHold(skillIndex);
         }
         else if (Input.GetButtonDown("Skill3")) {
             skillIndex = 2;
-            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+            spellManager.TriggerSpellsRotationOrHold(skillIndex);
         }
         else if (Input.GetButtonDown("Skill4")) {
             skillIndex = 3;
             if (form == PlayerForm.Dragon) {
-                spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+                spellManager.TriggerSpellsRotationOrHold(skillIndex);
             }
         }
     }
@@ -567,10 +567,10 @@ public class Player : GameCharacter {
     }
 
     public bool CastSpell() {
-        if (!spellSlotManagement.CanCastSpell()) return false;
+        if (!spellManager.CanCastSpell()) return false;
         BaseSpellCast spellCastForm = form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
         var spellCastState = form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
-        var spell = spellSlotManagement.StartSpellCast();
+        var spell = spellManager.StartSpellCast();
         spellCastForm.SetSkillData(
             spell,
             spell.skillStartupDuration,

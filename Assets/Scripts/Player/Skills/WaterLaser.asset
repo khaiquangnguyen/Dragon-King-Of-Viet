@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: WaterLaser
   m_EditorClassIdentifier: 
   skillName: 
-  icon: {fileID: 0}
+  icon: {fileID: 4334862959084499192, guid: 3e7d97ca4b7084e87955cd723dbd95a6, type: 3}
   baseCooldown: 0
   damage: 0
+  skillLevel: 0
   skillStartupDuration: 0
   skillActiveDuration: 0
   skillRecoveryDuration: 0

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: ChargeOfAThousandFishes
   m_EditorClassIdentifier: 
   skillName: Charge Of A Thousand Fishes
-  icon: {fileID: 0}
+  icon: {fileID: -6239131136140779504, guid: 7621de760f21f42a68d33622ddf2eb22, type: 3}
   baseCooldown: 0
   damage: 0
+  skillLevel: 0
   skillStartupDuration: 0
   skillActiveDuration: 0
   skillRecoveryDuration: 0

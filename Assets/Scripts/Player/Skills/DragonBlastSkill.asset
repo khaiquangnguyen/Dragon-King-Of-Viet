@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: DragonBlastSkill
   m_EditorClassIdentifier: 
   skillName: Dragon Blast
-  icon: {fileID: -6732451527612580723, guid: 2846042fad0f040efaea56a9e1e616a8, type: 3}
+  icon: {fileID: -3335081196777227646, guid: 62664dacf09204938881975ce55bc3d5, type: 3}
   baseCooldown: 10
   damage: 2
+  skillLevel: 0
   skillStartupDuration: 0.1
   skillActiveDuration: 0.3
   skillRecoveryDuration: 0.1

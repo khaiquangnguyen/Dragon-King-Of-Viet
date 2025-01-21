@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: SummonRain
   m_EditorClassIdentifier: 
   skillName: Summon Rain
-  icon: {fileID: 0}
+  icon: {fileID: 6206395841036836772, guid: c27fcffa05eb148ccab298b72069ead2, type: 3}
   baseCooldown: 0
   damage: 0
+  skillLevel: 0
   skillStartupDuration: 0
   skillActiveDuration: 0
   skillRecoveryDuration: 0
