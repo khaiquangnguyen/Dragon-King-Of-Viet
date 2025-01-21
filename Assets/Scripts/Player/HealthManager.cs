@@ -16,9 +16,11 @@ public class HealthManager : MonoBehaviour {
     public bool allowOverHeal;
     public float noDamageUntilRegenDuration = 3;
     public float damageLastTakenAt;
+    public float healingMult = 1;
 
     public HealthManager(int maxHealth, int currentHealth, int healthRegen) {
         gameCharacter = GetComponent<GameCharacter>();
+        healingMult = 1;
         this.currentHealth = currentHealth;
         this.maxHealth = maxHealth;
         this.healthRegen = healthRegen;
@@ -37,14 +39,14 @@ public class HealthManager : MonoBehaviour {
 
     public void Heal(int healAmount) {
         if (canHeal) {
-            currentHealth += healAmount;
+            currentHealth += (int)(healAmount * healingMult);
         }
     }
 
     public void RegenHealth() {
         if (canRegen && currentHealth < maxHealth && timeSinceLastRegen >= 1 &&
             Time.time - damageLastTakenAt >= noDamageUntilRegenDuration) {
-            currentHealth += healthRegen;
+            currentHealth += (int)(healthRegen * healingMult);
             timeSinceLastRegen = 0;
         }
     }

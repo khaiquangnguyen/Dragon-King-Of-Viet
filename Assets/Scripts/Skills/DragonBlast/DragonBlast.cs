@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DragonBlast", menuName = "Skills/DragonBlast", order = 0)]
+[CreateAssetMenu(fileName = "DragonBlast", menuName = "Skills/DragonBlast")]
 public class DragonBlast : Skill {
     public GameObject projectilePrefab;
     public GameObject projectileImpactPrefab;
@@ -19,17 +20,15 @@ public class DragonBlast : Skill {
         var spawnLocation = Caster.transform.position;
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var rotation = ComputeProjectileDirection(spawnLocation, mousePosition);
-        var spawnedProjectile = SpawnProjectileAt<DragonBlastProjectile>(projectilePrefab, spawnLocation, rotation);
-        DragonBlastProjectile projectileScript = spawnedProjectile.GetComponent<DragonBlastProjectile>();
-        if (!projectileScript) {
-            projectileScript = spawnedProjectile.AddComponent<DragonBlastProjectile>();
-        }
-
+        var (projectile, projectileScript) = SpawnSkillCollidablePartAt<DragonBlastProjectile>(projectilePrefab, spawnLocation, rotation);
         projectileScript.selfDestructEffect = projectileSelfDestructPrefab;
         projectileScript.impactEffect = projectileImpactPrefab;
         projectileScript.movementCurve = projectileMovementCurve;
         projectileScript.distance = distance;
         projectileScript.lifetime = lifetime;
-        projectileScript.InitWith(totalDamage, Caster.projectileLayer, true);
+        projectileScript.damage = totalDamage;
+        projectile.layer = Caster.projectileLayer;
+        projectileScript.destroyOnHit = true;
+        projectileScript.Init();
     }
 }

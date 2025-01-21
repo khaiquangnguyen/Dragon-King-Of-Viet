@@ -83,9 +83,11 @@ namespace CharacterBehavior {
 
         public void FixedUpdate() {
             // check state update
-            if (characterController.CheckIsInAir() && characterMovementState != CharacterMovementState.Jumping && !stats.canFly) {
+            if (characterController.CheckIsInAir() && characterMovementState != CharacterMovementState.Jumping &&
+                !stats.canFly) {
                 characterMovementState = CharacterMovementState.Falling;
             }
+
             CheckChangeToMovingOnGround();
             CheckChangeToMovingInAir();
             CheckChangeToMovingInWater();

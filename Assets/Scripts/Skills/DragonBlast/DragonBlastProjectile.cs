@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DragonBlastProjectile : ProjectileBehavior {
+public class DragonBlastProjectile : SkillCollidablePartBehavior {
     public AnimationCurve movementCurve;
 
     private void FixedUpdate() {

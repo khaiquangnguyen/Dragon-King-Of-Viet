@@ -6,6 +6,7 @@ namespace CharacterBehavior {
     [RequireComponent(typeof(CharacterController2D))]
     public abstract class GameCharacter : MonoBehaviour, IDamageTaker, IDamageDealer {
         public string uniqueId { get; }
+        public float healingMult;
         public float damageMult;
         public float abilityHaste { get; }
         public int facingDirection;

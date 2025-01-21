@@ -6,7 +6,9 @@ public class SpellSlotStats : ScriptableObject {
     public float firstSpellEnergyCost;
     public float secondSpellEnergyCost;
     public float thirdSpellEnergyCost;
+    public float fourthSpellEnergyCost;
     public float spellCardRotationPeriod;
+    public float spellCardRotationTotalDuration;
     public float spellCardHoldDuration;
     public float refundEnergyWhenInterrupted;
     public float refundEnergyWhenSkillNotUsed;

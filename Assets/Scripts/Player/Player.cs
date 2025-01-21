@@ -153,12 +153,6 @@ public class Player : GameCharacter {
     public CircleCollider2D manAttackCollider;
     public CircleCollider2D dragonAttackCollider;
     public bool canWallHang = true;
-    [HideInInspector]
-    public PlayerSpellSlotLevelOne playerSpellSlotLevelOne;
-    [HideInInspector]
-    public PlayerSpellSlotLevelTwo playerSpellSlotLevelTwo;
-    [HideInInspector]
-    public PlayerSpellSlotLevelThree playerSpellSlotLevelThree;
     private EnergyManager energyManager;
     #endregion
 
@@ -175,9 +169,6 @@ public class Player : GameCharacter {
         dragonRenderer = dragonBody.transform.Find("Renderer");
         humanAnimator = humanBody.GetComponentInChildren<Animator>();
         dragonAnimator = dragonBody.GetComponentInChildren<Animator>();
-        playerSpellSlotLevelOne = GetComponent<PlayerSpellSlotLevelOne>();
-        playerSpellSlotLevelTwo = GetComponent<PlayerSpellSlotLevelTwo>();
-        playerSpellSlotLevelThree = GetComponent<PlayerSpellSlotLevelThree>();
         humanBodyCollider = humanBody.transform.Find("BodyCollider").GetComponent<CapsuleCollider2D>();
         dashCooldown = playerStats.baseDashCooldown;
         dashCooldownCountdown = -1f;
