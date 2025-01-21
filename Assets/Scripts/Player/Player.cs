@@ -14,6 +14,7 @@ public enum Environment {
 }
 
 [RequireComponent(typeof(EnergyManager))]
+[RequireComponent(typeof(PlayerSpellSlotManagement))]
 public class Player : GameCharacter {
     private readonly IReadOnlyList<PlayerState> airStates = new List<PlayerState> {
         PlayerState.ManJump,
@@ -29,7 +30,8 @@ public class Player : GameCharacter {
     #endregion
 
     #region --------------------- State Attributes -------------------------------------
-    private PlayerForm form = PlayerForm.Man;
+    [ReadOnly]
+    public PlayerForm form = PlayerForm.Man;
     #endregion
 
     #region --------------------- Movement Attributes -------------------------------------
@@ -94,8 +96,6 @@ public class Player : GameCharacter {
     #region --------------------- Other Attributes --------------------------------------
     public LayerMask groundLayer;
     public PlayerStats playerStats;
-    public SkillList manSkills;
-    public SkillList dragonSkills;
     private readonly bool bumpHead = false;
     [HideInInspector]
     public bool inputDisabled;
@@ -154,6 +154,9 @@ public class Player : GameCharacter {
     public CircleCollider2D dragonAttackCollider;
     public bool canWallHang = true;
     private EnergyManager energyManager;
+    private PlayerSpellSlotManagement spellSlotManagement;
+    // when quick cast is enabled, if only one spell is equipped in the slot, it will be cast immediately
+    public bool allowQuickCastSpell = true;
     #endregion
 
     private void OnEnable() {
@@ -161,6 +164,7 @@ public class Player : GameCharacter {
         canWallHang = true;
         manAttackCollider.enabled = false;
         energyManager = GetComponent<EnergyManager>();
+        spellSlotManagement = GetComponent<PlayerSpellSlotManagement>();
         body = transform.GetComponent<Rigidbody2D>();
         characterController = GetComponent<CharacterController2D>();
         dragonBody = transform.Find("DragonBody").gameObject;
@@ -228,8 +232,32 @@ public class Player : GameCharacter {
         if (inputDisabled) return;
         transform.localScale = new Vector3(facingDirection, transform.localScale.y, transform.localScale.z);
         CheckEmpowerAndTransformInputs();
+        CheckTriggerSpellRotationInputs();
         if (environment == Environment.Ground || stateMachine.playerState is PlayerState.ManWallHang) {
             coyoteTimeCountdown = playerStats.jumpCoyoteDuration;
+        }
+    }
+
+    private void CheckTriggerSpellRotationInputs() {
+        // if cast skill, then change to cast spell state
+        int skillIndex = -1;
+        if (Input.GetButtonDown("Skill1")) {
+            skillIndex = 0;
+            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+        }
+        else if (Input.GetButtonDown("Skill2")) {
+            skillIndex = 1;
+            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+        }
+        else if (Input.GetButtonDown("Skill3")) {
+            skillIndex = 2;
+            spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+        }
+        else if (Input.GetButtonDown("Skill4")) {
+            skillIndex = 3;
+            if (form == PlayerForm.Dragon) {
+                spellSlotManagement.TriggerSpellsRotationOrHold(skillIndex);
+            }
         }
     }
 
@@ -293,8 +321,8 @@ public class Player : GameCharacter {
 
     public bool CheckChangeToManShortDashState() {
         var formValidated = stateMachine.currentStateBehavior.form == PlayerForm.Man;
-        var dodgeBack = Input.GetButtonDown("DodgeBack");
-        var dodgeForward = Input.GetButtonDown("DodgeForward");
+        var dodgeBack = Input.GetButtonDown("DashLeft");
+        var dodgeForward = Input.GetButtonDown("DashRight");
         var cooldownValidated = dashCooldownCountdown <= 0;
         var inputValidated = dodgeBack || dodgeForward;
         if (!isEmpowering) {
@@ -532,26 +560,28 @@ public class Player : GameCharacter {
     #endregion
 
     #region ------------------- Skills Usage ----------------------------------
-    public bool CheckChangeToDragonOrManCastSpell() {
-        BaseSpellCast spellCastForm = form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
-        var skillList = form == PlayerForm.Dragon ? dragonSkills : manSkills;
-        var spellCastState = form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
-        if (Input.GetButtonDown("Skill1")) {
-            var firstSkill = skillList.GetEnabledSkills().First();
-            spellCastForm.SetSkillData(
-                firstSkill,
-                firstSkill.skillStartupDuration,
-                firstSkill.skillActiveDuration,
-                firstSkill.skillRecoveryDuration,
-                firstSkill.skillStartupAnimation,
-                firstSkill.skillActiveAnimation,
-                firstSkill.skillRecoveryAnimation);
-            stateMachine.ChangeState(spellCastState);
-            firstSkill.Init(this);
-            return true;
-        }
+    public bool CheckChangeToManDragonCastSpell() {
+        var castInput = Input.GetButtonDown("FireSkill");
+        if (!castInput) return false;
+        return CastSpell();
+    }
 
-        return false;
+    public bool CastSpell() {
+        if (!spellSlotManagement.CanCastSpell()) return false;
+        BaseSpellCast spellCastForm = form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
+        var spellCastState = form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
+        var spell = spellSlotManagement.StartSpellCast();
+        spellCastForm.SetSkillData(
+            spell,
+            spell.skillStartupDuration,
+            spell.skillActiveDuration,
+            spell.skillRecoveryDuration,
+            spell.skillStartupAnimation,
+            spell.skillActiveAnimation,
+            spell.skillRecoveryAnimation);
+        stateMachine.ChangeState(spellCastState);
+        spell.Init(this);
+        return true;
     }
     #endregion
 

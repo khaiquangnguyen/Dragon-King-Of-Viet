@@ -12,8 +12,8 @@ public class SpellSlotUI: MonoBehaviour {
         var playerSpellSlot = player.GetComponent<PlayerSpellSlotManagement>();
         // update the sprite of the spell slot
         for (var i = 0; i < spellSlotImages.Count; i++) {
-            var spellEquippedAtSlot = playerSpellSlot.allEquippedSpellCards[i][playerSpellSlot.currentSpellCardIndices[i]];
-            spellSlotImages[i].sprite = spellEquippedAtSlot.icon;
+            var spellEquippedAtSlot = playerSpellSlot.GetCurrentSpellOfSlot(i);
+            if (spellEquippedAtSlot != null) spellSlotImages[i].sprite = spellEquippedAtSlot.icon;
         }
     }
 }

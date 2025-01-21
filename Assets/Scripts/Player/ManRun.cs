@@ -15,7 +15,7 @@ public class ManRun : PlayerStateBehavior {
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;
-        if (player.CheckChangeToDragonOrManCastSpell()) return;
+        if (player.CheckChangeToManDragonCastSpell()) return;
     }
 
     public override void FixedUpdate() {

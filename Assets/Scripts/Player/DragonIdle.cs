@@ -12,7 +12,7 @@ public class DragonIdle : PlayerStateBehavior {
         if (player.CheckChangeToDragonFloat()) return;
         if (player.CheckChangeToDragonAttackState()) return;
         if (player.CheckChangeToDragonDefenseState()) return;
-        if (player.CheckChangeToDragonOrManCastSpell()) return;
+        if (player.CheckChangeToManDragonCastSpell()) return;
     }
 
     public override void FixedUpdate() {

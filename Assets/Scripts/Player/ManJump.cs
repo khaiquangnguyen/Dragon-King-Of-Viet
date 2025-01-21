@@ -40,7 +40,7 @@ public class ManJump : PlayerStateBehavior {
         if (player.CheckChangeToManShortDashState()) return;
         if (player.CheckChangeToManDefenseState()) return;
         if (player.CheckChangeToManAttackState()) return;
-        if (player.CheckChangeToDragonOrManCastSpell()) return;
+        if (player.CheckChangeToManDragonCastSpell()) return;
         if (player.CheckTransformIntoDragonAndBack()) return;
     }
 
