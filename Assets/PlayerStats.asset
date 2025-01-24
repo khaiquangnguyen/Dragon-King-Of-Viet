@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   empoweredNextMoveBufferDuration: 0.06
   empowerCooldown: 0.02
-  empowerHoldDurationBeforeTransform: 1
   healthRegenDelayDuration: 1
   manIdleAnimation: {fileID: 7400000, guid: 1b8b8a7328271f24ebde7e623cf0d9c9, type: 2}
+  dragonIdleAnimation: {fileID: -4018411851501446075, guid: fcec902fc49ae4f1da105e89c3cf4a17, type: 3}
   manWallHangFallSpeed: -2
   manGroundAccelTime: 0.1
   manGroundDecelTime: 0.06
@@ -277,15 +277,52 @@ MonoBehaviour:
   defenseActiveCounterAnimation: {fileID: 7400000, guid: c81e99615881547ae84252469e25d1d7, type: 2}
   defenseActiveNoCounterAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
   defenseRecoveryAnimation: {fileID: 7400000, guid: 114c2835bb8244cddbbe3ba11454ef86, type: 2}
-  manToDragonTransformDuration: 0.3
-  dragonToManTransformDuration: 0.4
+  empowerHoldDurationBeforeTransform: 0.5
+  manToDragonTransformDuration: 2.5
+  dragonToManTransformDuration: 1
   ManToDragonTransformIframeDuration: 0.5
   dragonToManTransformIframeDuration: 0.5
+  transformationSlowMotionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.32133794
+      value: 0.37633348
+      inSlope: -1.1996406
+      outSlope: -1.1996406
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  manToDragonTransformAnimation: {fileID: -4683695404506846224, guid: fcec902fc49ae4f1da105e89c3cf4a17, type: 3}
+  manToDragonTransformRoarAnimation: {fileID: -2266719327770626426, guid: fcec902fc49ae4f1da105e89c3cf4a17, type: 3}
   dragonRotationSpeed: 6
   dragonToManRotationSpeed: 1
   dragonMaxSpeed: 15
   dragonAccelTime: 0.6
   dragonDecelTime: 0.6
+  dragonFloatMoveAnimation: {fileID: -2022143655944303726, guid: fcec902fc49ae4f1da105e89c3cf4a17, type: 3}
   dragonAttackStats:
   - startupDuration: 0.1
     activeDuration: 0.4
@@ -293,11 +330,12 @@ MonoBehaviour:
     attackCancelableAfter: 0
     damage: 0
     cancelable: 1
-    startupAnimation: {fileID: 7400000, guid: 8873066722f33453b99899e712c861a5, type: 2}
-    activeAnimation: {fileID: 7400000, guid: a9550dcad71764ba7b553ae93770b3c8, type: 2}
-    recoveryAnimation: {fileID: 7400000, guid: e0518902cd45846d8a2d23e60dbbd770, type: 2}
+    startupAnimation: {fileID: 7400000, guid: 119d0fe970a8e4b729e71bb35ba47561, type: 2}
+    activeAnimation: {fileID: 7400000, guid: 43e2228634a15467a81ed46b6bd7ca49, type: 2}
+    recoveryAnimation: {fileID: 7400000, guid: 3f834167177ee4626b32d1956a9a2404, type: 2}
   dragonDefenseStartupAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
   dragonDefenseActiveCounterAnimation: {fileID: 7400000, guid: 948b582872ee6c9458c2055e7e640296, type: 2}
   dragonDefenseActiveNoCounterAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
   dragonDefenseRecoveryAnimation: {fileID: 7400000, guid: 2422183a2577ab04aaf7e7812bbc2650, type: 2}
+  dragonFlyAnimation: {fileID: 0}
   dragonEnergyRegenDelayDuration: 1

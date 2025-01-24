@@ -53,7 +53,7 @@ public class PlayerSpellManager : MonoBehaviour {
 
     public List<Skill> GetAllSpellsOfSlot(int? slot = null) {
         var slotToCheck = slot ?? selectedSpellSlot;
-        var form = player.form;
+        var form = player.stateMachine.currentStateBehavior.form;
         var humanFormSpells = slotToCheck switch {
             0 => levelOneManEquippedSpellCards,
             1 => levelTwoManEquippedSpellCards,

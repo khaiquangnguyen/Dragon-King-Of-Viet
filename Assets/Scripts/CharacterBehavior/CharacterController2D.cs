@@ -183,6 +183,10 @@ namespace CharacterBehavior {
             body.MovePosition(new Vector2(newX, body.position.y));
         }
 
+        public void MoveTo(float newX, float newY) {
+            body.MovePosition(new Vector2(newX, newY));
+        }
+
         public void FixedUpdate() {
             if (shouldStickToGround && !CheckRaycastGround() && !CheckRaycastSlope()) {
                 StickToGround();

@@ -4,6 +4,9 @@ public class DragonIdle : PlayerStateBehavior {
 
     public override void OnStateEnter() {
         player.UpdateVelocity(0, 0);
+        player.dragonAnimator.Play(player.playerStats.dragonIdleAnimation.name);
+        player.dragonAnimator.speed = 1;
+
     }
 
     public override void Update() {

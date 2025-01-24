@@ -21,10 +21,10 @@ public class ManFall : PlayerStateBehavior {
         player.characterController.shouldStickToGround = false;
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
-        var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
+        var maxSpeedX = player.playerStats.manAirMaxHSpeed * Mathf.Abs(player.inputDirectionX);
         var gravityMult = player.GetGravityMult();
         player.characterController.MoveOnNonGroundHorizontalWithGravity(acceleration, deceleration, maxSpeedX,
-            player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxFallSpeed);
+            player.playerStats.gravity, gravityMult, player.facingDirection, player.playerStats.maxVerticalSpeed);
         if (player.characterController.CheckIsOnGround()) {
             player.characterController.shouldStickToGround = true;
             if (player.inputDirectionX == 0) {

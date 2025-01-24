@@ -9,28 +9,28 @@ public class ManToDragonTransform : PlayerStateBehavior {
         player.UpdateVelocity(0, 0);
         manToDragonCountdown = player.playerStats.manToDragonTransformDuration;
         player.dragonBody.gameObject.SetActive(true);
-        player.ChangeAlphaOfHumanAnimator(1);
-        player.ChangeAlphaOfDragonAnimator(0);
-        player.dragonBody.gameObject.transform.localScale = Vector3.zero;
+        player.dragonAnimator.Play(player.playerStats.manToDragonTransformAnimation.name);
+        player.humanBody.gameObject.SetActive(false);
     }
 
     public override void FixedUpdate() {
+        // the transformation is a two part transform
+        // first part is 1 third of the animation
+        // second part is the rest of the animation
+        // in the first part, the human scales down and fades out
+
         player.UpdateVelocity(0, 0);
         manToDragonCountdown = Mathf.Max(manToDragonCountdown - Time.fixedDeltaTime, 0f);
-        var transformRate = 1 - manToDragonCountdown / player.playerStats.manToDragonTransformDuration;
-        if (transformRate > 0.25f) {
-            player.dragonBody.gameObject.transform.localScale = Vector3.one * transformRate;
-            // scale down and fade human slowly
-            player.ChangeAlphaOfHumanAnimator(1 - transformRate);
-            player.ChangeAlphaOfDragonAnimator(transformRate);
+        var firstTransformDuration = player.playerStats.manToDragonTransformDuration * 0.5f;
+        var secondTransformDuration = player.playerStats.manToDragonTransformDuration * 0.5f;
+        var timePassSinceTransformedRatio = player.playerStats.manToDragonTransformDuration - manToDragonCountdown;
+        if (timePassSinceTransformedRatio > firstTransformDuration) {
+            player.dragonAnimator.Play(player.playerStats.manToDragonTransformRoarAnimation.name);
         }
-
-        if (transformRate >= 1) player.stateMachine.ChangeState(PlayerState.DragonIdle);
+        if (manToDragonCountdown <= 0) player.stateMachine.ChangeState(PlayerState.DragonIdle);
     }
 
     public override void OnStateExit() {
-        player.humanBody.gameObject.SetActive(false);
         player.dragonBody.gameObject.transform.localScale = Vector3.one;
-        player.ChangeAlphaOfDragonAnimator(1);
     }
 }

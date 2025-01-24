@@ -6,6 +6,8 @@ public class DragonFloatMove : PlayerStateBehavior {
 
     public override void OnStateEnter() {
         player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
+        player.dragonAnimator.Play(player.playerStats.dragonFloatMoveAnimation.name);
+        player.dragonAnimator.speed = 1;
     }
 
     public override void FixedUpdate() {

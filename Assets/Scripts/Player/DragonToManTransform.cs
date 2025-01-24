@@ -13,12 +13,13 @@ public class DragonToManTransform : PlayerStateBehavior {
         player.dragonMaxSpeed = player.playerStats.dragonMaxSpeed;
         dragonToManCountdown = player.playerStats.dragonToManTransformDuration;
         player.humanBody.gameObject.SetActive(true);
+        player.dragonAnimator.Play(player.playerStats.manToDragonTransformAnimation.name);
     }
 
     public override void FixedUpdate() {
         dragonToManCountdown = Mathf.Max(dragonToManCountdown - Time.fixedDeltaTime, 0f);
         var transformRate = 1 - dragonToManCountdown / player.playerStats.dragonToManTransformDuration;
-        player.dragonBody.gameObject.transform.localScale = Vector3.one * (1 - transformRate);
+        // player.dragonBody.gameObject.transform.localScale = Vector3.one * (1 - transformRate);
         if (Mathf.Approximately(dragonToManCountdown, 0)) {
             player.inputDisabled = false;
             player.dragonBody.gameObject.SetActive(false);

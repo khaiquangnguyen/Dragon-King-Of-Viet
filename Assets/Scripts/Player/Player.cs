@@ -31,7 +31,6 @@ public class Player : GameCharacter {
 
     #region --------------------- State Attributes -------------------------------------
     [ReadOnly]
-    public PlayerForm form = PlayerForm.Man;
     #endregion
 
     #region --------------------- Movement Attributes -------------------------------------
@@ -149,6 +148,7 @@ public class Player : GameCharacter {
     private DragonIdle dragonIdle;
     private DragonDefense dragonDefense;
     private DragonAttack dragonAttack;
+    private DragonFloatJump dragonFloatJump;
     private DragonCastSpell dragonCastSpell;
     public CircleCollider2D manAttackCollider;
     public CircleCollider2D dragonAttackCollider;
@@ -157,6 +157,7 @@ public class Player : GameCharacter {
     private PlayerSpellManager spellManager;
     // when quick cast is enabled, if only one spell is equipped in the slot, it will be cast immediately
     public bool allowQuickCastSpell = true;
+    private float fixedDeltaTime;
     #endregion
 
     private void OnEnable() {
@@ -179,6 +180,8 @@ public class Player : GameCharacter {
         healthManager = GetComponent<HealthManager>();
         projectileLayer = LayerMask.NameToLayer("PlayerProjectile");
         attackLayer = LayerMask.NameToLayer("PlayerAttack");
+        fixedDeltaTime = Time.fixedDeltaTime;
+
 
         stateMachine = new PlayerStateMachine();
         stateMachine.AddState(manIdle = new ManIdle(this));
@@ -205,6 +208,7 @@ public class Player : GameCharacter {
         stateMachine.AddState(dragonFloatMove = new DragonFloatMove(this));
         stateMachine.AddState(dragonDefense = new DragonDefense(this));
         stateMachine.AddState(dragonCastSpell = new DragonCastSpell(this));
+        stateMachine.AddState(dragonFloatJump = new DragonFloatJump(this));
         stateMachine.ChangeState(PlayerState.ManIdle);
     }
 
@@ -255,7 +259,7 @@ public class Player : GameCharacter {
         }
         else if (Input.GetButtonDown("Skill4")) {
             skillIndex = 3;
-            if (form == PlayerForm.Dragon) {
+            if (stateMachine.currentStateBehavior.form == PlayerForm.Dragon) {
                 spellManager.TriggerSpellsRotationOrHold(skillIndex);
             }
         }
@@ -265,7 +269,7 @@ public class Player : GameCharacter {
     // since if you put it in update like other CheckChange functions,
     // it will trigger almost immediately
     public bool CheckChangeToManIdle() {
-        if (form != PlayerForm.Man) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Man) return false;
         var notMoving = Mathf.Approximately(characterController.velocity.magnitude, 0);
         if (notMoving && environment == Environment.Ground) {
             stateMachine.ChangeState(PlayerState.ManIdle);
@@ -312,7 +316,7 @@ public class Player : GameCharacter {
     public bool CheckChangeToDragonFly() {
         var input = Input.GetButtonDown("Jump");
         if (input) {
-            stateMachine.ChangeState(PlayerState.DragonFly);
+            stateMachine.ChangeState(PlayerState.DragonFloatJump);
             return true;
         }
 
@@ -353,7 +357,7 @@ public class Player : GameCharacter {
     public bool CheckChangeToManAttackState() {
         var inputValidated = Input.GetButtonDown("Attack");
         if (!inputValidated) return false;
-        if (form != PlayerForm.Man) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Man) return false;
         attackInputBufferCountdown = playerStats.attackInputBufferDuration;
         stateMachine.ChangeState(isEmpowering ? PlayerState.ManEmpoweredAttack : PlayerState.ManAttack);
         return true;
@@ -362,7 +366,7 @@ public class Player : GameCharacter {
     public bool CheckChangeToDragonAttackState() {
         var inputValidated = Input.GetButtonDown("Attack");
         if (!inputValidated) return false;
-        if (form != PlayerForm.Dragon) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Dragon) return false;
         attackInputBufferCountdown = playerStats.attackInputBufferDuration;
         stateMachine.ChangeState(PlayerState.DragonAttack);
         return true;
@@ -370,7 +374,7 @@ public class Player : GameCharacter {
 
     public bool CheckChangeToManDefenseState() {
         var inputValidated = Input.GetButtonDown("Defense");
-        if (form != PlayerForm.Man) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Man) return false;
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
             stateMachine.ChangeState(isEmpowering ? PlayerState.ManEmpoweredDefense : PlayerState.ManDefense);
@@ -382,7 +386,7 @@ public class Player : GameCharacter {
 
     public bool CheckChangeToDragonDefenseState() {
         var inputValidated = Input.GetButtonDown("Defense");
-        if (form != PlayerForm.Dragon) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Dragon) return false;
         if (inputValidated) {
             attackInputBufferCountdown = playerStats.attackInputBufferDuration;
             stateMachine.ChangeState(PlayerState.DragonDefense);
@@ -477,7 +481,7 @@ public class Player : GameCharacter {
     }
 
     public bool CheckChangeToManJumpOrEmpoweredJumpState() {
-        if (form != PlayerForm.Man) return false;
+        if (stateMachine.currentStateBehavior.form != PlayerForm.Man) return false;
         if (Input.GetButtonDown("Jump")) {
             var canReceiveJumpInput = true;
             if (stateMachine.playerState is PlayerState.ManJump or PlayerState.ManEmpoweredJump) {
@@ -568,8 +572,8 @@ public class Player : GameCharacter {
 
     public bool CastSpell() {
         if (!spellManager.CanCastSpell()) return false;
-        BaseSpellCast spellCastForm = form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
-        var spellCastState = form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
+        BaseSpellCast spellCastForm =stateMachine.currentStateBehavior.form == PlayerForm.Dragon ? dragonCastSpell : manCastSpell;
+        var spellCastState =stateMachine.currentStateBehavior.form == PlayerForm.Dragon ? PlayerState.DragonCastSpell : PlayerState.ManCastSpell;
         var spell = spellManager.StartSpellCast();
         spellCastForm.SetSkillData(
             spell,
@@ -609,39 +613,31 @@ public class Player : GameCharacter {
         return false;
     }
 
-    public void ChangeToMan() {
-        form = PlayerForm.Man;
-        stateMachine.ChangeState(PlayerState.ManIdle);
-        humanBody.SetActive(true);
-        dragonBody.SetActive(false);
-    }
-
-    public void ChangeToDragon() {
-        form = PlayerForm.Dragon;
-        stateMachine.ChangeState(PlayerState.DragonIdle);
-        humanBody.SetActive(false);
-        dragonBody.SetActive(true);
-    }
-
     public bool CheckTransformIntoDragonAndBack() {
         var isEmpoweringHold = Input.GetButton("Empower");
         var isFireSkillHold = Input.GetButton("FireSkill");
-        if (isEmpoweringHold && isFireSkillHold) {
-            collectEnergyToTransformDuration += Time.deltaTime;
+        if (isEmpoweringHold && isFireSkillHold && stateMachine.currentStateBehavior.name != PlayerState.ManToDragon && stateMachine.currentStateBehavior.name != PlayerState.DragonToMan) {
+            Time.timeScale = playerStats.transformationSlowMotionCurve.Evaluate(collectEnergyToTransformDuration / playerStats.empowerHoldDurationBeforeTransform);
+            Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
+            collectEnergyToTransformDuration += Time.deltaTime / Time.timeScale;
             if (collectEnergyToTransformDuration >= playerStats.empowerHoldDurationBeforeTransform) {
-                if (form == PlayerForm.Man) {
-                    ChangeToDragon();
+                Time.timeScale = 1;
+                Time.fixedDeltaTime = fixedDeltaTime;
+                if (stateMachine.currentStateBehavior.form == PlayerForm.Man) {
+                    stateMachine.ChangeState(PlayerState.ManToDragon);
                     collectEnergyToTransformDuration = 0;
                     return true;
                 }
                 else {
-                    ChangeToMan();
+                    stateMachine.ChangeState(PlayerState.DragonToMan);
                     collectEnergyToTransformDuration = 0;
                     return true;
                 }
             }
         }
         else {
+            Time.timeScale = 1;
+            Time.fixedDeltaTime = fixedDeltaTime;
             collectEnergyToTransformDuration = 0;
         }
 

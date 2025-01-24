@@ -28,7 +28,7 @@ public class ManEmpoweredJump : ManJump {
     public override void FixedUpdate() {
         var acceleration = player.playerStats.manAirAccel;
         var deceleration = player.playerStats.manAirDecel;
-        var maxSpeedX = player.playerStats.manAirMaxSpeed * Mathf.Abs(player.inputDirectionX);
+        var maxSpeedX = player.playerStats.manAirMaxHSpeed * Mathf.Abs(player.inputDirectionX);
         var accelerationFactor = Mathf.Abs(player.characterController.velocity.x) > maxSpeedX
             ? acceleration
             : deceleration;

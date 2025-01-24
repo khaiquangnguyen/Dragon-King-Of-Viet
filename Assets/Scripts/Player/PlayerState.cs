@@ -25,7 +25,7 @@ public enum PlayerState {
     DragonFire,
     DragonDefense,
     DragonEmpoweredDefense,
-    DragonJump,
+    DragonFloatJump,
     ManToDragon,
     DragonToMan,
     DragonCastSpell

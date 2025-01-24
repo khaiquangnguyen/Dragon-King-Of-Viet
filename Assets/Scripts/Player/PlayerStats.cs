@@ -8,13 +8,13 @@ public class PlayerStats : ScriptableObject {
     [Header("Empower")]
     public float empoweredNextMoveBufferDuration = 0.05f;
     public float empowerCooldown = 0.2f;
-    public float empowerHoldDurationBeforeTransform = 0.2f;
     public float healthRegenDelayDuration = 1f;
     #endregion
 
     #region Idle
     [Header("Idle")]
     public AnimationClip manIdleAnimation;
+    public AnimationClip dragonIdleAnimation;
     #endregion
 
     #region Wall Hang
@@ -30,14 +30,15 @@ public class PlayerStats : ScriptableObject {
     public float manGroundMaxSpeed = 2f;
     public float manAirAccelTime = 10;
     public float manAirDecelTime = 10;
-    public float manAirMaxSpeed = 40f;
+    [FormerlySerializedAs("manAirMaxSpeed")]
+    public float manAirMaxHSpeed = 40f;
     public float manWaterAccelTime = 10;
     public float manWaterDecelTime = 10;
     public float manWaterMaxSpeed = 100f;
     public float manGroundAccel => manGroundMaxSpeed / manGroundAccelTime;
     public float manGroundDecel => manGroundMaxSpeed / manGroundDecelTime;
-    public float manAirAccel => manAirMaxSpeed / manAirAccelTime;
-    public float manAirDecel => manAirMaxSpeed / manAirDecelTime;
+    public float manAirAccel => manAirMaxHSpeed / manAirAccelTime;
+    public float manAirDecel => manAirMaxHSpeed / manAirDecelTime;
     public float manWaterAccel => manWaterMaxSpeed / manWaterAccelTime;
     public float manWaterDecel => manWaterMaxSpeed / manWaterDecelTime;
     #endregion
@@ -80,7 +81,8 @@ public class PlayerStats : ScriptableObject {
 
     // time the player is at the peak of their jump. we slow down the speed here but don't start falling yet
     public float jumpPeakHangThreshold = 0.95f;
-    public float maxFallSpeed = 100;
+    [FormerlySerializedAs("maxFallSpeed")]
+    public float maxVerticalSpeed = 100;
     public float jumpCutHeight = 0.5f;
     public float jumpCutDuration = 0.1f;
     public AnimationCurve jumpCutHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
@@ -161,13 +163,18 @@ public class PlayerStats : ScriptableObject {
 
     #region Dragon Transform
     [Header("Dragon Transform")]
+    public float empowerHoldDurationBeforeTransform = 0.2f;
     public float manToDragonTransformDuration = 2;
     public float dragonToManTransformDuration = 1f;
     public float ManToDragonTransformIframeDuration = 0.5f;
     public float dragonToManTransformIframeDuration = 0.5f;
+    public AnimationCurve transformationSlowMotionCurve = AnimationCurve.Linear(0, 1, 1, 1);
+    public AnimationClip manToDragonTransformAnimation;
+    public AnimationClip manToDragonTransformRoarAnimation;
     #endregion
 
     #region Dragon Move Stats
+    [Header("Dragon Move Stats")]
     public float dragonRotationSpeed = 3f;
     public float dragonToManRotationSpeed = 1f;
     public float dragonMaxSpeed = 6f;
@@ -175,6 +182,9 @@ public class PlayerStats : ScriptableObject {
     public float dragonDecelTime = 0.6f;
     public float dragonAccel => dragonMaxSpeed / dragonAccelTime;
     public float dragonDecel => dragonMaxSpeed / dragonDecelTime;
+    public AnimationCurve dragonJumpHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public AnimationCurve dragonJumpCutHeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public AnimationClip dragonFloatMoveAnimation;
     #endregion
 
     #region Dragon Attack Stats
@@ -192,6 +202,13 @@ public class PlayerStats : ScriptableObject {
 
     #region Dragon Dash Stats
     [Header("Dragon Dash Stats")]
+    #endregion
+
+    #region Dragon Fly Stats
+    [Header("Dragon Fly Stats")]
+    public AnimationClip dragonFlyAnimation;
+
+
     #endregion
 
     #region dragon energy stats

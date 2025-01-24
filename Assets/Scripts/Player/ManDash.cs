@@ -49,7 +49,7 @@ public class ManDash : PlayerStateBehavior {
         dashTimestamp = 0;
         var environmentMaxSpeed = environment switch {
             Environment.Ground => playerStats.manGroundMaxSpeed,
-            Environment.Air => playerStats.manAirMaxSpeed,
+            Environment.Air => playerStats.manAirMaxHSpeed,
             Environment.Water => playerStats.manWaterMaxSpeed,
             _ => throw new ArgumentOutOfRangeException()
         };
